@@ -1,0 +1,48 @@
+//https://github.com/babel/babel-loader
+//http://webpack.github.io/docs/
+
+
+var path = require('path');
+var webpack = require('webpack');
+
+
+
+var TARGET = process.env.TARGET;
+var ROOT_PATH = path.resolve(__dirname);
+var SRC_DIR = 'src';
+
+var config = {
+  paths: {
+    src: path.join(ROOT_PATH, SRC_DIR),
+    out:path.join(ROOT_PATH),
+    main: path.join(ROOT_PATH, SRC_DIR, 'sophie.js'),
+    test:path.join(ROOT_PATH, SRC_DIR, "test.js"),
+
+  },
+}
+
+
+module.exports = {
+    entry: {
+      sophie:config.paths.main,
+      test:config.paths.test
+    },
+    output: {
+        path: config.paths.out,
+        filename: '[name].js',
+        sourceMapFilename:"[file].map"
+    },
+    module: {
+      loaders: [
+        {
+          test: /\.js$/,
+          exclude: /(node_modules|bower_components)/,
+          loader: ["babel-loader"],
+          query: {}
+        }
+       ]
+    },
+    plugins:[
+
+    ]
+}

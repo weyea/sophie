@@ -1,7 +1,7 @@
 {
-  "name": "leaf",
+  "name": "sophie",
   "version": "0.0.1",
-  "main": "./leaf.js",
+  "main": "./sophie.js",
   "dependencies": {
     "deku": "2.0.0-rc13",
     "dift": "^0.1.12",

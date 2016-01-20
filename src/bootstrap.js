@@ -5,7 +5,7 @@
   var Register = require("./register")
   var Element = require("./element");
   var EE  = require("./event")
-  var StyleSheet = require("./StyleSheet")
+  var StyleSheet = require("./styleSheet")
 
 
 

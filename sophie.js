@@ -47,18 +47,19 @@
 	"use strict";
 
 	var Register = __webpack_require__(1);
-	var Element = __webpack_require__(26);
-	var Import = __webpack_require__(27);
-	var StyleSheet = __webpack_require__(28);
-	var Compontent = __webpack_require__(29);
-	var Bootstrap = __webpack_require__(30);
+	var Element = __webpack_require__(28);
+	var Import = __webpack_require__(29);
+	var StyleSheet = __webpack_require__(30);
+	var Compontent = __webpack_require__(31);
+	var Bootstrap = __webpack_require__(32);
 
 	var Sophie = {
 	  runApp: Bootstrap.runApp,
 	  element: Element,
 	  register: Register.register,
-	  create: Compontent,
+	  createClass: Compontent,
 	  import: Import,
+	  createStyleSheet: StyleSheet.create,
 	  StyleSheet: StyleSheet
 	};
 
@@ -71,8 +72,9 @@
 	"use strict";
 
 	var utils = __webpack_require__(2);
+	var EE = __webpack_require__(3);
 
-	var _require = __webpack_require__(3);
+	var _require = __webpack_require__(5);
 
 	var dom = _require.dom;
 	var diff = _require.diff;
@@ -93,6 +95,7 @@
 	    var createFun = function createFun() {
 	        this.state = {};
 	        this.children = [];
+	        this.refs = {};
 	    };
 
 	    createFun.prototype = definition;
@@ -105,18 +108,14 @@
 	    createFun.prototype._update = function () {
 	        var oldVnode = this.vnode;
 	        var newVnode = this.render();
-
 	        var changes = diff.diffNode(oldVnode, newVnode, vnode.createPath(this.path, oldVnode.key || "0"));
-
 	        this.node = changes.reduce(dom.patch({}, this), this.node);
 	        this.vnode = newVnode;
 	        return this.node;
 	    };
 
 	    registerDefinition(inName, createFun);
-
 	    document.createElement(inName);
-
 	    return createFun;
 	}
 
@@ -179,16 +178,6 @@
 	    }
 	}
 
-	var upgrageCallbacks = [];
-	var onUpgrade = function onUpgrade(callback) {
-	    upgrageCallbacks.push(callback);
-	};
-
-	var beforeUpgrageCallbacks = [];
-	var onBeforeUpgrade = function onBeforeUpgrade(callback) {
-	    beforeUpgrageCallbacks.push(callback);
-	};
-
 	var getRegName = function getRegName(el) {
 
 	    var name = el.tagName.toLowerCase();
@@ -228,9 +217,16 @@
 	function createVnodeFromDOMElement(el) {
 	    var type = el.tagName.toLowerCase();
 
+	    var attrs = el.attributes;
+	    var attributes = {};
+	    for (var i = 0; i < attrs.length; i++) {
+	        attributes[attrs[i].name] = attributes[attrs[i].value];
+	    }
+
 	    //@todo props
 	    return {
 	        type: type,
+	        attributes: attributes,
 	        nativeNode: el
 	    };
 	}
@@ -275,14 +271,11 @@
 
 	                inElement.__upgraded__ = true;
 
-	                for (var i = 0; i < beforeUpgrageCallbacks.length; i++) {
-	                    beforeUpgrageCallbacks[i](inElement);
-	                }
+	                EE.trigger("beforeCreate", [inElement]);
+
 	                ready(vnode, newVnode, inElement);
 
-	                for (var i = 0; i < upgrageCallbacks.length; i++) {
-	                    upgrageCallbacks[i](inElement);
-	                }
+	                EE.trigger("onCreate", [inElement]);
 	            }
 	        } else {}
 
@@ -343,11 +336,11 @@
 	});
 
 	module.exports = {
-	    onUpgrade: onUpgrade,
+
 	    registry: registry,
 	    isLeaf: isLeaf,
 	    upgrade: upgrade,
-	    onBeforeUpgrade: onBeforeUpgrade,
+
 	    upgradeDocument: function upgradeDocument(doc) {
 	        walkRoot(doc.body || doc, function (el, tagName) {
 	            if (getRegName(el)) {
@@ -384,24 +377,515 @@
 
 	'use strict';
 
+	var EventEmitter = __webpack_require__(4);
+	var ee = new EventEmitter();
+
+	module.exports = ee;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	 * EventEmitter v4.2.11 - git.io/ee
+	 * Unlicense - http://unlicense.org/
+	 * Oliver Caldwell - http://oli.me.uk/
+	 * @preserve
+	 */
+
+	;(function () {
+	    'use strict';
+
+	    /**
+	     * Class for managing events.
+	     * Can be extended to provide event functionality in other classes.
+	     *
+	     * @class EventEmitter Manages event registering and emitting.
+	     */
+	    function EventEmitter() {}
+
+	    // Shortcuts to improve speed and size
+	    var proto = EventEmitter.prototype;
+	    var exports = this;
+	    var originalGlobalValue = exports.EventEmitter;
+
+	    /**
+	     * Finds the index of the listener for the event in its storage array.
+	     *
+	     * @param {Function[]} listeners Array of listeners to search through.
+	     * @param {Function} listener Method to look for.
+	     * @return {Number} Index of the specified listener, -1 if not found
+	     * @api private
+	     */
+	    function indexOfListener(listeners, listener) {
+	        var i = listeners.length;
+	        while (i--) {
+	            if (listeners[i].listener === listener) {
+	                return i;
+	            }
+	        }
+
+	        return -1;
+	    }
+
+	    /**
+	     * Alias a method while keeping the context correct, to allow for overwriting of target method.
+	     *
+	     * @param {String} name The name of the target method.
+	     * @return {Function} The aliased method
+	     * @api private
+	     */
+	    function alias(name) {
+	        return function aliasClosure() {
+	            return this[name].apply(this, arguments);
+	        };
+	    }
+
+	    /**
+	     * Returns the listener array for the specified event.
+	     * Will initialise the event object and listener arrays if required.
+	     * Will return an object if you use a regex search. The object contains keys for each matched event. So /ba[rz]/ might return an object containing bar and baz. But only if you have either defined them with defineEvent or added some listeners to them.
+	     * Each property in the object response is an array of listener functions.
+	     *
+	     * @param {String|RegExp} evt Name of the event to return the listeners from.
+	     * @return {Function[]|Object} All listener functions for the event.
+	     */
+	    proto.getListeners = function getListeners(evt) {
+	        var events = this._getEvents();
+	        var response;
+	        var key;
+
+	        // Return a concatenated array of all matching events if
+	        // the selector is a regular expression.
+	        if (evt instanceof RegExp) {
+	            response = {};
+	            for (key in events) {
+	                if (events.hasOwnProperty(key) && evt.test(key)) {
+	                    response[key] = events[key];
+	                }
+	            }
+	        }
+	        else {
+	            response = events[evt] || (events[evt] = []);
+	        }
+
+	        return response;
+	    };
+
+	    /**
+	     * Takes a list of listener objects and flattens it into a list of listener functions.
+	     *
+	     * @param {Object[]} listeners Raw listener objects.
+	     * @return {Function[]} Just the listener functions.
+	     */
+	    proto.flattenListeners = function flattenListeners(listeners) {
+	        var flatListeners = [];
+	        var i;
+
+	        for (i = 0; i < listeners.length; i += 1) {
+	            flatListeners.push(listeners[i].listener);
+	        }
+
+	        return flatListeners;
+	    };
+
+	    /**
+	     * Fetches the requested listeners via getListeners but will always return the results inside an object. This is mainly for internal use but others may find it useful.
+	     *
+	     * @param {String|RegExp} evt Name of the event to return the listeners from.
+	     * @return {Object} All listener functions for an event in an object.
+	     */
+	    proto.getListenersAsObject = function getListenersAsObject(evt) {
+	        var listeners = this.getListeners(evt);
+	        var response;
+
+	        if (listeners instanceof Array) {
+	            response = {};
+	            response[evt] = listeners;
+	        }
+
+	        return response || listeners;
+	    };
+
+	    /**
+	     * Adds a listener function to the specified event.
+	     * The listener will not be added if it is a duplicate.
+	     * If the listener returns true then it will be removed after it is called.
+	     * If you pass a regular expression as the event name then the listener will be added to all events that match it.
+	     *
+	     * @param {String|RegExp} evt Name of the event to attach the listener to.
+	     * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
+	     * @return {Object} Current instance of EventEmitter for chaining.
+	     */
+	    proto.addListener = function addListener(evt, listener) {
+	        var listeners = this.getListenersAsObject(evt);
+	        var listenerIsWrapped = typeof listener === 'object';
+	        var key;
+
+	        for (key in listeners) {
+	            if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
+	                listeners[key].push(listenerIsWrapped ? listener : {
+	                    listener: listener,
+	                    once: false
+	                });
+	            }
+	        }
+
+	        return this;
+	    };
+
+	    /**
+	     * Alias of addListener
+	     */
+	    proto.on = alias('addListener');
+
+	    /**
+	     * Semi-alias of addListener. It will add a listener that will be
+	     * automatically removed after its first execution.
+	     *
+	     * @param {String|RegExp} evt Name of the event to attach the listener to.
+	     * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
+	     * @return {Object} Current instance of EventEmitter for chaining.
+	     */
+	    proto.addOnceListener = function addOnceListener(evt, listener) {
+	        return this.addListener(evt, {
+	            listener: listener,
+	            once: true
+	        });
+	    };
+
+	    /**
+	     * Alias of addOnceListener.
+	     */
+	    proto.once = alias('addOnceListener');
+
+	    /**
+	     * Defines an event name. This is required if you want to use a regex to add a listener to multiple events at once. If you don't do this then how do you expect it to know what event to add to? Should it just add to every possible match for a regex? No. That is scary and bad.
+	     * You need to tell it what event names should be matched by a regex.
+	     *
+	     * @param {String} evt Name of the event to create.
+	     * @return {Object} Current instance of EventEmitter for chaining.
+	     */
+	    proto.defineEvent = function defineEvent(evt) {
+	        this.getListeners(evt);
+	        return this;
+	    };
+
+	    /**
+	     * Uses defineEvent to define multiple events.
+	     *
+	     * @param {String[]} evts An array of event names to define.
+	     * @return {Object} Current instance of EventEmitter for chaining.
+	     */
+	    proto.defineEvents = function defineEvents(evts) {
+	        for (var i = 0; i < evts.length; i += 1) {
+	            this.defineEvent(evts[i]);
+	        }
+	        return this;
+	    };
+
+	    /**
+	     * Removes a listener function from the specified event.
+	     * When passed a regular expression as the event name, it will remove the listener from all events that match it.
+	     *
+	     * @param {String|RegExp} evt Name of the event to remove the listener from.
+	     * @param {Function} listener Method to remove from the event.
+	     * @return {Object} Current instance of EventEmitter for chaining.
+	     */
+	    proto.removeListener = function removeListener(evt, listener) {
+	        var listeners = this.getListenersAsObject(evt);
+	        var index;
+	        var key;
+
+	        for (key in listeners) {
+	            if (listeners.hasOwnProperty(key)) {
+	                index = indexOfListener(listeners[key], listener);
+
+	                if (index !== -1) {
+	                    listeners[key].splice(index, 1);
+	                }
+	            }
+	        }
+
+	        return this;
+	    };
+
+	    /**
+	     * Alias of removeListener
+	     */
+	    proto.off = alias('removeListener');
+
+	    /**
+	     * Adds listeners in bulk using the manipulateListeners method.
+	     * If you pass an object as the second argument you can add to multiple events at once. The object should contain key value pairs of events and listeners or listener arrays. You can also pass it an event name and an array of listeners to be added.
+	     * You can also pass it a regular expression to add the array of listeners to all events that match it.
+	     * Yeah, this function does quite a bit. That's probably a bad thing.
+	     *
+	     * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add to multiple events at once.
+	     * @param {Function[]} [listeners] An optional array of listener functions to add.
+	     * @return {Object} Current instance of EventEmitter for chaining.
+	     */
+	    proto.addListeners = function addListeners(evt, listeners) {
+	        // Pass through to manipulateListeners
+	        return this.manipulateListeners(false, evt, listeners);
+	    };
+
+	    /**
+	     * Removes listeners in bulk using the manipulateListeners method.
+	     * If you pass an object as the second argument you can remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
+	     * You can also pass it an event name and an array of listeners to be removed.
+	     * You can also pass it a regular expression to remove the listeners from all events that match it.
+	     *
+	     * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to remove from multiple events at once.
+	     * @param {Function[]} [listeners] An optional array of listener functions to remove.
+	     * @return {Object} Current instance of EventEmitter for chaining.
+	     */
+	    proto.removeListeners = function removeListeners(evt, listeners) {
+	        // Pass through to manipulateListeners
+	        return this.manipulateListeners(true, evt, listeners);
+	    };
+
+	    /**
+	     * Edits listeners in bulk. The addListeners and removeListeners methods both use this to do their job. You should really use those instead, this is a little lower level.
+	     * The first argument will determine if the listeners are removed (true) or added (false).
+	     * If you pass an object as the second argument you can add/remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
+	     * You can also pass it an event name and an array of listeners to be added/removed.
+	     * You can also pass it a regular expression to manipulate the listeners of all events that match it.
+	     *
+	     * @param {Boolean} remove True if you want to remove listeners, false if you want to add.
+	     * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add/remove from multiple events at once.
+	     * @param {Function[]} [listeners] An optional array of listener functions to add/remove.
+	     * @return {Object} Current instance of EventEmitter for chaining.
+	     */
+	    proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
+	        var i;
+	        var value;
+	        var single = remove ? this.removeListener : this.addListener;
+	        var multiple = remove ? this.removeListeners : this.addListeners;
+
+	        // If evt is an object then pass each of its properties to this method
+	        if (typeof evt === 'object' && !(evt instanceof RegExp)) {
+	            for (i in evt) {
+	                if (evt.hasOwnProperty(i) && (value = evt[i])) {
+	                    // Pass the single listener straight through to the singular method
+	                    if (typeof value === 'function') {
+	                        single.call(this, i, value);
+	                    }
+	                    else {
+	                        // Otherwise pass back to the multiple function
+	                        multiple.call(this, i, value);
+	                    }
+	                }
+	            }
+	        }
+	        else {
+	            // So evt must be a string
+	            // And listeners must be an array of listeners
+	            // Loop over it and pass each one to the multiple method
+	            i = listeners.length;
+	            while (i--) {
+	                single.call(this, evt, listeners[i]);
+	            }
+	        }
+
+	        return this;
+	    };
+
+	    /**
+	     * Removes all listeners from a specified event.
+	     * If you do not specify an event then all listeners will be removed.
+	     * That means every event will be emptied.
+	     * You can also pass a regex to remove all events that match it.
+	     *
+	     * @param {String|RegExp} [evt] Optional name of the event to remove all listeners for. Will remove from every event if not passed.
+	     * @return {Object} Current instance of EventEmitter for chaining.
+	     */
+	    proto.removeEvent = function removeEvent(evt) {
+	        var type = typeof evt;
+	        var events = this._getEvents();
+	        var key;
+
+	        // Remove different things depending on the state of evt
+	        if (type === 'string') {
+	            // Remove all listeners for the specified event
+	            delete events[evt];
+	        }
+	        else if (evt instanceof RegExp) {
+	            // Remove all events matching the regex.
+	            for (key in events) {
+	                if (events.hasOwnProperty(key) && evt.test(key)) {
+	                    delete events[key];
+	                }
+	            }
+	        }
+	        else {
+	            // Remove all listeners in all events
+	            delete this._events;
+	        }
+
+	        return this;
+	    };
+
+	    /**
+	     * Alias of removeEvent.
+	     *
+	     * Added to mirror the node API.
+	     */
+	    proto.removeAllListeners = alias('removeEvent');
+
+	    /**
+	     * Emits an event of your choice.
+	     * When emitted, every listener attached to that event will be executed.
+	     * If you pass the optional argument array then those arguments will be passed to every listener upon execution.
+	     * Because it uses `apply`, your array of arguments will be passed as if you wrote them out separately.
+	     * So they will not arrive within the array on the other side, they will be separate.
+	     * You can also pass a regular expression to emit to all events that match it.
+	     *
+	     * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
+	     * @param {Array} [args] Optional array of arguments to be passed to each listener.
+	     * @return {Object} Current instance of EventEmitter for chaining.
+	     */
+	    proto.emitEvent = function emitEvent(evt, args) {
+	        var listenersMap = this.getListenersAsObject(evt);
+	        var listeners;
+	        var listener;
+	        var i;
+	        var key;
+	        var response;
+
+	        for (key in listenersMap) {
+	            if (listenersMap.hasOwnProperty(key)) {
+	                listeners = listenersMap[key].slice(0);
+	                i = listeners.length;
+
+	                while (i--) {
+	                    // If the listener returns true then it shall be removed from the event
+	                    // The function is executed either with a basic call or an apply if there is an args array
+	                    listener = listeners[i];
+
+	                    if (listener.once === true) {
+	                        this.removeListener(evt, listener.listener);
+	                    }
+
+	                    response = listener.listener.apply(this, args || []);
+
+	                    if (response === this._getOnceReturnValue()) {
+	                        this.removeListener(evt, listener.listener);
+	                    }
+	                }
+	            }
+	        }
+
+	        return this;
+	    };
+
+	    /**
+	     * Alias of emitEvent
+	     */
+	    proto.trigger = alias('emitEvent');
+
+	    /**
+	     * Subtly different from emitEvent in that it will pass its arguments on to the listeners, as opposed to taking a single array of arguments to pass on.
+	     * As with emitEvent, you can pass a regex in place of the event name to emit to all events that match it.
+	     *
+	     * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
+	     * @param {...*} Optional additional arguments to be passed to each listener.
+	     * @return {Object} Current instance of EventEmitter for chaining.
+	     */
+	    proto.emit = function emit(evt) {
+	        var args = Array.prototype.slice.call(arguments, 1);
+	        return this.emitEvent(evt, args);
+	    };
+
+	    /**
+	     * Sets the current value to check against when executing listeners. If a
+	     * listeners return value matches the one set here then it will be removed
+	     * after execution. This value defaults to true.
+	     *
+	     * @param {*} value The new value to check for when executing listeners.
+	     * @return {Object} Current instance of EventEmitter for chaining.
+	     */
+	    proto.setOnceReturnValue = function setOnceReturnValue(value) {
+	        this._onceReturnValue = value;
+	        return this;
+	    };
+
+	    /**
+	     * Fetches the current value to check against when executing listeners. If
+	     * the listeners return value matches this one then it should be removed
+	     * automatically. It will return true by default.
+	     *
+	     * @return {*|Boolean} The current value to check for or the default, true.
+	     * @api private
+	     */
+	    proto._getOnceReturnValue = function _getOnceReturnValue() {
+	        if (this.hasOwnProperty('_onceReturnValue')) {
+	            return this._onceReturnValue;
+	        }
+	        else {
+	            return true;
+	        }
+	    };
+
+	    /**
+	     * Fetches the events object and creates one if required.
+	     *
+	     * @return {Object} The events storage object.
+	     * @api private
+	     */
+	    proto._getEvents = function _getEvents() {
+	        return this._events || (this._events = {});
+	    };
+
+	    /**
+	     * Reverts the global {@link EventEmitter} to its previous value and returns a reference to this version.
+	     *
+	     * @return {Function} Non conflicting EventEmitter class.
+	     */
+	    EventEmitter.noConflict = function noConflict() {
+	        exports.EventEmitter = originalGlobalValue;
+	        return EventEmitter;
+	    };
+
+	    // Expose the class either via AMD, CommonJS or the global object
+	    if (true) {
+	        !(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+	            return EventEmitter;
+	        }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    }
+	    else if (typeof module === 'object' && module.exports){
+	        module.exports = EventEmitter;
+	    }
+	    else {
+	        exports.EventEmitter = EventEmitter;
+	    }
+	}.call(this));
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.h = exports.dom = exports.diff = exports.vnode = exports.string = exports.element = undefined;
 
-	var _diff = __webpack_require__(4);
+	var _diff = __webpack_require__(6);
 
 	var diff = _interopRequireWildcard(_diff);
 
-	var _element = __webpack_require__(5);
+	var _element = __webpack_require__(7);
 
 	var vnode = _interopRequireWildcard(_element);
 
-	var _string = __webpack_require__(15);
+	var _string = __webpack_require__(17);
 
 	var string = _interopRequireWildcard(_string);
 
-	var _dom = __webpack_require__(17);
+	var _dom = __webpack_require__(19);
 
 	var dom = _interopRequireWildcard(_dom);
 
@@ -428,7 +912,7 @@
 	exports.h = h;
 
 /***/ },
-/* 4 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -441,13 +925,13 @@
 	exports.diffChildren = diffChildren;
 	exports.diffNode = diffNode;
 
-	var _element = __webpack_require__(5);
+	var _element = __webpack_require__(7);
 
-	var _dift = __webpack_require__(6);
+	var _dift = __webpack_require__(8);
 
 	var diffActions = _interopRequireWildcard(_dift);
 
-	var _unionType = __webpack_require__(8);
+	var _unionType = __webpack_require__(10);
 
 	var _unionType2 = _interopRequireDefault(_unionType);
 
@@ -643,7 +1127,7 @@
 	}
 
 /***/ },
-/* 5 */
+/* 7 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -852,7 +1336,7 @@
 	};
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -862,7 +1346,7 @@
 	});
 	exports.REMOVE = exports.MOVE = exports.UPDATE = exports.CREATE = undefined;
 
-	var _bitVector = __webpack_require__(7);
+	var _bitVector = __webpack_require__(9);
 
 	/**
 	 * Actions
@@ -1015,7 +1499,7 @@
 	exports.REMOVE = REMOVE;
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1068,10 +1552,10 @@
 	exports.getBit = getBit;
 
 /***/ },
-/* 8 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {var curryN = __webpack_require__(10);
+	/* WEBPACK VAR INJECTION */(function(process) {var curryN = __webpack_require__(12);
 
 	function isString(s) { return typeof s === 'string'; }
 	function isNumber(n) { return typeof n === 'number'; }
@@ -1150,10 +1634,10 @@
 
 	module.exports = Type;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -1250,12 +1734,12 @@
 
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _curry2 = __webpack_require__(11);
-	var _curryN = __webpack_require__(13);
-	var arity = __webpack_require__(14);
+	var _curry2 = __webpack_require__(13);
+	var _curryN = __webpack_require__(15);
+	var arity = __webpack_require__(16);
 
 
 	/**
@@ -1307,10 +1791,10 @@
 
 
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _curry1 = __webpack_require__(12);
+	var _curry1 = __webpack_require__(14);
 
 
 	/**
@@ -1345,7 +1829,7 @@
 
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports) {
 
 	/**
@@ -1370,10 +1854,10 @@
 
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arity = __webpack_require__(14);
+	var arity = __webpack_require__(16);
 
 
 	/**
@@ -1414,10 +1898,10 @@
 
 
 /***/ },
-/* 14 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _curry2 = __webpack_require__(11);
+	var _curry2 = __webpack_require__(13);
 
 
 	/**
@@ -1467,7 +1951,7 @@
 
 
 /***/ },
-/* 15 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1477,14 +1961,14 @@
 	});
 	exports.render = undefined;
 
-	var _renderString = __webpack_require__(16);
+	var _renderString = __webpack_require__(18);
 
 	var render = _renderString.renderString;
 
 	exports.render = render;
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1494,7 +1978,7 @@
 	});
 	exports.renderString = renderString;
 
-	var _element = __webpack_require__(5);
+	var _element = __webpack_require__(7);
 
 	/**
 	 * Turn an object of key/value pairs into a HTML attribute string. This
@@ -1559,7 +2043,7 @@
 	}
 
 /***/ },
-/* 17 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1569,15 +2053,15 @@
 	});
 	exports.patch = exports.createElement = exports.createRenderer = undefined;
 
-	var _createRenderer = __webpack_require__(18);
+	var _createRenderer = __webpack_require__(20);
 
 	var _createRenderer2 = _interopRequireDefault(_createRenderer);
 
-	var _createElement = __webpack_require__(19);
+	var _createElement = __webpack_require__(21);
 
 	var _createElement2 = _interopRequireDefault(_createElement);
 
-	var _patch = __webpack_require__(25);
+	var _patch = __webpack_require__(27);
 
 	var _patch2 = _interopRequireDefault(_patch);
 
@@ -1590,7 +2074,7 @@
 	exports.patch = _patch2.default;
 
 /***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1600,13 +2084,13 @@
 	});
 	exports.default = createDOMRenderer;
 
-	var _createElement = __webpack_require__(19);
+	var _createElement = __webpack_require__(21);
 
 	var _createElement2 = _interopRequireDefault(_createElement);
 
-	var _diff = __webpack_require__(4);
+	var _diff = __webpack_require__(6);
 
-	var _patch = __webpack_require__(25);
+	var _patch = __webpack_require__(27);
 
 	var _patch2 = _interopRequireDefault(_patch);
 
@@ -1655,7 +2139,7 @@
 	}
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1665,8 +2149,8 @@
 	});
 	exports.default = createElement;
 
-	var _element = __webpack_require__(5);
-	var _setAttribute = __webpack_require__(20);
+	var _element = __webpack_require__(7);
+	var _setAttribute = __webpack_require__(22);
 
 	function _interopRequireDefault(obj) {
 	  return obj && obj.__esModule ? obj : { default: obj };
@@ -1691,6 +2175,10 @@
 	    return document.createTextNode(value);
 	  }
 
+	  if (vnode.attributes["ref"] && context.refs) {
+	    context.refs[vnode.attributes["ref"]] = vnode.compontent || vnode;
+	  }
+
 	  if ((0, _element.isThunk)(vnode)) {
 
 	    var component = vnode.component;
@@ -1701,6 +2189,8 @@
 	    //为了元素增加一个包装原始
 	    var childrenWrap = _element.create("children", {}, children);
 	    component.children = childrenWrap;
+
+	    //生成ref引用
 
 	    var model = {
 	      children: children,
@@ -1716,6 +2206,9 @@
 	      cached = cache[type] = document.createElement(type);
 	    }
 
+	    if (component.componentWillMount) {
+	      component.componentWillMount();
+	    }
 	    var thisDOMElement = cached.cloneNode(false);
 
 	    for (var name in component.attributes) {
@@ -1723,12 +2216,17 @@
 	    }
 
 	    var output = component.render(model);
-	    var _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, context);
+
+	    var _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, component);
 
 	    if (component.onCreate) component.onCreate(model);
+	    if (component.componentDidMount) {
+	      component.componentDidMount();
+	    }
 	    vnode.state = {
 	      vnode: output,
 	      model: model,
+
 	      nativeNode: thisDOMElement
 	    };
 
@@ -1768,7 +2266,7 @@
 	}
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1779,17 +2277,17 @@
 	exports.removeAttribute = removeAttribute;
 	exports.setAttribute = setAttribute;
 
-	var _element = __webpack_require__(5);
+	var _element = __webpack_require__(7);
 
-	var _indexOf = __webpack_require__(21);
+	var _indexOf = __webpack_require__(23);
 
 	var _indexOf2 = _interopRequireDefault(_indexOf);
 
-	var _setify = __webpack_require__(22);
+	var _setify = __webpack_require__(24);
 
 	var _setify2 = _interopRequireDefault(_setify);
 
-	var _events = __webpack_require__(24);
+	var _events = __webpack_require__(26);
 
 	var _events2 = _interopRequireDefault(_events);
 
@@ -1865,7 +2363,7 @@
 	}
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports) {
 
 	/*!
@@ -1903,10 +2401,10 @@
 
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var naturalSelection = __webpack_require__(23);
+	var naturalSelection = __webpack_require__(25);
 
 	module.exports = function(element, value){
 	    var canSet = naturalSelection(element) && element === document.activeElement;
@@ -1924,7 +2422,7 @@
 
 
 /***/ },
-/* 23 */
+/* 25 */
 /***/ function(module, exports) {
 
 	var supportedTypes = ['text', 'search', 'tel', 'url', 'password'];
@@ -1935,7 +2433,7 @@
 
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2016,7 +2514,7 @@
 	};
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2027,15 +2525,15 @@
 	exports.insertAtIndex = undefined;
 	exports.default = patch;
 
-	var _setAttribute2 = __webpack_require__(20);
+	var _setAttribute2 = __webpack_require__(22);
 
-	var _element = __webpack_require__(5);
+	var _element = __webpack_require__(7);
 
-	var _createElement = __webpack_require__(19);
+	var _createElement = __webpack_require__(21);
 
 	var _createElement2 = _interopRequireDefault(_createElement);
 
-	var _diff = __webpack_require__(4);
+	var _diff = __webpack_require__(6);
 
 	function _interopRequireDefault(obj) {
 	  return obj && obj.__esModule ? obj : { default: obj };
@@ -2082,11 +2580,10 @@
 	        });
 	      },
 	      updateThunk: function updateThunk(prev, next, path) {
-	        var props = next.props;
-	        var children = next.children;
+
 	        var component = next.component;
-	        var render = component.render;
-	        var onUpdate = component.onUpdate;
+	        var props = component.props;
+	        var children = component.children;
 
 	        var prevNode = prev.state.vnode;
 	        var model = {
@@ -2096,10 +2593,17 @@
 	          dispatch: dispatch,
 	          context: context
 	        };
+	        if (component.componentWillUpdate) {
+	          component.componentWillUpdate();
+	        }
 	        var nextNode = component.render(model);
 	        var changes = (0, _diff.diffNode)(prevNode, nextNode, (0, _element.createPath)(path, '0'));
 	        DOMElement = changes.reduce(patch(dispatch, context), DOMElement);
-	        if (onUpdate) onUpdate(model);
+	        if (component.onUpdate) component.onUpdate(model);
+
+	        if (component.componentDidUpdate) {
+	          component.componentDidUpdate();
+	        }
 	        next.state = {
 	          vnode: nextNode,
 	          model: model
@@ -2135,7 +2639,11 @@
 	    var onRemove = component.onRemove;
 	    var model = state.model;
 
-	    if (onRemove) onRemove(model);
+	    if (component.onRemove) component.onRemove(model);
+
+	    if (component.componentWillUnmount) {
+	      component.componentWillUnmount();
+	    }
 	    vnode = state.vnode;
 	  }
 
@@ -2160,12 +2668,12 @@
 	};
 
 /***/ },
-/* 26 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _require = __webpack_require__(3);
+	var _require = __webpack_require__(5);
 
 	var dom = _require.dom;
 	var diff = _require.diff;
@@ -2178,7 +2686,7 @@
 	};
 
 /***/ },
-/* 27 */
+/* 29 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2192,7 +2700,7 @@
 	};
 
 /***/ },
-/* 28 */
+/* 30 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2201,7 +2709,7 @@
 	  var cssText = "";
 	  for (var selector in styles) {
 	    cssText += selector + "{";
-	    var values = styles[p];
+	    var values = styles[selector];
 	    for (var name in values) {
 	      cssText += name + ":" + values[name] + ";";
 	    }
@@ -2229,8 +2737,10 @@
 	  }
 	};
 
+	module.exports = StyleSheet;
+
 /***/ },
-/* 29 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2242,66 +2752,58 @@
 	};
 
 /***/ },
-/* 30 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	//bootstrap
 
-	var _require = __webpack_require__(3);
+	var _require = __webpack_require__(5);
 
 	var dom = _require.dom;
 
 	var utils = __webpack_require__(2);
-
-	var ready = false;
-
-	var readyCallbacks = [];
-	var complete;
-	var readyCallback = complete = function complete(callback) {
-	    if (ready) {
-	        callback && callback();
-	    } else {
-	        readyCallbacks.push(callback);
-	    }
-	};
+	var Register = __webpack_require__(1);
+	var Element = __webpack_require__(28);
+	var EE = __webpack_require__(3);
+	var StyleSheet = __webpack_require__(30);
 
 	var renderDocument = function renderDocument() {
-	    Leaf.upgradeDocument(document);
+	  Register.upgradeDocument(document);
 	};
 
+	var head = document.getElementsByTagName("head")[0];
+	var style = document.createElement("style");
+	style.innerText = "body{opacity:0;filter:alpha(opacity=0)}";
 	utils.ready(function () {
 
-	    var head = document.getElementsByTagName("head")[0];
-	    var style = document.createElement("style");
-	    style.innerText = "body{opacity:0;filter:alpha(opacity=0)}";
-	    //  head.appendChild(style);
+	  head.appendChild(style);
 
-	    try {
-	        renderDocument(document);
-	    } catch (e) {
-	        throw e;
-	    } finally {
-	        //  head.removeChild(style);
-
-	        Leaf._endTime = new Date().getTime();
-	        Leaf._time = Leaf._endTime - Leaf._startTime;
-	        console.log("Leaf用时：" + Leaf._time / 1000 + "s");
-
-	        ready = true;
-	        for (var i = 0; i < readyCallbacks.length; i++) {
-	            readyCallbacks[i]();
-	        }
-	    }
+	  try {
+	    renderDocument(document);
+	  } catch (e) {
+	    throw e;
+	  } finally {
+	    head.removeChild(style);
+	    StyleSheet.create({
+	      content: {
+	        display: 'block'
+	      }
+	    });
+	    EE.trigger("ready");
+	  }
 	});
 
 	module.exports = {
-	    runApp: function runApp(compontent, container) {
-	        var container = container ? container : document.body;
-	        var render = dom.createRenderer(document.body);
-	        render(compontent, compontent);
-	    }
+	  runApp: function runApp(compontent, container) {
+	    EE.on("ready", function () {
+	      var container = container ? container : document.body;
+	      var render = dom.createRenderer(document.body);
+	      var vnode = Element(compontent, {}, null);
+	      render(vnode, container);
+	    });
+	  }
 	};
 
 /***/ }

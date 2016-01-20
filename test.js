@@ -49,27 +49,39 @@
 	//
 	//
 	//
-	var MyButton = Leaf.register("my-button", {
+
+	Sophie.createStyleSheet({
+	  "my-button": {
+	    border: "solid 1px red",
+	    display: "block"
+	  }
+	});
+
+	var MyButton = Sophie.createClass("my-button", {
 	  name: "BaseDiv",
 	  type: "span",
 	  num: 0,
 
-	  onCreate: function onCreate() {
+	  componentWillMount: function componentWillMount() {
 	    var _this = this;
 
+	    this.state.name = 123;
 	    setInterval(function () {
 	      _this.num++;
 	      _this.setState({ name: [_this.num, 123] });
 	    }, 1000);
 	  },
+	  componentDidMount: function componentDidMount() {
+	    console.log(this.refs.div);
+	  },
 
 	  render: function render() {
 
-	    return Leaf.element(
+	    return Sophie.element(
 	      "div",
-	      { "class": "mybutton", "data-name": this.name },
+	      { ref: "div", "class": "mybutton", "data-name": this.name },
 	      this.children,
-	      Leaf.element(
+	      Sophie.element(
 	        "span",
 	        null,
 	        this.state.name
@@ -121,12 +133,7 @@
 	//
 	//
 
-	var render = Leaf.dom.createRenderer(document.getElementById("deku"));
-	render(Leaf.element(
-	  MyButton,
-	  null,
-	  "hello world"
-	), MyButton);
+	Sophie.runApp(MyButton);
 
 /***/ }
 /******/ ]);

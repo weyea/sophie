@@ -22,12 +22,15 @@ var MyButton = Sophie.createClass("my-button",{
 
     },1000)
   },
+  componentDidMount:function(){
+    console.log(this.refs.div)
+  },
 
   render: function  () {
 
 
     return (
-      <div class="mybutton" data-name={this.name}>
+      <div ref="div" class="mybutton" data-name={this.name}>
           {this.children}
           <span>{this.state.name}</span>
       </div>

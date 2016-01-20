@@ -17,6 +17,7 @@ function register(inName, inOptions) {
     var createFun = function () {
       this.state = {}
       this.children = []
+      this.refs = {}
 
     }
 
@@ -31,20 +32,14 @@ function register(inName, inOptions) {
     createFun.prototype._update = function(){
         var oldVnode = this.vnode;
         var newVnode = this.render();
-
         var changes = diff.diffNode(oldVnode, newVnode, vnode.createPath(this.path, oldVnode.key||"0"));
-
         this.node = changes.reduce(dom.patch({}, this), this.node);
         this.vnode = newVnode;
         return this.node;
     }
 
-
-
     registerDefinition(inName, createFun);
-
     document.createElement(inName);
-
     return createFun;
 }
 
@@ -110,16 +105,6 @@ function walkRoot(root, callback) {
 }
 
 
-var upgrageCallbacks = [];
-var onUpgrade = function (callback) {
-    upgrageCallbacks.push(callback);
-}
-
-var beforeUpgrageCallbacks = [];
-var onBeforeUpgrade = function (callback) {
-    beforeUpgrageCallbacks.push(callback);
-}
-
 
 var getRegName = function (el) {
 
@@ -165,9 +150,17 @@ var getRegName = function (el) {
 function createVnodeFromDOMElement(el){
    var type = el.tagName.toLowerCase();
 
+   var attrs = el.attributes;
+   var attributes = {}
+   for(var i=0;i<attrs.length;i++){
+     attributes[attrs[i].name]= attributes[attrs[i].value]
+
+   }
+
    //@todo props
    return {
      type:type,
+     attributes:attributes,
      nativeNode:el
    }
 
@@ -306,11 +299,11 @@ utils.ready(function () {
 
 
 module.exports = {
-  onUpgrade:onUpgrade,
+
   registry : registry,
   isLeaf : isLeaf,
   upgrade : upgrade,
-  onBeforeUpgrade,
+
   upgradeDocument : function (doc) {
       walkRoot(doc.body || doc, function (el, tagName) {
           if (getRegName(el)) {

@@ -32,6 +32,11 @@ function createElement(vnode, path, dispatch, context) {
     return document.createTextNode(value);
   }
 
+
+  if(vnode.attributes["ref"]&&context.refs){
+          context.refs[vnode.attributes["ref"]] = vnode.compontent||vnode
+  }
+
   if ((0, _element.isThunk)(vnode)) {
 
     var component = vnode.component;
@@ -42,6 +47,10 @@ function createElement(vnode, path, dispatch, context) {
     //为了元素增加一个包装原始
     var childrenWrap = _element.create("children",{}, children);
     component.children = childrenWrap
+
+    //生成ref引用
+
+
 
     var model = {
       children: children,
@@ -70,7 +79,8 @@ function createElement(vnode, path, dispatch, context) {
 
 
     var output = component.render(model);
-    var _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, context);
+
+    var _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, component);
 
     if (component.onCreate) component.onCreate(model);
     if(component.componentDidMount){
@@ -79,6 +89,7 @@ function createElement(vnode, path, dispatch, context) {
     vnode.state = {
       vnode: output,
       model: model,
+
       nativeNode :thisDOMElement
     }
 

@@ -62,7 +62,9 @@
 	  import: Import,
 	  createStyleSheet: StyleSheet.create,
 	  StyleSheet: StyleSheet,
-	  on: EE.on
+	  on: function on() {
+	    EE.on.apply(EE, arguments);
+	  }
 	};
 
 	window.Sophie = Sophie;

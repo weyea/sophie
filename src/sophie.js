@@ -16,7 +16,9 @@ var Sophie = {
   import:Import,
   createStyleSheet:StyleSheet.create,
   StyleSheet:StyleSheet,
-  on:EE.on
+  on:function(){
+    EE.on.apply(EE,arguments);
+  }
 }
 
 

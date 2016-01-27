@@ -1,14 +1,9 @@
-
+var CSSPropertyOperations = require('./CSSPropertyOperations')
 
 var ObjectToCssText = function(styles, mediaQuery){
   var cssText = ""
   for(var selector in styles){
-    cssText+=selector+"{";
-    var values = styles[selector];
-    for(var name in values){
-      cssText += name+":"+values[name]+";"
-    }
-    cssText += "}"
+    cssText+=selector+"{"+CSSPropertyOperations.createMarkupForStyles(styles[selector])+ "}"
   }
 
 

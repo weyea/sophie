@@ -79,8 +79,11 @@ function createElement(vnode, path, dispatch, context) {
 
 
     var output = component.render(model);
+    if(output){
+      var _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, component);
 
-    var _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, component);
+    }
+
 
     if (component.onCreate) component.onCreate(model);
     if(component.componentDidMount){
@@ -95,11 +98,14 @@ function createElement(vnode, path, dispatch, context) {
 
     //保留输出，setState，进行对比
     component.vnode= output;
+
     component.node = _DOMElement
     component.path = path;
 
+    if(output){
+        thisDOMElement.appendChild(_DOMElement);
+    }
 
-    thisDOMElement.appendChild(_DOMElement);
     component.nativeNode = thisDOMElement
     thisDOMElement.__upgraded__ = true;
     return thisDOMElement;

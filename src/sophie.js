@@ -6,6 +6,7 @@ var Import = require("./import")
 var StyleSheet = require("./styleSheet")
 var Compontent = require("./compontent.js");
 var Bootstrap = require("./bootstrap")
+  var EE  = require("./event")
 
 var Sophie = {
   runApp:Bootstrap.runApp,
@@ -14,7 +15,8 @@ var Sophie = {
   createClass:Compontent,
   import:Import,
   createStyleSheet:StyleSheet.create,
-  StyleSheet:StyleSheet
+  StyleSheet:StyleSheet,
+  on:EE.on
 }
 
 

@@ -35,18 +35,19 @@
               display:'block'
             }
           })
-          EE.trigger("ready")
+          EE.trigger("upgradeReady")
       }
 
   })
 
   module.exports = {
     runApp: function(compontent, container){
-      EE.on("ready", function(){
+      EE.on("upgradeReady", function(){
         var  container = container?container:document.body
         let render = dom.createRenderer(document.body)
         var vnode = Element(compontent,{},null);
         render(vnode, container)
+          EE.trigger("ready")
       })
 
     }

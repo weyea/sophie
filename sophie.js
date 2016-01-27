@@ -52,6 +52,7 @@
 	var StyleSheet = __webpack_require__(30);
 	var Compontent = __webpack_require__(37);
 	var Bootstrap = __webpack_require__(38);
+	var EE = __webpack_require__(3);
 
 	var Sophie = {
 	  runApp: Bootstrap.runApp,
@@ -60,7 +61,8 @@
 	  createClass: Compontent,
 	  import: Import,
 	  createStyleSheet: StyleSheet.create,
-	  StyleSheet: StyleSheet
+	  StyleSheet: StyleSheet,
+	  on: EE.on
 	};
 
 	window.Sophie = Sophie;
@@ -3347,17 +3349,18 @@
 	        display: 'block'
 	      }
 	    });
-	    EE.trigger("ready");
+	    EE.trigger("upgradeReady");
 	  }
 	});
 
 	module.exports = {
 	  runApp: function runApp(compontent, container) {
-	    EE.on("ready", function () {
+	    EE.on("upgradeReady", function () {
 	      var container = container ? container : document.body;
 	      var render = dom.createRenderer(document.body);
 	      var vnode = Element(compontent, {}, null);
 	      render(vnode, container);
+	      EE.trigger("ready");
 	    });
 	  }
 	};

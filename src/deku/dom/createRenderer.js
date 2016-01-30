@@ -9,6 +9,8 @@ var _createElement = require('./createElement');
 
 var _createElement2 = _interopRequireDefault(_createElement);
 
+var mountElement = require("./mountElement");
+
 var _diff = require('../diff');
 
 var _patch = require('./patch');
@@ -35,7 +37,7 @@ function createDOMRenderer(container, dispatch) {
   }
 
   var update = function update(newVnode, context) {
-    
+
     var changes = (0, _diff.diffNode)(oldVnode, newVnode, rootId);
 
     node = changes.reduce((0, _patch2.default)(dispatch, context), node);
@@ -46,6 +48,7 @@ function createDOMRenderer(container, dispatch) {
   var create = function create(vnode, context) {
     node = (0, _createElement2.default)(vnode, rootId, dispatch, context);
     if (container) container.appendChild(node);
+    mountElement(vnode);
     oldVnode = vnode;
     return node;
   };

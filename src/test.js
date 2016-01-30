@@ -15,15 +15,16 @@ var MyButton = Sophie.createClass("my-button",{
   num:0,
 
   componentWillMount:function(){
+
+  },
+  componentDidMount:function(){
     this.state.name = 123;
+    console.log("gogog")
     setInterval(()=>{
       this.num++;
       this.setState({name:[this.num,123]})
 
     },1000)
-  },
-  componentDidMount:function(){
-    console.log(this.refs.div)
   },
 
   render: function  () {

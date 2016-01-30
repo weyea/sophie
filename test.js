@@ -62,17 +62,16 @@
 	  type: "span",
 	  num: 0,
 
-	  componentWillMount: function componentWillMount() {
+	  componentWillMount: function componentWillMount() {},
+	  componentDidMount: function componentDidMount() {
 	    var _this = this;
 
 	    this.state.name = 123;
+	    console.log("gogog");
 	    setInterval(function () {
 	      _this.num++;
 	      _this.setState({ name: [_this.num, 123] });
 	    }, 1000);
-	  },
-	  componentDidMount: function componentDidMount() {
-	    console.log(this.refs.div);
 	  },
 
 	  render: function render() {

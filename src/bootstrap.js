@@ -8,8 +8,6 @@
   var StyleSheet = require("./styleSheet")
 
 
-
-
   var renderDocument = function () {
           Register.upgradeDocument(document);
   }
@@ -19,10 +17,7 @@
   style.innerText = "body{opacity:0;filter:alpha(opacity=0)}";
   utils.ready(function () {
 
-
        head.appendChild(style);
-
-
 
       try {
           renderDocument(document);

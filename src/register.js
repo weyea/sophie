@@ -1,7 +1,8 @@
 
 var utils = require("./utils");
 var EE  = require("./event")
-var {dom,diff,element,vnode} = require("./deku")
+var element = require("./element");
+var {dom,diff,vnode} = require("./deku")
 
 var registry = {};
 
@@ -28,6 +29,13 @@ function register(inName, inOptions) {
        this._update();
 
     }
+
+    // //重置render方法，生成根元素
+    // var oRender = definition.render;
+    // createFun.prototype.render = function(){
+    //   return element(this.name,this.props,oRender.apply(this,arguments));
+    // }
+
 
     createFun.prototype._update = function(){
         var oldVnode = this.vnode;

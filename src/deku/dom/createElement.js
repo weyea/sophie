@@ -70,6 +70,7 @@ function createElement(vnode, path, dispatch, context) {
      if(component.componentWillMount){
        component.componentWillMount();
      }
+
     var thisDOMElement = cached.cloneNode(false);
 
     for (var name in component.attributes) {
@@ -85,14 +86,10 @@ function createElement(vnode, path, dispatch, context) {
     }
 
 
-    if (component.onCreate) component.onCreate(model);
-    if(component.componentDidMount){
-      component.componentDidMount();
-    }
+
     vnode.state = {
       vnode: output,
       model: model,
-
       nativeNode :thisDOMElement
     }
 
@@ -108,6 +105,12 @@ function createElement(vnode, path, dispatch, context) {
 
     component.nativeNode = thisDOMElement
     thisDOMElement.__upgraded__ = true;
+
+    if (component.onCreate) component.onCreate(model);
+    if(component.componentDidMount){
+      component.componentDidMount();
+    }
+
     return thisDOMElement;
   }
 

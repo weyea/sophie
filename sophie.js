@@ -2204,7 +2204,7 @@
 	    return vnode.nativeNode;
 	  }
 
-	  if (vnode.attributes["ref"] && context.refs) {
+	  if (vnode.attributes && vnode.attributes["ref"] && context.refs) {
 	    context.refs[vnode.attributes["ref"]] = vnode.component || vnode;
 	  }
 

@@ -27,15 +27,17 @@ function createElement(vnode, path, dispatch, context) {
     return vnode.nativeNode;
   }
 
+  if(vnode.attributes["ref"]&&context.refs){
+          context.refs[vnode.attributes["ref"]] = vnode.component || vnode
+  }
+
   if ((0, _element.isText)(vnode)) {
     var value = typeof vnode.nodeValue === 'string' || typeof vnode.nodeValue === 'number' ? vnode.nodeValue : '';
     return document.createTextNode(value);
   }
 
 
-  if(vnode.attributes["ref"]&&context.refs){
-          context.refs[vnode.attributes["ref"]] = vnode.compontent||vnode
-  }
+
 
   if ((0, _element.isThunk)(vnode)) {
 

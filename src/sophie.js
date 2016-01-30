@@ -10,6 +10,7 @@ var Bootstrap = require("./bootstrap")
 
 var Sophie = {
   runApp:Bootstrap.runApp,
+
   element : Element,
   register:Register.register,
   createClass:Compontent,
@@ -18,7 +19,10 @@ var Sophie = {
   StyleSheet:StyleSheet,
   on:function(){
     EE.on.apply(EE,arguments);
-  }
+  },
+  isLeaf:Register.isLeaf,
+  isSophie:Register.isLeaf,
+  upgrade:Register.upgrade
 }
 
 

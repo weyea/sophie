@@ -56,6 +56,7 @@
 
 	var Sophie = {
 	  runApp: Bootstrap.runApp,
+
 	  element: Element,
 	  register: Register.register,
 	  createClass: Compontent,
@@ -64,7 +65,10 @@
 	  StyleSheet: StyleSheet,
 	  on: function on() {
 	    EE.on.apply(EE, arguments);
-	  }
+	  },
+	  isLeaf: Register.isLeaf,
+	  isSophie: Register.isLeaf,
+	  upgrade: Register.upgrade
 	};
 
 	window.Sophie = Sophie;
@@ -359,7 +363,6 @@
 	            }
 	        });
 	    },
-
 	    register: register
 	};
 
@@ -3395,6 +3398,7 @@
 	      }
 	    });
 	    EE.trigger("upgradeReady");
+	    EE.trigger("renderReady");
 	  }
 	});
 

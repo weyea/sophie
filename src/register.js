@@ -321,8 +321,5 @@ module.exports = {
       })
 
   },
-
-
-
   register : register
 }

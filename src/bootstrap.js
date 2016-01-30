@@ -30,7 +30,8 @@
               display:'block'
             }
           })
-          EE.trigger("upgradeReady")
+          EE.trigger("upgradeReady");
+          EE.trigger("renderReady");
       }
 
   })

@@ -68,7 +68,9 @@
 	  },
 	  isLeaf: Register.isLeaf,
 	  isSophie: Register.isLeaf,
-	  upgrade: Register.upgrade
+	  upgrade: Register.upgrade,
+	  registry: Register.registry,
+	  upgradeDocument: Register.upgradeDocument
 	};
 
 	window.Sophie = Sophie;

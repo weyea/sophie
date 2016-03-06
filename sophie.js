@@ -2276,10 +2276,10 @@
 	    component.nativeNode = thisDOMElement;
 	    thisDOMElement.__upgraded__ = true;
 
-	    if (component.onCreate) component.onCreate(model);
-	    if (component.componentDidMount) {
-	      component.componentDidMount();
-	    }
+	    // if (component.onCreate) component.onCreate(model);
+	    // if(component.componentDidMount){
+	    //   component.componentDidMount();
+	    // }
 
 	    return thisDOMElement;
 	  }
@@ -3414,6 +3414,7 @@
 	      EE.trigger("ready");
 	    });
 	  }
+
 	};
 
 /***/ }

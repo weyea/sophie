@@ -9,20 +9,22 @@ Sophie.createStyleSheet({
   }
 })
 
-var MyButton = Sophie.createClass("my-button",{
+var MyButton = Sophie.createClass("my-div",{
   name:"BaseDiv",
   type:"span",
   num:0,
 
   componentWillMount:function(){
-
+    this.state.name=123
   },
   componentDidMount:function(){
-    this.state.name = 123;
+
+    this.setState({name:123})
     console.log("gogog")
+
     setInterval(()=>{
       this.num++;
-      this.setState({name:[this.num,123]})
+    this.setState({name:[this.num,123]})
 
     },1000)
   },
@@ -83,4 +85,4 @@ var MyButton = Sophie.createClass("my-button",{
 //
 //
 
- Sophie.runApp(MyButton)
+ // Sophie.runApp(MyButton)

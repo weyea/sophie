@@ -17,8 +17,12 @@ var _patch = require('./patch');
 
 var _patch2 = _interopRequireDefault(_patch);
 
+var _mountElement = require("./mountElement")
+var _mountElement2 = _interopRequireDefault(_mountElement);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.createRenderer = _createRenderer2.default;
 exports.createElement = _createElement2.default;
+exports.mountElement = _mountElement2.default;
 exports.patch = _patch2.default;

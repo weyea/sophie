@@ -23,17 +23,15 @@ var cache = {};
 function createElement(vnode, path, dispatch, context) {
 
 
-  if(vnode.nativeNode){
-    return vnode.nativeNode;
-  }
 
+  //给ref符值
   if(vnode.attributes&&vnode.attributes["ref"]&&context.refs){
           context.refs[vnode.attributes["ref"]] = vnode.component || vnode
   }
 
   if ((0, _element.isText)(vnode)) {
     var value = typeof vnode.nodeValue === 'string' || typeof vnode.nodeValue === 'number' ? vnode.nodeValue : '';
-    return document.createTextNode(value);
+    return vnode.nativeNode||document.createTextNode(value);
   }
 
 
@@ -47,13 +45,10 @@ function createElement(vnode, path, dispatch, context) {
     var type = component.type||"div";
 
     //为了元素增加一个包装原始
-    var childrenWrap = _element.create("children",{}, children);
-    component.children = childrenWrap
+    // var childrenWrap = _element.create("children",{}, children);
+    // component.children = childrenWrap
 
     //生成ref引用
-
-
-
     var model = {
       children: children,
       props: props,
@@ -63,17 +58,24 @@ function createElement(vnode, path, dispatch, context) {
     };
 
 
+    if(component.componentWillMount){
+      component.componentWillMount();
+    }
+
+    var oldNativeNode;
+    if(vnode.nativeNode){
+      oldNativeNode = vnode.nativeNode;
+    }
     var cached = cache[type];
 
     if (typeof cached === 'undefined') {
       cached = cache[type] =  document.createElement(type);
     }
 
-     if(component.componentWillMount){
-       component.componentWillMount();
-     }
 
-    var thisDOMElement = cached.cloneNode(false);
+
+    var thisDOMElement = oldNativeNode|| cached.cloneNode(false);
+
 
     for (var name in component.attributes) {
       (0, _setAttribute.setAttribute)(thisDOMElement, name, component.attributes[name]);
@@ -102,6 +104,7 @@ function createElement(vnode, path, dispatch, context) {
     component.path = path;
 
     if(output){
+        thisDOMElement.innerHTML = ""
         thisDOMElement.appendChild(_DOMElement);
     }
 
@@ -116,6 +119,10 @@ function createElement(vnode, path, dispatch, context) {
     return thisDOMElement;
   }
 
+
+  if(vnode.nativeNode){
+    return  vnode.nativeNode
+   }
   var cached = cache[vnode.type];
 
   if (typeof cached === 'undefined') {

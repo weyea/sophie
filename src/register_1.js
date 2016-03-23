@@ -22,15 +22,7 @@ function register(inName, inOptions) {
 
     }
 
-
-    var oldRender =  definition.render
-
     createFun.prototype = definition
-
-
-    // createFun.prototype.render = function(){
-    //   return element(this.name, this.attributes, oldRender.apply(this, arguments))
-    // }
 
     createFun.prototype.setState = function(value){
 
@@ -341,10 +333,7 @@ var upgradeDocument = function (doc) {
 
     console.log("gogog")
     func(rootDOM, rootVnode)
-
-
-
-
+    
     var rootId = "0"
      dom.createElement(appRoot,rootId,null,null)
      dom.mountElement(appRoot);

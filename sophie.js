@@ -1287,6 +1287,8 @@
 	 */
 
 	function createThunkElement(component, key, props, children) {
+	  if (!props) props = {};
+	  props.children = children;
 	  component.children = children;
 	  component.key = children;
 	  component.props = props;

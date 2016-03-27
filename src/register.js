@@ -28,9 +28,9 @@ function register(inName, inOptions) {
     createFun.prototype = definition
 
 
-    // createFun.prototype.render = function(){
-    //   return element(this.name, this.attributes, oldRender.apply(this, arguments))
-    // }
+    createFun.prototype.render = function(){
+      return element(this.name, this.attributes, oldRender.apply(this, arguments))
+    }
 
     createFun.prototype.setState = function(value){
 
@@ -339,16 +339,18 @@ var upgradeDocument = function (doc) {
       return vnode
     }
 
-    console.log("gogog")
+    
     func(rootDOM, rootVnode)
 
 
+ if(appRoot){
+   var rootId = "0"
+    dom.createElement(appRoot,rootId,null,null)
+    dom.mountElement(appRoot);
+    readyUpgrage(appRoot)
+ }
 
 
-    var rootId = "0"
-     dom.createElement(appRoot,rootId,null,null)
-     dom.mountElement(appRoot);
-     readyUpgrage(appRoot)
 
 }
 

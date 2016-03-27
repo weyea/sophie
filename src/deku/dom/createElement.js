@@ -35,8 +35,6 @@ function createElement(vnode, path, dispatch, context) {
   }
 
 
-
-
   if ((0, _element.isThunk)(vnode)) {
 
     var component = vnode.component;
@@ -44,9 +42,9 @@ function createElement(vnode, path, dispatch, context) {
     var props = component.props;
     var type = component.type||"div";
 
-    //为了元素增加一个包装原始
-    // var childrenWrap = _element.create("children",{}, children);
-    // component.children = childrenWrap
+  //  为了元素增加一个包装原始
+    var childrenWrap = _element.create("children",{}, children);
+    component.children = childrenWrap
 
     //生成ref引用
     var model = {
@@ -66,26 +64,34 @@ function createElement(vnode, path, dispatch, context) {
     if(vnode.nativeNode){
       oldNativeNode = vnode.nativeNode;
     }
-    var cached = cache[type];
-
-    if (typeof cached === 'undefined') {
-      cached = cache[type] =  document.createElement(type);
-    }
-
-
-
-    var thisDOMElement = oldNativeNode|| cached.cloneNode(false);
-
-
-    for (var name in component.attributes) {
-      (0, _setAttribute.setAttribute)(thisDOMElement, name, component.attributes[name]);
-    }
 
 
 
     var output = component.render(model);
+    var _DOMElement ;
     if(output){
-      var _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, component);
+
+      if(oldNativeNode){
+        for (var name in vnode.attributes) {
+          (0, _setAttribute.setAttribute)(oldNativeNode, name, vnode.attributes[name]);
+        }
+        _DOMElement =  oldNativeNode;
+
+        output.children.forEach(function (node, index) {
+          if (node === null || node === undefined) {
+            return;
+          }
+          var child = createElement(node, (0, _element.createPath)(path, node.key || index), dispatch, output);
+          _DOMElement.appendChild(child);
+        });
+
+
+      }
+      else {
+
+      _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, component);
+
+      }
 
     }
 
@@ -94,7 +100,7 @@ function createElement(vnode, path, dispatch, context) {
     vnode.state = {
       vnode: output,
       model: model,
-      nativeNode :thisDOMElement
+      nativeNode :_DOMElement
     }
 
     //保留输出，setState，进行对比
@@ -103,20 +109,17 @@ function createElement(vnode, path, dispatch, context) {
     component.node = _DOMElement
     component.path = path;
 
-    if(output){
-        thisDOMElement.innerHTML = ""
-        thisDOMElement.appendChild(_DOMElement);
-    }
 
-    component.nativeNode = thisDOMElement
-    thisDOMElement.__upgraded__ = true;
+
+    component.nativeNode = _DOMElement
+    _DOMElement.__upgraded__ = true;
 
     // if (component.onCreate) component.onCreate(model);
     // if(component.componentDidMount){
     //   component.componentDidMount();
     // }
 
-    return thisDOMElement;
+    return _DOMElement;
   }
 
 

@@ -3445,7 +3445,7 @@
 	  head.appendChild(style);
 
 	  try {
-	    // renderDocument(document);
+	    renderDocument(document);
 	  } catch (e) {
 	    throw e;
 	  } finally {

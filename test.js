@@ -50,11 +50,26 @@
 	//
 	//
 
-	Sophie.createStyleSheet({
-	  "my-button": {
-	    border: "solid 1px red",
-	    display: "block"
+	var WhatIWantToSay = "I LOVE YOU! SHENG YUAN YUAN";
+
+	var ShowDiv = Sophie.createClass("my-l-div", {
+
+	  componentWillMount: function componentWillMount() {
+	    this.state.name = 123;
+	  },
+
+	  componentDidMount: function componentDidMount() {
+	    console.log("123");
+	  },
+
+	  render: function render() {
+	    return Sophie.element(
+	      "div",
+	      null,
+	      WhatIWantToSay
+	    );
 	  }
+
 	});
 
 	var MyButton = Sophie.createClass("my-div", {
@@ -82,12 +97,7 @@
 	    return Sophie.element(
 	      "div",
 	      { ref: "div", "class": "mybutton", "data-name": this.name },
-	      this.children,
-	      Sophie.element(
-	        "span",
-	        null,
-	        this.state.name
-	      )
+	      Sophie.element(ShowDiv, null)
 	    );
 	  }
 
@@ -109,33 +119,39 @@
 	//     }
 	//
 	//   }
-
-	//   var MyButton = {
 	//
-	//       onCreate:function(){
-	//       },
-	//       render: function  ({ props, children, context, path }) {
+	// var MyButton = {
+	//
+	//     onCreate:function(){
+	//     },
+	//     render: function  ({ props, children, context, path }) {
 	//
 	//
-	//         return (
-	//           <div class="container">
-	//               <div>
-	//                 <BaseDiv class="my-button">basediv</BaseDiv>
-	//               </div>
+	//       return (
+	//         <div class="container">
+	//             <div>
+	//               <BaseDiv class="my-button">basediv</BaseDiv>
+	//             </div>
 	//
-	//           </div>
+	//         </div>
 	//
-	//         )
-	//       }
-	//
+	//       )
 	//     }
 	//
+	//   }
 	//
 	//
 	//
 	//
 
-	// Sophie.runApp(MyButton)
+	Sophie.createStyleSheet({
+	  "my-button": {
+	    border: "solid 1px red",
+	    display: "block"
+	  }
+	});
+
+	Sophie.runApp(MyButton);
 
 /***/ }
 /******/ ]);

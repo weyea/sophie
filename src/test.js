@@ -2,12 +2,26 @@
 //
 //
 
-Sophie.createStyleSheet({
-  "my-button":{
-    border:"solid 1px red",
-    display:"block"
+var WhatIWantToSay = "I LOVE YOU! SHENG YUAN YUAN"
+
+var  ShowDiv = Sophie.createClass("my-l-div", {
+
+  componentWillMount:function(){
+    this.state.name=123
+
+  },
+
+  componentDidMount:function(){
+    console.log("123")
+  },
+  
+  render:function(){
+    return (<div>{WhatIWantToSay}</div>)
   }
+
 })
+
+
 
 var MyButton = Sophie.createClass("my-div",{
   name:"BaseDiv",
@@ -34,13 +48,14 @@ var MyButton = Sophie.createClass("my-div",{
 
     return (
       <div ref="div" class="mybutton" data-name={this.name}>
-          {this.children}
-          <span>{this.state.name}</span>
+        <ShowDiv></ShowDiv>
       </div>
     )
   }
 
 })
+
+
 
 
 // var BaseDiv = {
@@ -59,30 +74,38 @@ var MyButton = Sophie.createClass("my-div",{
 //     }
 //
 //   }
+  //
+  // var MyButton = {
+  //
+  //     onCreate:function(){
+  //     },
+  //     render: function  ({ props, children, context, path }) {
+  //
+  //
+  //       return (
+  //         <div class="container">
+  //             <div>
+  //               <BaseDiv class="my-button">basediv</BaseDiv>
+  //             </div>
+  //
+  //         </div>
+  //
+  //       )
+  //     }
+  //
+  //   }
+  //
+  //
+  //
+  //
 
-//   var MyButton = {
-//
-//       onCreate:function(){
-//       },
-//       render: function  ({ props, children, context, path }) {
-//
-//
-//         return (
-//           <div class="container">
-//               <div>
-//                 <BaseDiv class="my-button">basediv</BaseDiv>
-//               </div>
-//
-//           </div>
-//
-//         )
-//       }
-//
-//     }
-//
-//
-//
-//
-//
+  Sophie.createStyleSheet({
+    "my-button":{
+      border:"solid 1px red",
+      display:"block"
+    }
+  })
 
- // Sophie.runApp(MyButton)
+
+
+ Sophie.runApp(MyButton)

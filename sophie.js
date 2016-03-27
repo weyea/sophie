@@ -108,9 +108,16 @@
 	        this.refs = {};
 	    };
 
+	    var oldRender = definition.render;
+
 	    createFun.prototype = definition;
 
+	    createFun.prototype.render = function () {
+	        return element(this.name, this.attributes, oldRender.apply(this, arguments));
+	    };
+
 	    createFun.prototype.setState = function (value) {
+
 	        this.state = value;
 	        this._update();
 	    };
@@ -122,6 +129,7 @@
 	    // }
 
 	    createFun.prototype._update = function () {
+
 	        var oldVnode = this.vnode;
 	        var newVnode = this.render();
 	        var changes = diff.diffNode(oldVnode, newVnode, vnode.createPath(this.path, oldVnode.key || "0"));
@@ -155,28 +163,6 @@
 
 	function registerDefinition(inName, inDefinition) {
 	    registry[inName] = inDefinition;
-	}
-
-	function isInTemplate(el) {
-	    var p;
-	    while (p = el.parentNode) {
-	        if (p.tagName && p.tagName.toLowerCase() == "template") {
-	            return true;
-	        }
-	        el = p;
-	    }
-	}
-
-	function walk(name, context, callback) {
-	    var define = registry[name];
-	    var tagName = define["extents"] || name;
-	    context = context || document;
-	    var els = context.getElementsByTagName(tagName);
-	    for (var i = 0; i < els.length; i++) {
-	        if (!isInTemplate(els[i])) {
-	            callback(els[i]);
-	        }
-	    }
 	}
 
 	function walkRoot(root, callback) {
@@ -230,76 +216,47 @@
 	    }
 	};
 
+	function render(newVnode, inElement) {
+
+	    // attributes: attributes,
+	    // children: children,
+	    // type: type,
+	    // key: key
+
+	    var el = newVnode.render(newVnode);
+	    var domElement = dom.createElement(el, null, null, newVnode);
+	    inElement.innerHTML = "";
+	    inElement.appendChild(domElement);
+	}
+
 	function createVnodeFromDOMElement(el) {
-	    var type = el.tagName.toLowerCase();
 
-	    var attrs = el.attributes;
-	    var attributes = {};
-	    for (var i = 0; i < attrs.length; i++) {
-	        attributes[attrs[i].name] = attributes[attrs[i].value];
+	    //文本
+	    if (el.nodeType == 3) {
+	        return {
+	            type: '#text',
+	            nodeValue: el.nodeValue,
+	            nativeNode: el
+	        };
 	    }
-
-	    //@todo props
-	    return {
-	        type: type,
-	        attributes: attributes,
-	        nativeNode: el
-	    };
-	}
-
-	function upgrade(inElement) {
-
-	    if (!inElement.tagName) return;
-
-	    if (inElement.__upgraded__) {
-	        walkRoot(inElement, function (el, tagName) {
-	            var regName = getRegName(el);
-	            if (regName) {
-	                upgrade(el);
-	                return false;
+	    //标签
+	    else if (el.nodeType == 1) {
+	            var type = el.tagName.toLowerCase();
+	            var attrs = el.attributes;
+	            var attributes = {};
+	            for (var i = 0; i < attrs.length; i++) {
+	                attributes[attrs[i].name] = attributes[attrs[i].value];
 	            }
-	            return true;
-	        });
 
-	        return;
-	    } else {
-
-	        var name = inElement.tagName.toLowerCase();
-	        var is = inElement.getAttribute("is");
-	        var regName = getRegName(inElement);
-	        if (regName) {
-	            var inDefinition = registry[regName];
-	            if (inDefinition) {
-	                var vnode = implement(inElement, inDefinition);
-
-	                walkRoot(inElement, function (el, tagName) {
-	                    var regName = getRegName(el);
-	                    if (regName) {
-	                        upgrade(el);
-	                        return false;
-	                    }
-	                    return true;
-	                });
-
-	                var newVnode = implement(inElement, inDefinition);
-
-	                registerDOMProp(newVnode, inElement);
-
-	                inElement.__upgraded__ = true;
-
-	                EE.trigger("beforeCreate", [inElement]);
-
-	                ready(vnode, newVnode, inElement);
-
-	                EE.trigger("onCreate", [inElement]);
-	            }
-	        } else {}
-
-	        return inElement;
-	    }
+	            //@todo props
+	            return {
+	                type: type,
+	                attributes: attributes,
+	                nativeNode: el,
+	                children: []
+	            };
+	        }
 	}
-
-	//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#Internet_Explorer_8_specific_notes
 
 	function implement(inElement, inDefinition) {
 	    var vnode = new inDefinition();
@@ -308,13 +265,65 @@
 	}
 
 	function registerDOMProp(vnode, inElement) {
-	    var children = [];
-	    var childNodes = inElement.childNodes;
-
-	    for (var i = 0; i < childNodes.length; i++) {
-	        children.push(createVnodeFromDOMElement(childNodes[i]));
+	    var attrs = inElement.attributes;
+	    var attributes = {};
+	    for (var i = 0; i < attrs.length; i++) {
+	        attributes[attrs[i].name] = attributes[attrs[i].value];
 	    }
-	    vnode.children = children;
+	    vnode.attributes = attributes;
+	}
+
+	function getDOMAttrs(inElement) {
+	    var attrs = inElement.attributes;
+	    var attributes = {};
+	    for (var i = 0; i < attrs.length; i++) {
+	        attributes[attrs[i].name] = attributes[attrs[i].value];
+	    }
+
+	    return attributes;
+	}
+
+	function upgrade(inElement) {
+
+	    if (!inElement.tagName) return;
+
+	    //如果已经更新过，就查看子元素是不是全部更新过
+	    if (inElement.__upgraded__) {} else {
+
+	        var name = inElement.tagName.toLowerCase();
+	        var inDefinition = registry[name];
+	        if (inDefinition) {
+	            EE.trigger("beforeCreate", [inElement]);
+	            var vnode = implement(inElement, inDefinition);
+
+	            return vnode;
+	        }
+	    }
+	}
+
+	function readyUpgrage(vnode) {
+
+	    if ((0, dom.element.isThunk)(vnode)) {
+
+	        var component = vnode.component;
+
+	        //保留输出，setState，进行对比
+	        var output = component.vnode;
+
+	        output.children.forEach(function (node, index) {
+	            if (node === null || node === undefined) {
+	                return;
+	            }
+	            var child = readyUpgrage(node);
+	        });
+
+	        EE.trigger("onCreate", [vnode.nativeNode]);
+	    }
+	}
+
+	function readyUpgrage(inElement) {
+	    inElement.__upgraded__ = true;
+	    EE.trigger("onCreate", [inElement]);
 	}
 
 	function isLeaf(inElement) {
@@ -324,32 +333,66 @@
 	    }
 	}
 
-	var initialize = function initialize() {
-	    for (var p in registry) {
-	        walk(p, document, function (element) {
-	            upgrade(element);
-	        });
+	var isReady = false;
+
+	var upgradeDocument = function upgradeDocument(doc) {
+	    var rootDOM = document.body;
+	    var rootVnode = createVnodeFromDOMElement(document.body);
+	    var appRoot;
+	    var func = function func(el) {
+	        var children = el.children;
+	        var vnode;
+	        var tagName = el.tagName.toLowerCase();
+
+	        if (isLeaf(el)) {
+
+	            var inDefinition = registry[tagName];
+
+	            var vnodeChildren = [];
+
+	            for (var i = 0; i < children.length; i++) {
+	                var child = children[i];
+	                var childVnode = func(child);
+	                vnodeChildren.push(childVnode);
+	            }
+
+	            vnode = element(inDefinition, getDOMAttrs(el), vnodeChildren);
+	            vnode.nativeNode = el;
+	            if (!appRoot) {
+	                appRoot = vnode;
+	            }
+	        } else if (el.nodeType == 1) {
+
+	            var vnodeChildren = [];
+	            for (var i = 0; i < children.length; i++) {
+	                var child = children[i];
+	                var childVnode = func(child);
+	                vnodeChildren.push(childVnode);
+	            }
+
+	            vnode = element(tagName, getDOMAttrs(el), vnodeChildren);
+	            vnode.nativeNode = el;
+	        } else if (el.nodeType == 3) {
+	            vnode = el.nodeValue;
+	        }
+	        return vnode;
+	    };
+
+	    func(rootDOM, rootVnode);
+
+	    if (appRoot) {
+	        var rootId = "0";
+	        dom.createElement(appRoot, rootId, null, null);
+	        dom.mountElement(appRoot);
+	        readyUpgrage(appRoot);
 	    }
 	};
 
-	function ready(oldVnode, newVnode, inElement) {
-
-	    // attributes: attributes,
-	    // children: children,
-	    // type: type,
-	    // key: key
-
-	    var el = newVnode.render(newVnode);
-	    var domElement = dom.createElement(el);
-	    inElement.innerHTML = "";
-	    inElement.appendChild(domElement);
-	};
-
-	var isReady = false;
-	utils.ready(function () {
-	    isReady = true;
-	    initialize();
-	});
+	// utils.ready(function () {
+	//     isReady = true;
+	//     console.log("ready")
+	//     upgradeDocument();
+	// })
 
 	module.exports = {
 
@@ -357,14 +400,7 @@
 	    isLeaf: isLeaf,
 	    upgrade: upgrade,
 
-	    upgradeDocument: function upgradeDocument(doc) {
-	        walkRoot(doc.body || doc, function (el, tagName) {
-	            if (getRegName(el)) {
-	                upgrade(el);
-	                return false;
-	            }
-	        });
-	    },
+	    upgradeDocument: upgradeDocument,
 	    register: register
 	};
 
@@ -2100,12 +2136,16 @@
 
 	var _patch2 = _interopRequireDefault(_patch);
 
+	var _mountElement = __webpack_require__(28);
+	var _mountElement2 = _interopRequireDefault(_mountElement);
+
 	function _interopRequireDefault(obj) {
 	  return obj && obj.__esModule ? obj : { default: obj };
 	}
 
 	exports.createRenderer = _createRenderer2.default;
 	exports.createElement = _createElement2.default;
+	exports.mountElement = _mountElement2.default;
 	exports.patch = _patch2.default;
 
 /***/ },
@@ -2204,17 +2244,14 @@
 
 	function createElement(vnode, path, dispatch, context) {
 
-	  if (vnode.nativeNode) {
-	    return vnode.nativeNode;
-	  }
-
+	  //给ref符值
 	  if (vnode.attributes && vnode.attributes["ref"] && context.refs) {
 	    context.refs[vnode.attributes["ref"]] = vnode.component || vnode;
 	  }
 
 	  if ((0, _element.isText)(vnode)) {
 	    var value = typeof vnode.nodeValue === 'string' || typeof vnode.nodeValue === 'number' ? vnode.nodeValue : '';
-	    return document.createTextNode(value);
+	    return vnode.nativeNode || document.createTextNode(value);
 	  }
 
 	  if ((0, _element.isThunk)(vnode)) {
@@ -2224,12 +2261,11 @@
 	    var props = component.props;
 	    var type = component.type || "div";
 
-	    //为了元素增加一个包装原始
+	    //  为了元素增加一个包装原始
 	    var childrenWrap = _element.create("children", {}, children);
 	    component.children = childrenWrap;
 
 	    //生成ref引用
-
 	    var model = {
 	      children: children,
 	      props: props,
@@ -2238,31 +2274,42 @@
 	      context: context
 	    };
 
-	    var cached = cache[type];
-
-	    if (typeof cached === 'undefined') {
-	      cached = cache[type] = document.createElement(type);
-	    }
-
 	    if (component.componentWillMount) {
 	      component.componentWillMount();
 	    }
 
-	    var thisDOMElement = cached.cloneNode(false);
-
-	    for (var name in component.attributes) {
-	      (0, _setAttribute.setAttribute)(thisDOMElement, name, component.attributes[name]);
+	    var oldNativeNode;
+	    if (vnode.nativeNode) {
+	      oldNativeNode = vnode.nativeNode;
 	    }
 
 	    var output = component.render(model);
+	    var _DOMElement;
 	    if (output) {
-	      var _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, component);
+
+	      if (oldNativeNode) {
+	        for (var name in vnode.attributes) {
+	          (0, _setAttribute.setAttribute)(oldNativeNode, name, vnode.attributes[name]);
+	        }
+	        _DOMElement = oldNativeNode;
+
+	        output.children.forEach(function (node, index) {
+	          if (node === null || node === undefined) {
+	            return;
+	          }
+	          var child = createElement(node, (0, _element.createPath)(path, node.key || index), dispatch, output);
+	          _DOMElement.appendChild(child);
+	        });
+	      } else {
+
+	        _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, component);
+	      }
 	    }
 
 	    vnode.state = {
 	      vnode: output,
 	      model: model,
-	      nativeNode: thisDOMElement
+	      nativeNode: _DOMElement
 	    };
 
 	    //保留输出，setState，进行对比
@@ -2271,21 +2318,20 @@
 	    component.node = _DOMElement;
 	    component.path = path;
 
-	    if (output) {
-	      thisDOMElement.appendChild(_DOMElement);
-	    }
-
-	    component.nativeNode = thisDOMElement;
-	    thisDOMElement.__upgraded__ = true;
+	    component.nativeNode = _DOMElement;
+	    _DOMElement.__upgraded__ = true;
 
 	    // if (component.onCreate) component.onCreate(model);
 	    // if(component.componentDidMount){
 	    //   component.componentDidMount();
 	    // }
 
-	    return thisDOMElement;
+	    return _DOMElement;
 	  }
 
+	  if (vnode.nativeNode) {
+	    return vnode.nativeNode;
+	  }
 	  var cached = cache[vnode.type];
 
 	  if (typeof cached === 'undefined') {

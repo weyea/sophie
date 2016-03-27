@@ -57,17 +57,20 @@
 	  }
 	});
 
-	var MyButton = Sophie.createClass("my-button", {
+	var MyButton = Sophie.createClass("my-div", {
 	  name: "BaseDiv",
 	  type: "span",
 	  num: 0,
 
-	  componentWillMount: function componentWillMount() {},
+	  componentWillMount: function componentWillMount() {
+	    this.state.name = 123;
+	  },
 	  componentDidMount: function componentDidMount() {
 	    var _this = this;
 
-	    this.state.name = 123;
+	    this.setState({ name: 123 });
 	    console.log("gogog");
+
 	    setInterval(function () {
 	      _this.num++;
 	      _this.setState({ name: [_this.num, 123] });
@@ -132,7 +135,7 @@
 	//
 	//
 
-	Sophie.runApp(MyButton);
+	// Sophie.runApp(MyButton)
 
 /***/ }
 /******/ ]);

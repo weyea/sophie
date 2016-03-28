@@ -24,6 +24,8 @@ function register(inName, inOptions) {
 
 
     var oldRender =  definition.render
+    var oldComponentDidMount = definition.componentDidMount
+    var oldComponentWillMount = definition.componentDidMount
 
     createFun.prototype = definition
 
@@ -31,6 +33,17 @@ function register(inName, inOptions) {
     createFun.prototype.render = function(){
       return element(this.name, this.attributes, oldRender.apply(this, arguments))
     }
+
+    createFun.prototype.componentDidMount = function(){
+      oldComponentDidMount.apply(this, arguments)
+       EE.trigger("componentDidMount",[this.node])
+    }
+
+    createFun.prototype.componentWillMount = function(){
+      oldComponentWillMount.apply(this, arguments)
+       EE.trigger("oldComponentWillMount",[this.node])
+    }
+
 
     createFun.prototype.setState = function(value){
 
@@ -347,7 +360,7 @@ var upgradeDocument = function (doc) {
 
  if(appRoot){
    var rootId = "0"
-   
+
     dom.createElement(appRoot,rootId,null,null)
     dom.mountElement(appRoot);
     readyUpgrage(appRoot)

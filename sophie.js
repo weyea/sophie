@@ -383,7 +383,7 @@
 
 	    if (appRoot) {
 	        var rootId = "0";
-	        debugger;
+
 	        dom.createElement(appRoot, rootId, null, null);
 	        dom.mountElement(appRoot);
 	        readyUpgrage(appRoot);

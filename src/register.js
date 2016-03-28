@@ -35,12 +35,12 @@ function register(inName, inOptions) {
     }
 
     createFun.prototype.componentDidMount = function(){
-      oldComponentDidMount.apply(this, arguments)
+     oldComponentDidMount&&oldComponentDidMount.apply(this, arguments)
        EE.trigger("componentDidMount",[this.node])
     }
 
     createFun.prototype.componentWillMount = function(){
-      oldComponentWillMount.apply(this, arguments)
+      oldComponentWillMount&&oldComponentWillMount.apply(this, arguments)
        EE.trigger("oldComponentWillMount",[this.node])
     }
 

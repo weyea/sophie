@@ -2,28 +2,46 @@
 //
 //
 
-var WhatIWantToSay = "I LOVE YOU! SHENG YUAN YUAN"
+var WhatIWantToSay = "header"
 
-var  ShowDiv = Sophie.createClass("my-l-div", {
+var  MyDivHeader = Sophie.createClass("my-div-header", {
 
   componentWillMount:function(){
-    this.state.name=123
+
 
   },
 
   componentDidMount:function(){
-    console.log("123")
+    console.log("header")
   },
-  
+
   render:function(){
-    return (<div>{WhatIWantToSay}</div>)
+    return (<div>header</div>)
+  }
+
+})
+
+
+var  MyDivBody = Sophie.createClass("my-div-body", {
+
+  componentWillMount:function(){
+
+
+  },
+
+  componentDidMount:function(){
+    console.log("body")
+  },
+
+  render:function(){
+    return (<div>body</div>)
   }
 
 })
 
 
 
-var MyButton = Sophie.createClass("my-div",{
+var MyDiv = Sophie.createClass("my-div",{
   name:"BaseDiv",
   type:"span",
   num:0,
@@ -47,16 +65,16 @@ var MyButton = Sophie.createClass("my-div",{
 
 
     return (
-      <div ref="div" class="mybutton" data-name={this.name}>
-        <ShowDiv></ShowDiv>
-      </div>
+       this.children
     )
   }
 
 })
 
 
-
+// <div ref="div" class="mybutton" data-name={this.name}>
+//   <ShowDiv></ShowDiv>
+// </div>
 
 // var BaseDiv = {
 //     name:"BaseDiv",
@@ -108,4 +126,4 @@ var MyButton = Sophie.createClass("my-div",{
 
 
 
- Sophie.runApp(MyButton)
+ // Sophie.runApp(MyDiv)

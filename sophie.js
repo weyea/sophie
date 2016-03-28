@@ -345,7 +345,6 @@
 	        var tagName = el.tagName.toLowerCase();
 
 	        if (isLeaf(el)) {
-
 	            var inDefinition = registry[tagName];
 
 	            var vnodeChildren = [];
@@ -357,13 +356,15 @@
 	            }
 
 	            vnode = element(inDefinition, getDOMAttrs(el), vnodeChildren);
+
+	            //根元素只能有一个
+	            appRoot = vnode;
+
 	            vnode.nativeNode = el;
-	            if (!appRoot) {
-	                appRoot = vnode;
-	            }
 	        } else if (el.nodeType == 1) {
 
 	            var vnodeChildren = [];
+
 	            for (var i = 0; i < children.length; i++) {
 	                var child = children[i];
 	                var childVnode = func(child);
@@ -382,6 +383,7 @@
 
 	    if (appRoot) {
 	        var rootId = "0";
+	        debugger;
 	        dom.createElement(appRoot, rootId, null, null);
 	        dom.mountElement(appRoot);
 	        readyUpgrage(appRoot);

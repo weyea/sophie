@@ -50,29 +50,45 @@
 	//
 	//
 
-	var WhatIWantToSay = "I LOVE YOU! SHENG YUAN YUAN";
+	var WhatIWantToSay = "header";
 
-	var ShowDiv = Sophie.createClass("my-l-div", {
+	var MyDivHeader = Sophie.createClass("my-div-header", {
 
-	  componentWillMount: function componentWillMount() {
-	    this.state.name = 123;
-	  },
+	  componentWillMount: function componentWillMount() {},
 
 	  componentDidMount: function componentDidMount() {
-	    console.log("123");
+	    console.log("header");
 	  },
 
 	  render: function render() {
 	    return Sophie.element(
 	      "div",
 	      null,
-	      WhatIWantToSay
+	      "header"
 	    );
 	  }
 
 	});
 
-	var MyButton = Sophie.createClass("my-div", {
+	var MyDivBody = Sophie.createClass("my-div-body", {
+
+	  componentWillMount: function componentWillMount() {},
+
+	  componentDidMount: function componentDidMount() {
+	    console.log("body");
+	  },
+
+	  render: function render() {
+	    return Sophie.element(
+	      "div",
+	      null,
+	      "body"
+	    );
+	  }
+
+	});
+
+	var MyDiv = Sophie.createClass("my-div", {
 	  name: "BaseDiv",
 	  type: "span",
 	  num: 0,
@@ -94,14 +110,14 @@
 
 	  render: function render() {
 
-	    return Sophie.element(
-	      "div",
-	      { ref: "div", "class": "mybutton", "data-name": this.name },
-	      Sophie.element(ShowDiv, null)
-	    );
+	    return this.children;
 	  }
 
 	});
+
+	// <div ref="div" class="mybutton" data-name={this.name}>
+	//   <ShowDiv></ShowDiv>
+	// </div>
 
 	// var BaseDiv = {
 	//     name:"BaseDiv",
@@ -151,7 +167,7 @@
 	  }
 	});
 
-	Sophie.runApp(MyButton);
+	// Sophie.runApp(MyDiv)
 
 /***/ }
 /******/ ]);

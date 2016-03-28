@@ -302,9 +302,8 @@ var upgradeDocument = function (doc) {
       var tagName = el.tagName.toLowerCase();
 
       if(isLeaf(el)){
-
-
         var inDefinition = registry[tagName];
+
 
          var vnodeChildren = []
 
@@ -315,14 +314,17 @@ var upgradeDocument = function (doc) {
          }
 
          vnode = element(inDefinition, getDOMAttrs(el), vnodeChildren);
+
+         //根元素只能有一个
+        appRoot = vnode;
+
          vnode.nativeNode = el;
-         if(!appRoot){
-           appRoot = vnode;
-         }
+
 
       } else if(el.nodeType ==1){
 
-           var vnodeChildren = []
+        var vnodeChildren = []
+
         for(var i=0;i< children.length;i++){
           var child = children[i];
           var childVnode = func(child);
@@ -339,12 +341,13 @@ var upgradeDocument = function (doc) {
       return vnode
     }
 
-    
+
     func(rootDOM, rootVnode)
 
 
  if(appRoot){
    var rootId = "0"
+   debugger
     dom.createElement(appRoot,rootId,null,null)
     dom.mountElement(appRoot);
     readyUpgrage(appRoot)

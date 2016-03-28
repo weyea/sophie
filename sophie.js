@@ -109,11 +109,23 @@
 	    };
 
 	    var oldRender = definition.render;
+	    var oldComponentDidMount = definition.componentDidMount;
+	    var oldComponentWillMount = definition.componentDidMount;
 
 	    createFun.prototype = definition;
 
 	    createFun.prototype.render = function () {
 	        return element(this.name, this.attributes, oldRender.apply(this, arguments));
+	    };
+
+	    createFun.prototype.componentDidMount = function () {
+	        oldComponentDidMount.apply(this, arguments);
+	        EE.trigger("componentDidMount", [this.node]);
+	    };
+
+	    createFun.prototype.componentWillMount = function () {
+	        oldComponentWillMount.apply(this, arguments);
+	        EE.trigger("oldComponentWillMount", [this.node]);
 	    };
 
 	    createFun.prototype.setState = function (value) {

@@ -13,11 +13,11 @@ var Sophie = {
   runApp:Bootstrap.runApp,
   renderElement:Bootstrap.renderElement,
   mountElement:dom.mountElement,
-  createVnodeByTagName:dom.createVnodeByTagName,
+  createVnodeByTagName:Bootstrap.createVnodeByTagName,
 
-  createElementByVnode:dom.createElementByVnode,
+  createElementByVnode:Bootstrap.createElementByVnode,
 
-  createElementByTagName:dom.createElementByTagName,
+  createElementByTagName:Bootstrap.createElementByTagName,
 
 
   element : Element,

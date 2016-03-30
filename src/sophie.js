@@ -2,6 +2,7 @@
 
 var Register = require("./register")
 var Element = require("./element")
+var {dom} = require("./deku")
 var Import = require("./import")
 var StyleSheet = require("./styleSheet")
 var Compontent = require("./compontent.js");
@@ -10,6 +11,8 @@ var Bootstrap = require("./bootstrap")
 
 var Sophie = {
   runApp:Bootstrap.runApp,
+  renderElement:Bootstrap.renderElement,
+  mountElement:dom.mountElement,
 
   element : Element,
   register:Register.register,

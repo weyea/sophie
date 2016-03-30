@@ -46,6 +46,10 @@
           EE.trigger("ready")
       })
 
+    },
+    renderElement:function(compontent){
+          var vnode = Element(compontent,{},null);
+        return   dom.createElement(vnode,0)
     }
 
   }

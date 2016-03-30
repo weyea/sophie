@@ -176,6 +176,8 @@
 
 	});
 
+	console.log(Sophie.renderElement(MyJSDiv));
+
 	Sophie.runApp(MyJSDiv);
 
 /***/ }

@@ -48,6 +48,11 @@
 
 	var Register = __webpack_require__(1);
 	var Element = __webpack_require__(5);
+
+	var _require = __webpack_require__(6);
+
+	var dom = _require.dom;
+
 	var Import = __webpack_require__(30);
 	var StyleSheet = __webpack_require__(31);
 	var Compontent = __webpack_require__(38);
@@ -56,6 +61,8 @@
 
 	var Sophie = {
 	  runApp: Bootstrap.runApp,
+	  renderElement: Bootstrap.renderElement,
+	  mountElement: dom.mountElement,
 
 	  element: Element,
 	  register: Register.register,
@@ -3485,6 +3492,10 @@
 	      render(vnode, container);
 	      EE.trigger("ready");
 	    });
+	  },
+	  renderElement: function renderElement(compontent) {
+	    var vnode = Element(compontent, {}, null);
+	    return dom.createElement(vnode, 0);
 	  }
 
 	};

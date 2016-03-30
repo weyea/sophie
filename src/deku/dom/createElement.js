@@ -41,8 +41,10 @@ function createElement(vnode, path, dispatch, context) {
     var type = component.type || "div";
 
   //  为了元素增加一个包装原始
+
     var childrenWrap = _element.create("children",{}, children);
     component.children = childrenWrap
+    component.content = children
 
     //生成ref引用
     var model = {

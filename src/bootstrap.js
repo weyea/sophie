@@ -47,8 +47,20 @@
       })
 
     },
-    renderElement:function(compontent){
-          var vnode = Element(compontent,{},null);
+    createVnodeByTagName:function(name){
+        var compontent = Register.registry[name]
+        var vnode = Element(compontent,{},null);
+    },
+
+    createElementByVnode:function(vnode){
+
+        return   dom.createElement(vnode,0)
+    },
+
+    createElementByTagName:function(name){
+
+        var node = this.createVnodeByTagName(name)
+
         return   dom.createElement(vnode,0)
     }
 

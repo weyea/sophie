@@ -13,6 +13,12 @@ var Sophie = {
   runApp:Bootstrap.runApp,
   renderElement:Bootstrap.renderElement,
   mountElement:dom.mountElement,
+  createVnodeByTagName:dom.createVnodeByTagName,
+
+  createElementByVnode:dom.createElementByVnode,
+
+  createElementByTagName:dom.createElementByTagName,
+
 
   element : Element,
   register:Register.register,

@@ -3501,6 +3501,7 @@
 	    createVnodeByTagName: function createVnodeByTagName(name) {
 	        var compontent = Register.registry[name];
 	        var vnode = Element(compontent, {}, null);
+	        return vnode;
 	    },
 
 	    createElementByVnode: function createElementByVnode(vnode) {
@@ -3510,9 +3511,9 @@
 
 	    createElementByTagName: function createElementByTagName(name) {
 
-	        var node = this.createVnodeByTagName(name);
+	        var vnode = this.createVnodeByTagName(name);
 
-	        return dom.createElement(vnode, 0);
+	        return this.createElementByVnode(vnode);
 	    }
 
 	};

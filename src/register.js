@@ -25,7 +25,7 @@ function register(inName, inOptions) {
 
     var oldRender =  definition.render
     var oldComponentDidMount = definition.componentDidMount
-    var oldComponentWillMount = definition.componentDidMount
+    var oldComponentWillMount = definition.componentWillMount
 
     createFun.prototype = definition
 

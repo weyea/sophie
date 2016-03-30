@@ -18,9 +18,10 @@ function mountElement(vnode) {
 
     });
 
-    if (component.onCreate) component.onCreate(model);
+    if (component.onCreate) component.onCreate();
     if(component.componentDidMount){
       component.componentDidMount();
+
     }
 
   }

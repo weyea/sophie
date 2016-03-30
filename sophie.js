@@ -110,7 +110,7 @@
 
 	    var oldRender = definition.render;
 	    var oldComponentDidMount = definition.componentDidMount;
-	    var oldComponentWillMount = definition.componentDidMount;
+	    var oldComponentWillMount = definition.componentWillMount;
 
 	    createFun.prototype = definition;
 
@@ -2639,7 +2639,7 @@
 	      var child = mountElement(node);
 	    });
 
-	    if (component.onCreate) component.onCreate(model);
+	    if (component.onCreate) component.onCreate();
 	    if (component.componentDidMount) {
 	      component.componentDidMount();
 	    }

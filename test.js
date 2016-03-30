@@ -50,6 +50,13 @@
 	//
 	//
 
+	Sophie.createStyleSheet({
+	  "my-button": {
+	    border: "solid 1px red",
+	    display: "block"
+	  }
+	});
+
 	var WhatIWantToSay = "header";
 
 	var MyDivHeader = Sophie.createClass("my-div-header", {
@@ -88,7 +95,7 @@
 
 	});
 
-	var MyDiv = Sophie.createClass("my-div", {
+	var MyHTMLDiv = Sophie.createClass("my-div", {
 	  name: "BaseDiv",
 	  type: "span",
 	  num: 0,
@@ -115,59 +122,61 @@
 
 	});
 
-	// <div ref="div" class="mybutton" data-name={this.name}>
-	//   <ShowDiv></ShowDiv>
-	// </div>
+	var BaseDiv = {
+	  name: "BaseDiv",
 
-	// var BaseDiv = {
-	//     name:"BaseDiv",
-	//
-	//     onCreate:function(){
-	//     },
-	//     render: function  ({ props, children, context, path }) {
-	//
-	//
-	//       return (
-	//         <div class="baseDiv" data-name={this.name}>
-	//             {children}
-	//         </div>
-	//       )
-	//     }
-	//
-	//   }
-	//
-	// var MyButton = {
-	//
-	//     onCreate:function(){
-	//     },
-	//     render: function  ({ props, children, context, path }) {
-	//
-	//
-	//       return (
-	//         <div class="container">
-	//             <div>
-	//               <BaseDiv class="my-button">basediv</BaseDiv>
-	//             </div>
-	//
-	//         </div>
-	//
-	//       )
-	//     }
-	//
-	//   }
-	//
-	//
-	//
-	//
+	  onCreate: function onCreate() {},
+	  render: function render(_ref) {
+	    var props = _ref.props;
+	    var children = _ref.children;
+	    var context = _ref.context;
+	    var path = _ref.path;
 
-	Sophie.createStyleSheet({
-	  "my-button": {
-	    border: "solid 1px red",
-	    display: "block"
+	    return Sophie.element(
+	      "div",
+	      { "class": "baseDiv", "data-name": this.name },
+	      children
+	    );
 	  }
+
+	};
+
+	var MyJSDiv = Sophie.createClass("my-js-div", {
+
+	  componentWillMount: function componentWillMount() {
+	    this.state.name = 123;
+	  },
+	  componentDidMount: function componentDidMount() {
+	    var _this2 = this;
+
+	    this.setState({ name: 123 });
+	    console.log("gogog");
+
+	    setInterval(function () {
+	      _this2.num++;
+	      _this2.setState({ name: [_this2.num, 123] });
+	    }, 1000);
+	  },
+
+	  render: function render() {
+	    return Sophie.element(
+	      "div",
+	      { "class": "container" },
+	      Sophie.element(
+	        "div",
+	        null,
+	        Sophie.element(
+	          BaseDiv,
+	          { "class": "my-button" },
+	          "basediv"
+	        )
+	      )
+	    );
+	  }
+
 	});
 
-	// Sophie.runApp(MyDiv)
+	Sophie.runApp(MyJSDiv);
 
 /***/ }
 /******/ ]);

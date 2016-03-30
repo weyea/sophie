@@ -22,8 +22,6 @@ var cache = {};
 
 function createElement(vnode, path, dispatch, context) {
 
-
-
   //给ref符值
   if(vnode.attributes&&vnode.attributes["ref"]&&context.refs){
           context.refs[vnode.attributes["ref"]] = vnode.component || vnode
@@ -40,7 +38,7 @@ function createElement(vnode, path, dispatch, context) {
     var component = vnode.component;
     var children = component.children;
     var props = component.props;
-    var type = component.type||"div";
+    var type = component.type || "div";
 
   //  为了元素增加一个包装原始
     var childrenWrap = _element.create("children",{}, children);

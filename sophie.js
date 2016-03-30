@@ -63,6 +63,11 @@
 	  runApp: Bootstrap.runApp,
 	  renderElement: Bootstrap.renderElement,
 	  mountElement: dom.mountElement,
+	  createVnodeByTagName: dom.createVnodeByTagName,
+
+	  createElementByVnode: dom.createElementByVnode,
+
+	  createElementByTagName: dom.createElementByTagName,
 
 	  element: Element,
 	  register: Register.register,
@@ -3457,7 +3462,7 @@
 	var StyleSheet = __webpack_require__(31);
 
 	var renderDocument = function renderDocument() {
-	  Register.upgradeDocument(document);
+	    Register.upgradeDocument(document);
 	};
 
 	var head = document.getElementsByTagName("head")[0];
@@ -3465,38 +3470,50 @@
 	style.innerText = "body{opacity:0;filter:alpha(opacity=0)}";
 	utils.ready(function () {
 
-	  head.appendChild(style);
+	    head.appendChild(style);
 
-	  try {
-	    renderDocument(document);
-	  } catch (e) {
-	    throw e;
-	  } finally {
-	    head.removeChild(style);
-	    StyleSheet.create({
-	      content: {
-	        display: 'block'
-	      }
-	    });
-	    EE.trigger("upgradeReady");
-	    EE.trigger("renderReady");
-	  }
+	    try {
+	        renderDocument(document);
+	    } catch (e) {
+	        throw e;
+	    } finally {
+	        head.removeChild(style);
+	        StyleSheet.create({
+	            content: {
+	                display: 'block'
+	            }
+	        });
+	        EE.trigger("upgradeReady");
+	        EE.trigger("renderReady");
+	    }
 	});
 
 	module.exports = {
-	  runApp: function runApp(compontent, container) {
-	    EE.on("upgradeReady", function () {
-	      var container = container ? container : document.body;
-	      var render = dom.createRenderer(document.body);
-	      var vnode = Element(compontent, {}, null);
-	      render(vnode, container);
-	      EE.trigger("ready");
-	    });
-	  },
-	  renderElement: function renderElement(compontent) {
-	    var vnode = Element(compontent, {}, null);
-	    return dom.createElement(vnode, 0);
-	  }
+	    runApp: function runApp(compontent, container) {
+	        EE.on("upgradeReady", function () {
+	            var container = container ? container : document.body;
+	            var render = dom.createRenderer(document.body);
+	            var vnode = Element(compontent, {}, null);
+	            render(vnode, container);
+	            EE.trigger("ready");
+	        });
+	    },
+	    createVnodeByTagName: function createVnodeByTagName(name) {
+	        var compontent = Register.registry[name];
+	        var vnode = Element(compontent, {}, null);
+	    },
+
+	    createElementByVnode: function createElementByVnode(vnode) {
+
+	        return dom.createElement(vnode, 0);
+	    },
+
+	    createElementByTagName: function createElementByTagName(name) {
+
+	        var node = this.createVnodeByTagName(name);
+
+	        return dom.createElement(vnode, 0);
+	    }
 
 	};
 

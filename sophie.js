@@ -3470,7 +3470,7 @@
 	style.innerText = "body{opacity:0;filter:alpha(opacity=0)}";
 	utils.ready(function () {
 
-	    head.appendChild(style);
+	    //  head.appendChild(style);
 
 	    try {
 	        renderDocument(document);

@@ -24,7 +24,7 @@
       } catch (e) {
           throw e;
       } finally {
-          head.removeChild(style);
+          // head.removeChild(style);
           StyleSheet.create({
             content:{
               display:'block'

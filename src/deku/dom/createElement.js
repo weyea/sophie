@@ -42,6 +42,7 @@ function createElement(vnode, path, dispatch, context) {
     var children = component.children;
     var props = component.props;
     var type = component.type || "div";
+    component.ovnode = vnode
 
   //  为了元素增加一个包装原始
 

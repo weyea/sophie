@@ -2276,8 +2276,8 @@
 	  //设置上下文
 	  vnode.context = context;
 	  //给ref符值
-	  if (vnode.attributes && vnode.attributes["ref"] && context.refs) {
-	    context.refs[vnode.attributes["ref"]] = vnode.component || vnode;
+	  if (vnode.attributes && vnode.attributes["ref"] && context.component.refs) {
+	    context.component.refs[vnode.attributes["ref"]] = vnode.component || vnode;
 	  }
 
 	  if ((0, _element.isText)(vnode)) {

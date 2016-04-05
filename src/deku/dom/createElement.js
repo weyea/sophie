@@ -100,7 +100,8 @@ function createElement(vnode, path, dispatch, context) {
 
 
 
-    vnode.state = {
+
+    .state = {
       vnode: output,
       model: model,
       nativeNode :_DOMElement
@@ -115,6 +116,7 @@ function createElement(vnode, path, dispatch, context) {
 
 
     component.nativeNode = _DOMElement
+    vnode.nativeNode = _DOMElement
     _DOMElement.__upgraded__ = true;
 
     // if (component.onCreate) component.onCreate(model);

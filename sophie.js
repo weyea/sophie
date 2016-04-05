@@ -2355,6 +2355,7 @@
 	    component.path = path;
 
 	    component.nativeNode = _DOMElement;
+	    vnode.nativeNode = _DOMElement;
 	    _DOMElement.__upgraded__ = true;
 
 	    // if (component.onCreate) component.onCreate(model);

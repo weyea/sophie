@@ -101,7 +101,7 @@ function createElement(vnode, path, dispatch, context) {
 
 
 
-    .state = {
+    vnode.state = {
       vnode: output,
       model: model,
       nativeNode :_DOMElement

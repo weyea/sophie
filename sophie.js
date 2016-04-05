@@ -84,7 +84,10 @@
 	  upgrade: Register.upgrade,
 	  registry: Register.registry,
 	  upgradeDocument: Register.upgradeDocument,
-	  isThunk: element.isThunk
+	  isThunk: function isThunk(node) {
+	    return node.type === '#thunk';
+	  }
+
 	};
 
 	window.Sophie = Sophie;

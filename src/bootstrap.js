@@ -43,7 +43,7 @@
         let render = dom.createRenderer(document.body)
         var vnode = Element(compontent,{},null);
         render(vnode, container)
-          EE.trigger("ready")
+          EE.trigger("ready",[vnode])
       })
 
     },

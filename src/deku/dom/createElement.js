@@ -22,6 +22,9 @@ var cache = {};
 
 function createElement(vnode, path, dispatch, context) {
 
+
+  //设置上下文
+  vnode.context = context
   //给ref符值
   if(vnode.attributes&&vnode.attributes["ref"]&&context.refs){
           context.refs[vnode.attributes["ref"]] = vnode.component || vnode
@@ -89,7 +92,7 @@ function createElement(vnode, path, dispatch, context) {
       }
       else {
 
-      _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, component);
+      _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, vnode);
 
       }
 
@@ -119,6 +122,8 @@ function createElement(vnode, path, dispatch, context) {
     //   component.componentDidMount();
     // }
 
+    _DOMElement.vnode = vnode
+
     return _DOMElement;
   }
 
@@ -146,6 +151,8 @@ function createElement(vnode, path, dispatch, context) {
     DOMElement.appendChild(child);
   });
   vnode.nativeNode = DOMElement
+  DOMElement.vnode = vnode
+
 
   return DOMElement;
 }

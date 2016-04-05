@@ -9,7 +9,7 @@ function mountElement(vnode) {
 
     var component = vnode.component;
     //保留输出，setState，进行对比
-    var  output = component.vnode;
+    var output = component.vnode;
     output.children.forEach(function (node, index) {
       if (node === null || node === undefined) {
         return;

@@ -2,7 +2,7 @@
 
 var Register = require("./register")
 var Element = require("./element")
-var {dom} = require("./deku")
+var {dom, element} = require("./deku")
 var Import = require("./import")
 var StyleSheet = require("./styleSheet")
 var Compontent = require("./compontent.js");
@@ -33,7 +33,8 @@ var Sophie = {
   isSophie:Register.isLeaf,
   upgrade:Register.upgrade,
   registry:Register.registry,
-  upgradeDocument:Register.upgradeDocument
+  upgradeDocument:Register.upgradeDocument,
+  isThunk:element.isThunk
 }
 
 

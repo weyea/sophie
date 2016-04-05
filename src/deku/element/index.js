@@ -115,6 +115,7 @@ function createThunkElement(component, key, props, children) {
   component.children = children
   component.key = children
   component.props = props;
+
   component.attributes=props
 
   return {

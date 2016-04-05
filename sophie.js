@@ -52,6 +52,7 @@
 	var _require = __webpack_require__(6);
 
 	var dom = _require.dom;
+	var element = _require.element;
 
 	var Import = __webpack_require__(30);
 	var StyleSheet = __webpack_require__(31);
@@ -82,7 +83,8 @@
 	  isSophie: Register.isLeaf,
 	  upgrade: Register.upgrade,
 	  registry: Register.registry,
-	  upgradeDocument: Register.upgradeDocument
+	  upgradeDocument: Register.upgradeDocument,
+	  isThunk: element.isThunk
 	};
 
 	window.Sophie = Sophie;
@@ -1354,6 +1356,7 @@
 	  component.children = children;
 	  component.key = children;
 	  component.props = props;
+
 	  component.attributes = props;
 
 	  return {
@@ -2270,6 +2273,8 @@
 
 	function createElement(vnode, path, dispatch, context) {
 
+	  //设置上下文
+	  vnode.context = context;
 	  //给ref符值
 	  if (vnode.attributes && vnode.attributes["ref"] && context.refs) {
 	    context.refs[vnode.attributes["ref"]] = vnode.component || vnode;
@@ -2330,7 +2335,7 @@
 	        });
 	      } else {
 
-	        _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, component);
+	        _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, vnode);
 	      }
 	    }
 
@@ -2353,6 +2358,8 @@
 	    // if(component.componentDidMount){
 	    //   component.componentDidMount();
 	    // }
+
+	    _DOMElement.vnode = vnode;
 
 	    return _DOMElement;
 	  }
@@ -2380,6 +2387,7 @@
 	    DOMElement.appendChild(child);
 	  });
 	  vnode.nativeNode = DOMElement;
+	  DOMElement.vnode = vnode;
 
 	  return DOMElement;
 	}
@@ -3495,7 +3503,7 @@
 	            var render = dom.createRenderer(document.body);
 	            var vnode = Element(compontent, {}, null);
 	            render(vnode, container);
-	            EE.trigger("ready");
+	            EE.trigger("ready", [vnode]);
 	        });
 	    },
 	    createVnodeByTagName: function createVnodeByTagName(name) {

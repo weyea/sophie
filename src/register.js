@@ -31,7 +31,7 @@ function register(inName, inOptions) {
 
 
     createFun.prototype.render = function(){
-      return element(this.name, this.attributes, oldRender.apply(this, arguments))
+      return this.element(this.name, this.attributes, oldRender.apply(this, arguments))
     }
 
     createFun.prototype.componentDidMount = function(){
@@ -67,6 +67,13 @@ function register(inName, inOptions) {
         this.node = changes.reduce(dom.patch({}, this.ovnode), this.node);
         this.vnode = newVnode;
         return this.node;
+    }
+
+
+    createFun.prototype.element = function(){
+      var vnode = element.apply(null, arguments)
+      vnode.compontentContext = this.ovnode
+      return vnode
     }
 
     registerDefinition(inName, createFun);

@@ -68,7 +68,7 @@
 	  },
 
 	  render: function render() {
-	    return Sophie.element(
+	    return this.element(
 	      "div",
 	      null,
 	      "header"
@@ -86,7 +86,7 @@
 	  },
 
 	  render: function render() {
-	    return Sophie.element(
+	    return this.element(
 	      "div",
 	      null,
 	      "body"
@@ -122,24 +122,21 @@
 
 	});
 
-	var BaseDiv = {
-	  name: "BaseDiv",
+	var BaseDiv = Sophie.createClass("base-div", {
 
-	  onCreate: function onCreate() {},
 	  render: function render(_ref) {
 	    var props = _ref.props;
 	    var children = _ref.children;
 	    var context = _ref.context;
 	    var path = _ref.path;
 
-	    return Sophie.element(
+	    return this.element(
 	      "div",
 	      { "class": "baseDiv", "data-name": this.name },
 	      children
 	    );
 	  }
-
-	};
+	});
 
 	var MyJSDiv = Sophie.createClass("my-js-div", {
 
@@ -159,13 +156,13 @@
 	  },
 
 	  render: function render() {
-	    return Sophie.element(
+	    return this.element(
 	      "div",
 	      { "class": "container" },
-	      Sophie.element(
+	      this.element(
 	        "div",
 	        null,
-	        Sophie.element(
+	        this.element(
 	          BaseDiv,
 	          { "class": "my-button" },
 	          "basediv"
@@ -176,7 +173,7 @@
 
 	});
 
-	console.log(Sophie.renderElement(MyJSDiv));
+	// console.log(Sophie.renderElement(MyJSDiv))
 
 	Sophie.runApp(MyJSDiv);
 

@@ -80,11 +80,10 @@ var MyHTMLDiv = Sophie.createClass("my-div",{
 })
 
 
-var BaseDiv = {
-    name:"BaseDiv",
 
-    onCreate:function(){
-    },
+  var BaseDiv = Sophie.createClass("base-div",{
+
+
     render: function  ({ props, children, context, path }) {
 
 
@@ -94,8 +93,7 @@ var BaseDiv = {
         </div>
       )
     }
-
-  }
+  })
 
 
 
@@ -134,6 +132,6 @@ var BaseDiv = {
 
 
 
-	console.log(Sophie.renderElement(MyJSDiv))
+	// console.log(Sophie.renderElement(MyJSDiv))
 
  Sophie.runApp(MyJSDiv)

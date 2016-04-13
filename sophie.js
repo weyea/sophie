@@ -111,312 +111,318 @@
 	var registry = {};
 
 	function register(inName, inOptions) {
-	    var definition = inOptions || {};
-	    if (!inName) {
-	        throw new Error('Name argument must not be empty');
-	    }
-	    definition.name = inName;
-	    resolveTagName(definition);
-	    resolveMixin(definition);
+	  var definition = inOptions || {};
+	  if (!inName) {
+	    throw new Error('Name argument must not be empty');
+	  }
+	  definition.name = inName;
+	  resolveTagName(definition);
+	  resolveMixin(definition);
 
-	    var createFun = function createFun() {
-	        this.state = {};
-	        this.children = [];
-	        this.refs = {};
-	    };
+	  var createFun = function createFun() {
+	    this.state = {};
+	    this.children = [];
+	    this.refs = {};
+	  };
 
-	    var oldRender = definition.render;
-	    var oldComponentDidMount = definition.componentDidMount;
-	    var oldComponentWillMount = definition.componentWillMount;
+	  var oldRender = definition.render;
+	  var oldComponentDidMount = definition.componentDidMount;
+	  var oldComponentWillMount = definition.componentWillMount;
 
-	    createFun.prototype = definition;
+	  createFun.prototype = definition;
 
-	    createFun.prototype.render = function () {
-	        return element(this.name, this.attributes, oldRender.apply(this, arguments));
-	    };
+	  createFun.prototype.render = function () {
+	    return this.element(this.name, this.attributes, oldRender.apply(this, arguments));
+	  };
 
-	    createFun.prototype.componentDidMount = function () {
-	        oldComponentDidMount && oldComponentDidMount.apply(this, arguments);
-	        EE.trigger("componentDidMount", [this.node]);
-	    };
+	  createFun.prototype.componentDidMount = function () {
+	    oldComponentDidMount && oldComponentDidMount.apply(this, arguments);
+	    EE.trigger("componentDidMount", [this.node]);
+	  };
 
-	    createFun.prototype.componentWillMount = function () {
-	        oldComponentWillMount && oldComponentWillMount.apply(this, arguments);
-	        EE.trigger("oldComponentWillMount", [this.node]);
-	    };
+	  createFun.prototype.componentWillMount = function () {
+	    oldComponentWillMount && oldComponentWillMount.apply(this, arguments);
+	    EE.trigger("oldComponentWillMount", [this.node]);
+	  };
 
-	    createFun.prototype.setState = function (value) {
+	  createFun.prototype.setState = function (value) {
 
-	        this.state = value;
-	        this._update();
-	    };
+	    this.state = value;
+	    this._update();
+	  };
 
-	    // //重置render方法，生成根元素
-	    // var oRender = definition.render;
-	    // createFun.prototype.render = function(){
-	    //   return element(this.name,this.props,oRender.apply(this,arguments));
-	    // }
+	  // //重置render方法，生成根元素
+	  // var oRender = definition.render;
+	  // createFun.prototype.render = function(){
+	  //   return element(this.name,this.props,oRender.apply(this,arguments));
+	  // }
 
-	    createFun.prototype._update = function () {
+	  createFun.prototype._update = function () {
 
-	        var oldVnode = this.vnode;
-	        var newVnode = this.render();
-	        var changes = diff.diffNode(oldVnode, newVnode, vnode.createPath(this.path, oldVnode.key || "0"));
-	        this.node = changes.reduce(dom.patch({}, this.ovnode), this.node);
-	        this.vnode = newVnode;
-	        return this.node;
-	    };
+	    var oldVnode = this.vnode;
+	    var newVnode = this.render();
+	    var changes = diff.diffNode(oldVnode, newVnode, vnode.createPath(this.path, oldVnode.key || "0"));
+	    this.node = changes.reduce(dom.patch({}, this.ovnode), this.node);
+	    this.vnode = newVnode;
+	    return this.node;
+	  };
 
-	    registerDefinition(inName, createFun);
-	    document.createElement(inName);
-	    return createFun;
+	  createFun.prototype.element = function () {
+	    var vnode = element.apply(null, arguments);
+	    vnode.compontentContext = this.ovnode;
+	    return vnode;
+	  };
+
+	  registerDefinition(inName, createFun);
+	  document.createElement(inName);
+	  return createFun;
 	}
 
 	function resolveTagName(inDefinition) {
-	    inDefinition.tagName = inDefinition.name;
-	    inDefinition.type = inDefinition.name;
+	  inDefinition.tagName = inDefinition.name;
+	  inDefinition.type = inDefinition.name;
 	}
 
 	function resolveMixin(inDefinition) {
-	    var mixin = inDefinition.mixin || [];
-	    for (var i = 0; i < mixin.length; i++) {
-	        var pName = mixin[i];
-	        var pDefinition = registry[pName] || {};
-	        for (var p in pDefinition) {
-	            if (!inDefinition[p]) {
-	                inDefinition[p] = pDefinition[p];
-	            }
-	        }
+	  var mixin = inDefinition.mixin || [];
+	  for (var i = 0; i < mixin.length; i++) {
+	    var pName = mixin[i];
+	    var pDefinition = registry[pName] || {};
+	    for (var p in pDefinition) {
+	      if (!inDefinition[p]) {
+	        inDefinition[p] = pDefinition[p];
+	      }
 	    }
+	  }
 	}
 
 	function registerDefinition(inName, inDefinition) {
-	    registry[inName] = inDefinition;
+	  registry[inName] = inDefinition;
 	}
 
 	function walkRoot(root, callback) {
-	    var child = root.childNodes;
-	    for (var i = 0; i < child.length; i++) {
+	  var child = root.childNodes;
+	  for (var i = 0; i < child.length; i++) {
 
-	        var el = child[i];
-	        if (el.nodeType == 1) {
-	            var tagName = el.tagName.toLowerCase();
-	            var result = callback(el, tagName);
-	            if (result !== false) {
-	                walkRoot(child[i], callback);
-	            }
-	        }
+	    var el = child[i];
+	    if (el.nodeType == 1) {
+	      var tagName = el.tagName.toLowerCase();
+	      var result = callback(el, tagName);
+	      if (result !== false) {
+	        walkRoot(child[i], callback);
+	      }
 	    }
+	  }
 	}
 
 	var getRegName = function getRegName(el) {
 
-	    var name = el.tagName.toLowerCase();
-	    var className = el.className;
-	    className = (" " + className + " ").replace(/[\n\t]/g, " ");
+	  var name = el.tagName.toLowerCase();
+	  var className = el.className;
+	  className = (" " + className + " ").replace(/[\n\t]/g, " ");
 
-	    for (var regName in registry) {
+	  for (var regName in registry) {
 
-	        var tn;
-	        var cn;
-	        var regNames = regName.split(".");
+	    var tn;
+	    var cn;
+	    var regNames = regName.split(".");
 
-	        if (regNames.length == 1) {
-	            tn = regNames[0];
-	            if (tn === name) {
+	    if (regNames.length == 1) {
+	      tn = regNames[0];
+	      if (tn === name) {
 
-	                return tn;
-	            }
-	        } else if (regNames.length == 2) {
-	            tn = regNames[0];
-	            cn = regNames[1];
+	        return tn;
+	      }
+	    } else if (regNames.length == 2) {
+	      tn = regNames[0];
+	      cn = regNames[1];
 
-	            if (tn && cn) {
-	                cn = " " + cn + " ";
-	                if (tn == name && className.indexOf(cn) > -1) {
-	                    return regName;
-	                }
-	            } else if (cn) {
-	                if (className.indexOf(cn) > -1) {
-	                    return regName;
-	                }
-	            }
+	      if (tn && cn) {
+	        cn = " " + cn + " ";
+	        if (tn == name && className.indexOf(cn) > -1) {
+	          return regName;
 	        }
+	      } else if (cn) {
+	        if (className.indexOf(cn) > -1) {
+	          return regName;
+	        }
+	      }
 	    }
+	  }
 	};
 
 	function render(newVnode, inElement) {
 
-	    // attributes: attributes,
-	    // children: children,
-	    // type: type,
-	    // key: key
+	  // attributes: attributes,
+	  // children: children,
+	  // type: type,
+	  // key: key
 
-	    var el = newVnode.render(newVnode);
-	    var domElement = dom.createElement(el, null, null, newVnode);
-	    inElement.innerHTML = "";
-	    inElement.appendChild(domElement);
+	  var el = newVnode.render(newVnode);
+	  var domElement = dom.createElement(el, null, null, newVnode);
+	  inElement.innerHTML = "";
+	  inElement.appendChild(domElement);
 	}
 
 	function createVnodeFromDOMElement(el) {
 
-	    //文本
-	    if (el.nodeType == 3) {
-	        return {
-	            type: '#text',
-	            nodeValue: el.nodeValue,
-	            nativeNode: el
-	        };
-	    }
-	    //标签
-	    else if (el.nodeType == 1) {
-	            var type = el.tagName.toLowerCase();
-	            var attrs = el.attributes;
-	            var attributes = {};
-	            for (var i = 0; i < attrs.length; i++) {
-	                attributes[attrs[i].name] = attributes[attrs[i].value];
-	            }
+	  //文本
+	  if (el.nodeType == 3) {
+	    return {
+	      type: '#text',
+	      nodeValue: el.nodeValue,
+	      nativeNode: el
+	    };
+	  }
+	  //标签
+	  else if (el.nodeType == 1) {
+	      var type = el.tagName.toLowerCase();
+	      var attrs = el.attributes;
+	      var attributes = {};
+	      for (var i = 0; i < attrs.length; i++) {
+	        attributes[attrs[i].name] = attributes[attrs[i].value];
+	      }
 
-	            //@todo props
-	            return {
-	                type: type,
-	                attributes: attributes,
-	                nativeNode: el,
-	                children: []
-	            };
-	        }
+	      //@todo props
+	      return {
+	        type: type,
+	        attributes: attributes,
+	        nativeNode: el,
+	        children: []
+	      };
+	    }
 	}
 
 	function implement(inElement, inDefinition) {
-	    var vnode = new inDefinition();
-	    vnode.nativeNode = inElement;
-	    return vnode;
+	  var vnode = new inDefinition();
+	  vnode.nativeNode = inElement;
+	  return vnode;
 	}
 
 	function registerDOMProp(vnode, inElement) {
-	    var attrs = inElement.attributes;
-	    var attributes = {};
-	    for (var i = 0; i < attrs.length; i++) {
-	        attributes[attrs[i].name] = attributes[attrs[i].value];
-	    }
-	    vnode.attributes = attributes;
+	  var attrs = inElement.attributes;
+	  var attributes = {};
+	  for (var i = 0; i < attrs.length; i++) {
+	    attributes[attrs[i].name] = attributes[attrs[i].value];
+	  }
+	  vnode.attributes = attributes;
 	}
 
 	function getDOMAttrs(inElement) {
-	    var attrs = inElement.attributes;
-	    var attributes = {};
-	    for (var i = 0; i < attrs.length; i++) {
-	        attributes[attrs[i].name] = attributes[attrs[i].value];
-	    }
+	  var attrs = inElement.attributes;
+	  var attributes = {};
+	  for (var i = 0; i < attrs.length; i++) {
+	    attributes[attrs[i].name] = attributes[attrs[i].value];
+	  }
 
-	    return attributes;
+	  return attributes;
 	}
 
 	function upgrade(inElement) {
 
-	    if (!inElement.tagName) return;
+	  if (!inElement.tagName) return;
 
-	    //如果已经更新过，就查看子元素是不是全部更新过
-	    if (inElement.__upgraded__) {} else {
+	  //如果已经更新过，就查看子元素是不是全部更新过
+	  if (inElement.__upgraded__) {} else {
 
-	        var name = inElement.tagName.toLowerCase();
-	        var inDefinition = registry[name];
-	        if (inDefinition) {
-	            EE.trigger("beforeCreate", [inElement]);
-	            var vnode = implement(inElement, inDefinition);
+	    var name = inElement.tagName.toLowerCase();
+	    var inDefinition = registry[name];
+	    if (inDefinition) {
+	      EE.trigger("beforeCreate", [inElement]);
+	      var vnode = implement(inElement, inDefinition);
 
-	            return vnode;
-	        }
+	      return vnode;
 	    }
+	  }
 	}
 
 	function readyUpgrage(vnode) {
 
-	    if ((0, dom.element.isThunk)(vnode)) {
+	  if ((0, dom.element.isThunk)(vnode)) {
 
-	        var component = vnode.component;
+	    var component = vnode.component;
 
-	        //保留输出，setState，进行对比
-	        var output = component.vnode;
+	    //保留输出，setState，进行对比
+	    var output = component.vnode;
 
-	        output.children.forEach(function (node, index) {
-	            if (node === null || node === undefined) {
-	                return;
-	            }
-	            var child = readyUpgrage(node);
-	        });
+	    output.children.forEach(function (node, index) {
+	      if (node === null || node === undefined) {
+	        return;
+	      }
+	      var child = readyUpgrage(node);
+	    });
 
-	        EE.trigger("onCreate", [vnode.nativeNode]);
-	    }
+	    EE.trigger("onCreate", [vnode.nativeNode]);
+	  }
 	}
 
 	function readyUpgrage(inElement) {
-	    inElement.__upgraded__ = true;
-	    EE.trigger("onCreate", [inElement]);
+	  inElement.__upgraded__ = true;
+	  EE.trigger("onCreate", [inElement]);
 	}
 
 	function isLeaf(inElement) {
-	    if (inElement) {
-	        var name = inElement.tagName.toLowerCase();
-	        return registry[name];
-	    }
+	  if (inElement) {
+	    var name = inElement.tagName.toLowerCase();
+	    return registry[name];
+	  }
 	}
 
 	var isReady = false;
 
 	var upgradeDocument = function upgradeDocument(doc) {
-	    var rootDOM = document.body;
-	    var rootVnode = createVnodeFromDOMElement(document.body);
-	    var appRoot;
-	    var func = function func(el) {
-	        var children = el.children;
-	        var vnode;
-	        var tagName = el.tagName.toLowerCase();
+	  var rootDOM = document.body;
+	  var rootVnode = createVnodeFromDOMElement(document.body);
+	  var appRoot;
+	  var func = function func(el) {
+	    var children = el.children;
+	    var vnode;
+	    var tagName = el.tagName.toLowerCase();
 
-	        if (isLeaf(el)) {
-	            var inDefinition = registry[tagName];
+	    if (isLeaf(el)) {
+	      var inDefinition = registry[tagName];
 
-	            var vnodeChildren = [];
+	      var vnodeChildren = [];
 
-	            for (var i = 0; i < children.length; i++) {
-	                var child = children[i];
-	                var childVnode = func(child);
-	                vnodeChildren.push(childVnode);
-	            }
+	      for (var i = 0; i < children.length; i++) {
+	        var child = children[i];
+	        var childVnode = func(child);
+	        vnodeChildren.push(childVnode);
+	      }
 
-	            vnode = element(inDefinition, getDOMAttrs(el), vnodeChildren);
+	      vnode = element(inDefinition, getDOMAttrs(el), vnodeChildren);
 
-	            //根元素只能有一个
-	            appRoot = vnode;
+	      //根元素只能有一个
+	      appRoot = vnode;
 
-	            vnode.nativeNode = el;
-	        } else if (el.nodeType == 1) {
+	      vnode.nativeNode = el;
+	    } else if (el.nodeType == 1) {
 
-	            var vnodeChildren = [];
+	      var vnodeChildren = [];
 
-	            for (var i = 0; i < children.length; i++) {
-	                var child = children[i];
-	                var childVnode = func(child);
-	                vnodeChildren.push(childVnode);
-	            }
+	      for (var i = 0; i < children.length; i++) {
+	        var child = children[i];
+	        var childVnode = func(child);
+	        vnodeChildren.push(childVnode);
+	      }
 
-	            vnode = element(tagName, getDOMAttrs(el), vnodeChildren);
-	            vnode.nativeNode = el;
-	        } else if (el.nodeType == 3) {
-	            vnode = el.nodeValue;
-	        }
-	        return vnode;
-	    };
-
-	    func(rootDOM, rootVnode);
-
-	    if (appRoot) {
-	        var rootId = "0";
-
-	        dom.createElement(appRoot, rootId, null, null);
-	        dom.mountElement(appRoot);
-	        readyUpgrage(appRoot);
+	      vnode = element(tagName, getDOMAttrs(el), vnodeChildren);
+	      vnode.nativeNode = el;
+	    } else if (el.nodeType == 3) {
+	      vnode = el.nodeValue;
 	    }
+	    return vnode;
+	  };
+
+	  func(rootDOM, rootVnode);
+
+	  if (appRoot) {
+	    var rootId = "0";
+
+	    dom.createElement(appRoot, rootId, null, null);
+	    dom.mountElement(appRoot);
+	    readyUpgrage(appRoot);
+	  }
 	};
 
 	// utils.ready(function () {
@@ -427,12 +433,12 @@
 
 	module.exports = {
 
-	    registry: registry,
-	    isLeaf: isLeaf,
-	    upgrade: upgrade,
+	  registry: registry,
+	  isLeaf: isLeaf,
+	  upgrade: upgrade,
 
-	    upgradeDocument: upgradeDocument,
-	    register: register
+	  upgradeDocument: upgradeDocument,
+	  register: register
 	};
 
 /***/ },
@@ -958,6 +964,7 @@
 	var vnode = _require.vnode;
 
 	module.exports = function () {
+
 	  var vnode = element.apply(null, arguments);
 	  return vnode;
 	};
@@ -1309,15 +1316,23 @@
 	    return createThunkElement(type, key, attributes, children);
 	  }
 
-	  //
+	  //创建标签
 
-	  //文本
-	  return {
+	  var result = {
 	    attributes: attributes,
 	    children: children,
 	    type: type,
 	    key: key
 	  };
+
+	  for (var i = 0; i < children.length; i++) {
+	    if (!children[i]) continue;
+	    if (children[i].parent) {} else {
+	      children[i].parent = result;
+	    }
+	  }
+
+	  return result;
 	}
 
 	/**
@@ -1362,7 +1377,7 @@
 
 	  component.attributes = props;
 
-	  return {
+	  var result = {
 	    type: '#thunk',
 	    children: children,
 	    props: props,
@@ -1370,6 +1385,15 @@
 	    component: component,
 	    key: key
 	  };
+
+	  for (var i = 0; i < children.length; i++) {
+	    if (!children[i]) continue;
+	    if (children[i].parent) {} else {
+	      children[i].parent = result;
+	    }
+	  }
+
+	  return result;
 	}
 
 	/**
@@ -2325,18 +2349,8 @@
 	    if (output) {
 
 	      if (oldNativeNode) {
-	        for (var name in vnode.attributes) {
-	          (0, _setAttribute.setAttribute)(oldNativeNode, name, vnode.attributes[name]);
-	        }
-	        _DOMElement = oldNativeNode;
 
-	        output.children.forEach(function (node, index) {
-	          if (node === null || node === undefined) {
-	            return;
-	          }
-	          var child = createElement(node, (0, _element.createPath)(path, node.key || index), dispatch, output);
-	          _DOMElement.appendChild(child);
-	        });
+	        _DOMElement = oldNativeNode;
 	      } else {
 
 	        _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, vnode);

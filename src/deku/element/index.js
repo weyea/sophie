@@ -65,15 +65,29 @@ function create(type, attributes) {
     return createThunkElement(type, key, attributes, children);
   }
 
-  //
+  //创建标签
 
-  //文本
-  return {
+  var result =  {
     attributes: attributes,
     children: children,
     type: type,
     key: key
   };
+
+
+  for(var i = 0;i<children.length;i++){
+    if(!children[i])continue;
+    if(children[i].parent){
+
+    }
+    else {
+        children[i].parent = result;
+    }
+
+  }
+
+
+  return result
 }
 
 /**
@@ -118,7 +132,7 @@ function createThunkElement(component, key, props, children) {
 
   component.attributes=props
 
-  return {
+  var result =  {
     type: '#thunk',
     children: children,
     props: props,
@@ -126,6 +140,18 @@ function createThunkElement(component, key, props, children) {
     component: component,
     key: key
   };
+
+  for(var i = 0;i<children.length;i++){
+    if(!children[i])continue;
+    if(children[i].parent){
+
+    }
+    else {
+        children[i].parent = result;
+    }
+  }
+
+  return  result
 }
 
 /**

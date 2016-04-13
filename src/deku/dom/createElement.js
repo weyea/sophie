@@ -76,20 +76,8 @@ function createElement(vnode, path, dispatch, context) {
     if(output){
 
       if(oldNativeNode){
-        for (var name in vnode.attributes) {
-          (0, _setAttribute.setAttribute)(oldNativeNode, name, vnode.attributes[name]);
-        }
-        _DOMElement =  oldNativeNode;
 
-        output.children.forEach(function (node, index) {
-          if (node === null || node === undefined) {
-            return;
-          }
-          var child = createElement(node, (0, _element.createPath)(path, node.key || index), dispatch, output);
-          _DOMElement.appendChild(child);
-        });
-
-
+          _DOMElement =  oldNativeNode
       }
       else {
 

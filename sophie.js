@@ -3497,15 +3497,16 @@
 	style.innerText = "body{opacity:0;filter:alpha(opacity=0)}";
 
 	module.exports = {
-	    runApp: function runApp(compontent, container) {
+	    runApp: function runApp(compontent, container, fire) {
 	        utils.ready(function () {
 	            var container = container ? container : document.body;
 	            var render = dom.createRenderer(document.body);
 	            var vnode = Element(compontent, {}, null);
 	            render(vnode, container);
-	            EE.trigger("ready", [vnode]);
+	            if (fire !== false) EE.trigger("ready", [vnode]);
 	        });
 	    },
+
 	    createVnodeByTagName: function createVnodeByTagName(name) {
 	        var compontent = Register.registry[name];
 	        var vnode = Element(compontent, {}, null);

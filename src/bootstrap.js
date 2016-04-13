@@ -21,16 +21,17 @@
 
 
   module.exports = {
-    runApp: function(compontent, container){
-    utils.ready(function () {
-        var  container = container?container:document.body
-        let render = dom.createRenderer(document.body)
-        var vnode = Element(compontent,{},null);
-        render(vnode, container)
-          EE.trigger("ready",[vnode])
-      })
+    runApp: function(compontent, container,fire){
+      utils.ready(function () {
+          var  container = container?container:document.body
+          let render = dom.createRenderer(document.body)
+          var vnode = Element(compontent,{},null);
+          render(vnode, container)
+          if(fire !== false)  EE.trigger("ready",[vnode])
+        })
 
     },
+
     createVnodeByTagName:function(name){
         var compontent = Register.registry[name]
         var vnode = Element(compontent,{},null);

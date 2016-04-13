@@ -2890,13 +2890,13 @@
 	var head;
 
 	var StyleSheet = {
-	  create: function create(styles) {
+	  create: function create(styles, mediaQuery) {
 	    if (!head) {
 	      head = document.getElementsByTagName("head")[0];
 	    }
 
 	    var style = document.createElement("style");
-	    var cssText = ObjectToCssText(styles);
+	    var cssText = ObjectToCssText(styles, mediaQuery);
 	    style.innerText = cssText;
 	    head.appendChild(style);
 	  }

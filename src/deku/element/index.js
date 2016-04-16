@@ -125,7 +125,7 @@ function createTextElement(text) {
 
 function createThunkElement(component, key, props, children) {
   if(!props) props = {};
-  props.children = children;
+  // props.children = children;
   component.children = children
   component.key = children
   component.props = props;

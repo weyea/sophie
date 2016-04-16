@@ -1,5 +1,7 @@
 'use strict';
 
+var merge = require("merge")
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 if (!Array.isArray) {
@@ -126,17 +128,27 @@ function createTextElement(text) {
 function createThunkElement(component, key, props, children) {
   if(!props) props = {};
   // props.children = children;
+
+  var defaultProps = component.getDefaultProps&&component.getDefaultProps()
+  var defaultState = component.getInitialState&&component.getInitialState()
+
+  var newProps = merge.recursive(defaultProps||{}, props)
+  var newState = merge.recursive({},defaultState||{})
+
+
   component.children = children
   component.key = children
-  component.props = props;
+  component.props = defaultProps;
+  component.sate = newState
 
-  component.attributes=props
+
+  component.attributes=defaultProps
 
   var result =  {
     type: '#thunk',
     children: children,
-    props: props,
-    attributes:props,
+    props: defaultProps,
+    attributes:defaultProps,
     component: component,
     key: key
   };

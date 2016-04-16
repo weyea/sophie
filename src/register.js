@@ -34,6 +34,8 @@ function register(inName, inOptions) {
       return this.element(this.name, this.attributes, oldRender.apply(this, arguments))
     }
 
+
+
     createFun.prototype.componentDidMount = function(){
      oldComponentDidMount&&oldComponentDidMount.apply(this, arguments)
        EE.trigger("componentDidMount",[this.node])
@@ -44,6 +46,9 @@ function register(inName, inOptions) {
        EE.trigger("oldComponentWillMount",[this.node])
     }
 
+    //for decleare
+    // createFun.prototype.getDefaultProps = function(){}
+    // createFun.prototype.getInitialState = function(){}
 
     createFun.prototype.setState = function(value){
 

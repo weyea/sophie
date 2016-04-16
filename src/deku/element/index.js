@@ -104,7 +104,7 @@ function reduceChildren(children, vnode) {
     children.push(createTextElement(vnode));
   } else if (Array.isArray(vnode)) {
     children = [].concat(_toConsumableArray(children), _toConsumableArray(vnode.reduce(reduceChildren, [])));
-  } else if (typeof vnode !== 'undefined') {
+  } else if (vnode) {
     children.push(vnode);
   }
   return children;

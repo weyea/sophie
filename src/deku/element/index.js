@@ -138,17 +138,17 @@ function createThunkElement(component, key, props, children) {
 
   component.children = children
   component.key = children
-  component.props = defaultProps;
+  component.props = newProps;
   component.sate = newState
 
 
-  component.attributes=defaultProps
+  component.attributes=newProps
 
   var result =  {
     type: '#thunk',
     children: children,
-    props: defaultProps,
-    attributes:defaultProps,
+    props: newProps,
+    attributes:newProps,
     component: component,
     key: key
   };

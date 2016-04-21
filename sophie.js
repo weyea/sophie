@@ -1311,7 +1311,7 @@
 
 	  var key = typeof attributes.key === 'string' || typeof attributes.key === 'number' ? attributes.key : undefined;
 
-	  delete attributes.key;
+	  // delete attributes.key;
 
 	  if ((typeof type === 'undefined' ? 'undefined' : _typeof(type)) === 'object') {
 	    return createThunkElement(type, key, attributes, children);
@@ -1385,7 +1385,7 @@
 	  var newState = merge.recursive({}, defaultState || {});
 
 	  component.children = children;
-	  component.key = children;
+	  component.key = key;
 	  component.props = newProps;
 	  component.sate = newState;
 

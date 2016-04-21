@@ -56,7 +56,7 @@ function create(type, attributes) {
 
   var key = typeof attributes.key === 'string' || typeof attributes.key === 'number' ? attributes.key : undefined;
 
-  delete attributes.key;
+  // delete attributes.key;
 
   if ((typeof type === 'undefined' ? 'undefined' : _typeof(type)) === 'object') {
     return createThunkElement(type, key, attributes, children);
@@ -137,12 +137,12 @@ function createThunkElement(component, key, props, children) {
 
 
   component.children = children
-  component.key = children
+  component.key = key
   component.props = newProps;
   component.sate = newState
 
 
-  component.attributes=newProps
+  component.attributes = newProps
 
   var result =  {
     type: '#thunk',

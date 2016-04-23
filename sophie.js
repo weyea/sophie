@@ -3710,7 +3710,7 @@
 
 	var isReady = false;
 	var callbacks = [];
-	var ready = function ready(callbck) {
+	var ready = function ready(callback) {
 	  if (isReady) {
 	    callback && callback();
 	  } else {

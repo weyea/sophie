@@ -1,6 +1,6 @@
 {
   "name": "sophie",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "main": "./sophie.js",
   "dependencies": {
     "deku": "2.0.0-rc13",

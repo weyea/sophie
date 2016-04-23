@@ -19,7 +19,7 @@
 
   var isReady = false
   var callbacks = []
-  var ready = function(callbck){
+  var ready = function(callback){
      if(isReady){
        callback&&callback()
      }

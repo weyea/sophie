@@ -17,8 +17,23 @@
   style.innerText = "body{opacity:0;filter:alpha(opacity=0)}";
 
 
+  var isReady = false
+  var callbacks = []
+  var ready = function(callbck){
+     if(isReady){
+       callback&&callback()
+     }
+     else{
+       callbacks.push(callback)
+     }
+  }
 
-
+ var fireReady = function(){
+   if(!isReady) return;
+   for(var i=0;i<callbacks.length;i++){
+     callbacks[i]&&callbacks[i]();
+   }
+ }
 
   module.exports = {
     runApp: function(compontent, container,fire){
@@ -27,10 +42,16 @@
           let render = dom.createRenderer(document.body)
           var vnode = Element(compontent,{},null);
           render(vnode, container)
-          if(fire !== false)  EE.trigger("ready",[vnode])
-        })
+          isReady = true;
+          if(fire !== false)  {
+            EE.trigger("ready",[vnode])
+            fireReady();
+          }
+      })
 
     },
+
+    ready:ready,
 
     createVnodeByTagName:function(name){
         var compontent = Register.registry[name]

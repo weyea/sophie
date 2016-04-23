@@ -11,6 +11,7 @@ var Bootstrap = require("./bootstrap")
 
 var Sophie = {
   runApp:Bootstrap.runApp,
+  ready:Bootstrap.ready,
   renderElement:Bootstrap.renderElement,
   mountElement:dom.mountElement,
   createVnodeByTagName:Bootstrap.createVnodeByTagName,

@@ -62,6 +62,7 @@
 
 	var Sophie = {
 	  runApp: Bootstrap.runApp,
+	  ready: Bootstrap.ready,
 	  renderElement: Bootstrap.renderElement,
 	  mountElement: dom.mountElement,
 	  createVnodeByTagName: Bootstrap.createVnodeByTagName,
@@ -3700,41 +3701,64 @@
 	var StyleSheet = __webpack_require__(33);
 
 	var renderDocument = function renderDocument() {
-	    Register.upgradeDocument(document);
+	  Register.upgradeDocument(document);
 	};
 
 	var head = document.getElementsByTagName("head")[0];
 	var style = document.createElement("style");
 	style.innerText = "body{opacity:0;filter:alpha(opacity=0)}";
 
+	var isReady = false;
+	var callbacks = [];
+	var ready = function ready(callbck) {
+	  if (isReady) {
+	    callback && callback();
+	  } else {
+	    callbacks.push(callback);
+	  }
+	};
+
+	var fireReady = function fireReady() {
+	  if (!isReady) return;
+	  for (var i = 0; i < callbacks.length; i++) {
+	    callbacks[i] && callbacks[i]();
+	  }
+	};
+
 	module.exports = {
-	    runApp: function runApp(compontent, container, fire) {
-	        utils.ready(function () {
-	            var container = container ? container : document.body;
-	            var render = dom.createRenderer(document.body);
-	            var vnode = Element(compontent, {}, null);
-	            render(vnode, container);
-	            if (fire !== false) EE.trigger("ready", [vnode]);
-	        });
-	    },
+	  runApp: function runApp(compontent, container, fire) {
+	    utils.ready(function () {
+	      var container = container ? container : document.body;
+	      var render = dom.createRenderer(document.body);
+	      var vnode = Element(compontent, {}, null);
+	      render(vnode, container);
+	      isReady = true;
+	      if (fire !== false) {
+	        EE.trigger("ready", [vnode]);
+	        fireReady();
+	      }
+	    });
+	  },
 
-	    createVnodeByTagName: function createVnodeByTagName(name) {
-	        var compontent = Register.registry[name];
-	        var vnode = Element(compontent, {}, null);
-	        return vnode;
-	    },
+	  ready: ready,
 
-	    createElementByVnode: function createElementByVnode(vnode) {
+	  createVnodeByTagName: function createVnodeByTagName(name) {
+	    var compontent = Register.registry[name];
+	    var vnode = Element(compontent, {}, null);
+	    return vnode;
+	  },
 
-	        return dom.createElement(vnode, 0);
-	    },
+	  createElementByVnode: function createElementByVnode(vnode) {
 
-	    createElementByTagName: function createElementByTagName(name) {
+	    return dom.createElement(vnode, 0);
+	  },
 
-	        var vnode = this.createVnodeByTagName(name);
+	  createElementByTagName: function createElementByTagName(name) {
 
-	        return this.createElementByVnode(vnode);
-	    }
+	    var vnode = this.createVnodeByTagName(name);
+
+	    return this.createElementByVnode(vnode);
+	  }
 
 	};
 

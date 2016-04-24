@@ -2569,8 +2569,11 @@
 
 	        _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, vnode);
 
-	        for (var name in vnode.attributes) {
-	          (0, _setAttribute.setAttribute)(_DOMElement, name, vnode.attributes[name]);
+	        if (vnode.attributes["id"]) {
+	          (0, _setAttribute.setAttribute)(_DOMElement, "id", vnode.attributes["id"]);
+	        }
+	        if (vnode.attributes["key"]) {
+	          (0, _setAttribute.setAttribute)(_DOMElement, "key", vnode.attributes["key"]);
 	        }
 	      }
 	    }

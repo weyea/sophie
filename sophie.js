@@ -132,9 +132,11 @@
 
 	  createFun.prototype = definition;
 
-	  createFun.prototype.render = function () {
-	    return this.element(this.name, this.attributes, oldRender.apply(this, arguments));
-	  };
+	  if (Sophie && Sophie.renderRootElement) {
+	    createFun.prototype.render = function () {
+	      return this.element(this.name, this.attributes, oldRender.apply(this, arguments));
+	    };
+	  }
 
 	  createFun.prototype.componentDidMount = function () {
 	    oldComponentDidMount && oldComponentDidMount.apply(this, arguments);

@@ -26,8 +26,8 @@ function createElement(vnode, path, dispatch, context) {
   //设置上下文
   vnode.context = context
   //给ref符值
-  if(vnode.attributes&&vnode.attributes["ref"]&&context.component.refs){
-          context.component.refs[vnode.attributes["ref"]] = vnode.component || vnode
+  if(vnode.attributes&&vnode.attributes["ref"]&&vnode.componentContext&&vnode.componentContext.refs){
+          vnode.componentContext.refs[vnode.attributes["ref"]] = vnode.component || vnode
   }
 
   if ((0, _element.isText)(vnode)) {
@@ -82,6 +82,10 @@ function createElement(vnode, path, dispatch, context) {
       else {
 
       _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, vnode);
+
+      for (var name in vnode.attributes) {
+        (0, _setAttribute.setAttribute)(_DOMElement, name, vnode.attributes[name]);
+      }
 
       }
 

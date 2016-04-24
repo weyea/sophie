@@ -36,10 +36,6 @@ function register(inName, inOptions) {
     }
 
     
-
-
-
-
     createFun.prototype.componentDidMount = function(){
      oldComponentDidMount&&oldComponentDidMount.apply(this, arguments)
        EE.trigger("componentDidMount",[this.node])

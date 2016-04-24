@@ -3731,6 +3731,7 @@
 	      var container = container ? container : document.body;
 	      var render = dom.createRenderer(document.body);
 	      var vnode = Element(compontent, {}, null);
+	      Sophie.firstVnode = vnode;
 	      render(vnode, container);
 	      isReady = true;
 	      if (fire !== false) {

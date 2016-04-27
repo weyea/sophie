@@ -37,7 +37,7 @@
 
   module.exports = {
     runApp: function(compontent, container,fire){
-      utils.ready(function () {
+      // utils.ready(function () {
           var  container = container?container:document.body
           let render = dom.createRenderer(document.body)
           var vnode = Element(compontent,{},null);
@@ -48,7 +48,7 @@
             EE.trigger("ready",[vnode])
             fireReady();
           }
-      })
+      // })
 
     },
 

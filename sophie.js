@@ -3736,18 +3736,18 @@
 
 	module.exports = {
 	  runApp: function runApp(compontent, container, fire) {
-	    utils.ready(function () {
-	      var container = container ? container : document.body;
-	      var render = dom.createRenderer(document.body);
-	      var vnode = Element(compontent, {}, null);
-	      Sophie.firstVnode = vnode;
-	      render(vnode, container);
-	      isReady = true;
-	      if (fire !== false) {
-	        EE.trigger("ready", [vnode]);
-	        fireReady();
-	      }
-	    });
+	    // utils.ready(function () {
+	    var container = container ? container : document.body;
+	    var render = dom.createRenderer(document.body);
+	    var vnode = Element(compontent, {}, null);
+	    Sophie.firstVnode = vnode;
+	    render(vnode, container);
+	    isReady = true;
+	    if (fire !== false) {
+	      EE.trigger("ready", [vnode]);
+	      fireReady();
+	    }
+	    // })
 	  },
 
 	  ready: ready,

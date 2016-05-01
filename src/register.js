@@ -8,7 +8,7 @@ var registry = {};
 
 function register(inName, inOptions) {
 
-    if(arguments.length==1){
+    if(!inOptions){
       inOptions = inName;
       inName = "undefined"
     }

@@ -129,20 +129,39 @@ function createThunkElement(component, key, props, children) {
   if(!props) props = {};
   // props.children = children;
 
+
+    component.key = key
+    component.type = "#thunk"
+    component.component= component
+
+    for(var i = 0;i<children.length;i++){
+      if(!children[i])continue;
+      if(children[i].parent){
+
+      }
+      else {
+          children[i].parent = component;
+      }
+    }
+    component.children = children
+
   var defaultProps = component.getDefaultProps&&component.getDefaultProps()
-  var defaultState = component.getInitialState&&component.getInitialState()
-
   var newProps = merge.recursive(defaultProps||{}, props)
-  var newState = merge.recursive({},defaultState||{})
-
-
-  component.children = children
-  component.key = key
   component.props = newProps;
-  component.sate = newState
-
-
   component.attributes = newProps
+
+  var defaultState = component.getInitialState&&component.getInitialState()
+  var newState = merge.recursive({},defaultState||{})
+    component.sate = newState
+
+
+
+
+
+
+
+
+
 
   var result =  {
     type: '#thunk',
@@ -153,18 +172,7 @@ function createThunkElement(component, key, props, children) {
     key: key
   };
 
-  component.type = "#thunk"
-  component.component= component
 
-  for(var i = 0;i<children.length;i++){
-    if(!children[i])continue;
-    if(children[i].parent){
-
-    }
-    else {
-        children[i].parent = component;
-    }
-  }
 
   return  component
 }

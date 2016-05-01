@@ -1445,28 +1445,7 @@
 	  if (!props) props = {};
 	  // props.children = children;
 
-	  var defaultProps = component.getDefaultProps && component.getDefaultProps();
-	  var defaultState = component.getInitialState && component.getInitialState();
-
-	  var newProps = merge.recursive(defaultProps || {}, props);
-	  var newState = merge.recursive({}, defaultState || {});
-
-	  component.children = children;
 	  component.key = key;
-	  component.props = newProps;
-	  component.sate = newState;
-
-	  component.attributes = newProps;
-
-	  var result = {
-	    type: '#thunk',
-	    children: children,
-	    props: newProps,
-	    attributes: newProps,
-	    component: component,
-	    key: key
-	  };
-
 	  component.type = "#thunk";
 	  component.component = component;
 
@@ -1476,6 +1455,25 @@
 	      children[i].parent = component;
 	    }
 	  }
+	  component.children = children;
+
+	  var defaultProps = component.getDefaultProps && component.getDefaultProps();
+	  var newProps = merge.recursive(defaultProps || {}, props);
+	  component.props = newProps;
+	  component.attributes = newProps;
+
+	  var defaultState = component.getInitialState && component.getInitialState();
+	  var newState = merge.recursive({}, defaultState || {});
+	  component.sate = newState;
+
+	  var result = {
+	    type: '#thunk',
+	    children: children,
+	    props: newProps,
+	    attributes: newProps,
+	    component: component,
+	    key: key
+	  };
 
 	  return component;
 	}

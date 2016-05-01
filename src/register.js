@@ -88,6 +88,12 @@ function register(inName, inOptions) {
     createFun.prototype.element = function(){
       var vnode = element.apply(null, arguments)
       vnode.compontentContext = this.ovnode
+
+      if(vnode.attributes&&vnode.attributes["ref"]){
+        var refValue =  vnode.attributes["ref"];
+        this.refs[refValue] = vnode;
+      }
+
       return vnode
     }
 

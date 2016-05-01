@@ -184,6 +184,12 @@
 	  createFun.prototype.element = function () {
 	    var vnode = element.apply(null, arguments);
 	    vnode.compontentContext = this.ovnode;
+
+	    if (vnode.attributes && vnode.attributes["ref"]) {
+	      var refValue = vnode.attributes["ref"];
+	      this.refs[refValue] = vnode;
+	    }
+
 	    return vnode;
 	  };
 
@@ -2527,9 +2533,9 @@
 	  //设置上下文
 	  vnode.context = context;
 	  //给ref符值
-	  if (vnode.attributes && vnode.attributes["ref"] && vnode.componentContext && vnode.componentContext.refs) {
-	    vnode.componentContext.refs[vnode.attributes["ref"]] = vnode.component || vnode;
-	  }
+	  // if(vnode.attributes&&vnode.attributes["ref"]&&vnode.componentContext&&vnode.componentContext.refs){
+	  //         vnode.componentContext.refs[vnode.attributes["ref"]] = vnode.component || vnode
+	  // }
 
 	  if ((0, _element.isText)(vnode)) {
 	    var value = typeof vnode.nodeValue === 'string' || typeof vnode.nodeValue === 'number' ? vnode.nodeValue : '';

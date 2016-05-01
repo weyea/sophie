@@ -1473,7 +1473,7 @@
 	  for (var i = 0; i < children.length; i++) {
 	    if (!children[i]) continue;
 	    if (children[i].parent) {} else {
-	      children[i].parent = result;
+	      children[i].parent = component;
 	    }
 	  }
 

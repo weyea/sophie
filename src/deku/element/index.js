@@ -162,7 +162,7 @@ function createThunkElement(component, key, props, children) {
 
     }
     else {
-        children[i].parent = result;
+        children[i].parent = component;
     }
   }
 

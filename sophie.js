@@ -194,6 +194,7 @@
 	  }, createFun.prototype.append = function (child) {
 	    var children = this.children;
 	    child.parent = this;
+	    child.compontentContext = this.compontentContext;
 	    children.push(child);
 	    this._update();
 	  };
@@ -218,7 +219,7 @@
 	    for (var i = 0; i < children.length; i++) {
 	      if (children[i] == before) {
 	        children.splice(i, 0, target);
-
+	        target.compontentContext = this.compontentContext;
 	        target.parent = parent;
 	        break;
 	      }
@@ -233,6 +234,7 @@
 	      if (children[i] == after) {
 	        children.splice(i + 1, 0, target);
 	        target.parent = parent;
+	        target.compontentContext = this.compontentContext;
 	        break;
 	      }
 	    }

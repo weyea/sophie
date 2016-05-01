@@ -191,6 +191,52 @@
 	    }
 
 	    return vnode;
+	  }, createFun.prototype.append = function (child) {
+	    var children = this.children;
+	    child.parent = this;
+	    children.push(child);
+	    this._update();
+	  };
+
+	  createFun.prototype.remove = function (child) {
+	    var parent = this;
+	    var children = parent.children;
+	    for (var i = 0; i < children.length; i++) {
+	      if (children[i] == child) {
+	        //  children[i].parent = undefined
+	        children.splice(i, 1);
+
+	        break;
+	      }
+	    }
+	    this._update();
+	  };
+
+	  createFun.prototype.insertBefore = function (target, before) {
+	    var parent = this;
+	    var children = parent.children;
+	    for (var i = 0; i < children.length; i++) {
+	      if (children[i] == before) {
+	        children.splice(i, 0, target);
+
+	        target.parent = parent;
+	        break;
+	      }
+	    }
+	    this._update();
+	  };
+
+	  createFun.prototype.insertAfter = function (target, after) {
+	    var parent = this;
+	    var children = parent.children;
+	    for (var i = 0; i < children.length; i++) {
+	      if (children[i] == after) {
+	        children.splice(i + 1, 0, target);
+	        target.parent = parent;
+	        break;
+	      }
+	    }
+	    this._update();
 	  };
 
 	  if (inName !== "undefined") {

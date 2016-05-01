@@ -152,7 +152,7 @@ function createThunkElement(component, key, props, children) {
 
   var defaultState = component.getInitialState&&component.getInitialState()
   var newState = merge.recursive({},defaultState||{})
-    component.sate = newState
+    component.state = newState
 
 
 

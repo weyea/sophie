@@ -1464,7 +1464,7 @@
 
 	  var defaultState = component.getInitialState && component.getInitialState();
 	  var newState = merge.recursive({}, defaultState || {});
-	  component.sate = newState;
+	  component.state = newState;
 
 	  var result = {
 	    type: '#thunk',

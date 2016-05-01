@@ -1465,6 +1465,9 @@
 	    key: key
 	  };
 
+	  component.type = "#thunk";
+	  component.component = component;
+
 	  for (var i = 0; i < children.length; i++) {
 	    if (!children[i]) continue;
 	    if (children[i].parent) {} else {
@@ -1472,7 +1475,7 @@
 	    }
 	  }
 
-	  return result;
+	  return component;
 	}
 
 	/**

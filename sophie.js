@@ -112,10 +112,17 @@
 	var registry = {};
 
 	function register(inName, inOptions) {
+
+	  if (arguments.length == 1) {
+	    inOptions = inName;
+	    inName = "undefined";
+	  }
+
 	  var definition = inOptions || {};
 	  if (!inName) {
 	    throw new Error('Name argument must not be empty');
 	  }
+
 	  definition.name = inName;
 	  resolveTagName(definition);
 	  resolveMixin(definition);
@@ -180,8 +187,11 @@
 	    return vnode;
 	  };
 
-	  registerDefinition(inName, createFun);
-	  document.createElement(inName);
+	  if (inName !== "undefined") {
+	    registerDefinition(inName, createFun);
+	    document.createElement(inName);
+	  }
+
 	  return createFun;
 	}
 

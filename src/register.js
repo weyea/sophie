@@ -154,6 +154,9 @@ function register(inName, inOptions) {
     document.createElement(inName);
   }
 
+  createFun.prototype.constructor = createFun
+
+
   return createFun;
 }
 

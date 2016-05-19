@@ -1382,6 +1382,10 @@
 
 	  // delete attributes.key;
 
+	  if (!key) {
+	    key = attributes.key = attributes.id;
+	  }
+
 	  if ((typeof type === 'undefined' ? 'undefined' : _typeof(type)) === 'object') {
 	    return createThunkElement(type, key, attributes, children);
 	  }

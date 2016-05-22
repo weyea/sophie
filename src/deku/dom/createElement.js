@@ -98,11 +98,7 @@ function createElement(vnode, path, dispatch, context) {
 
 
 
-    vnode.state = {
-      vnode: output,
-      model: model,
-      nativeNode :_DOMElement
-    }
+    
 
     //保留输出，setState，进行对比
     component.vnode= output;

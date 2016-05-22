@@ -47,7 +47,7 @@ function patch(dispatch, context) {
               insertAtIndex(DOMElement, index, (0, _createElement2.default)(vnode, path, dispatch, context));
             },
             removeChild: function removeChild(index) {
-              
+
               DOMElement.removeChild(childNodes[index]);
             },
             updateChild: function updateChild(index, actions) {
@@ -66,7 +66,7 @@ function patch(dispatch, context) {
         var children = component.children;
 
 
-        var prevNode = prev.state.vnode;
+        var prevNode = prev.vnode;
         var model = {
           children: children,
           props: props,
@@ -85,10 +85,7 @@ function patch(dispatch, context) {
         if(component.componentDidUpdate){
             component.componentDidUpdate()
         }
-        next.state = {
-          vnode: nextNode,
-          model: model
-        };
+
       },
       replaceNode: function replaceNode(prev, next, path) {
         var newEl = (0, _createElement2.default)(next, path, dispatch, context);
@@ -113,19 +110,15 @@ function patch(dispatch, context) {
  */
 
 function removeThunks(vnode) {
+
   while ((0, _element.isThunk)(vnode)) {
     var _vnode = vnode;
     var component = _vnode.component;
-    var state = _vnode.state;
-    var onRemove = component.onRemove;
-    var model = state.model;
-
-    if (component.onRemove) component.onRemove(model);
 
     if(component.componentWillUnmount){
         component.componentWillUnmount()
     }
-    vnode = state.vnode;
+    vnode = component.vnode;
   }
 
   if (vnode.children) {

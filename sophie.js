@@ -1910,6 +1910,7 @@
 	exports.MOVE = MOVE;
 	exports.REMOVE = REMOVE;
 
+
 /***/ },
 /* 12 */
 /***/ function(module, exports) {
@@ -3046,6 +3047,7 @@
 	              insertAtIndex(DOMElement, index, (0, _createElement2.default)(vnode, path, dispatch, context));
 	            },
 	            removeChild: function removeChild(index) {
+
 	              DOMElement.removeChild(childNodes[index]);
 	            },
 	            updateChild: function updateChild(index, actions) {

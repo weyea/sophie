@@ -36,8 +36,8 @@ function register(inName, inOptions) {
     var oldRender =  definition.render
     var oldComponentDidMount = definition.componentDidMount
     var oldComponentWillMount = definition.componentWillMount
-    var oldComponentDidInserted = definition.componentDidInserted
-    var oldComponentDidInserted = definition.componentDidInserted
+    var componentDidInsert = definition.componentDidInsert
+    var componentDidInsert = definition.componentDidInsert
 
     createFun.prototype = definition
 
@@ -144,7 +144,7 @@ function register(inName, inOptions) {
         }
       }
       this._update()
-      if(child.componentDidInserted){
+      if(child.componentDidInsert){
         child.componentDidInsert();
       }
     }

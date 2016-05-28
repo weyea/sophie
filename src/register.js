@@ -110,7 +110,7 @@ function register(inName, inOptions) {
           child.compontentContext = this.compontentContext
           children.push(child);
           this._update()
-          if(child.componentDidInserted){
+          if(child.componentDidInsert){
             child.componentDidInsert();
           }
     }

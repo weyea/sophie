@@ -36,6 +36,8 @@ function register(inName, inOptions) {
     var oldRender =  definition.render
     var oldComponentDidMount = definition.componentDidMount
     var oldComponentWillMount = definition.componentWillMount
+    var oldComponentDidInserted = definition.componentDidInserted
+    var oldComponentDidInserted = definition.componentDidInserted
 
     createFun.prototype = definition
 
@@ -49,6 +51,11 @@ function register(inName, inOptions) {
     createFun.prototype.componentDidMount = function(){
      oldComponentDidMount&&oldComponentDidMount.apply(this, arguments)
        EE.trigger("componentDidMount",[this.node])
+    }
+
+    createFun.prototype.componentDidInserted = function(){
+     oldComponentDidInserted&&oldComponentDidInserted.apply(this, arguments)
+       EE.trigger("componentDidInserted",[this.node])
     }
 
     createFun.prototype.componentWillMount = function(){
@@ -103,6 +110,9 @@ function register(inName, inOptions) {
           child.compontentContext = this.compontentContext
           children.push(child);
           this._update()
+          if(child.componentDidInserted){
+            child.componentDidInsert();
+          }
     }
 
     createFun.prototype.remove =function(child){
@@ -117,6 +127,9 @@ function register(inName, inOptions) {
         }
       }
       this._update()
+      if(child.componentDidRemove){
+        child.componentDidRemove();
+      }
     }
 
     createFun.prototype.insertBefore =function(target, before){
@@ -131,6 +144,9 @@ function register(inName, inOptions) {
         }
       }
       this._update()
+      if(child.componentDidInserted){
+        child.componentDidInsert();
+      }
     }
 
     createFun.prototype.insertAfter =function(target, after){
@@ -145,6 +161,9 @@ function register(inName, inOptions) {
         }
       }
       this._update()
+      if(child.componentDidInserted){
+        child.componentDidInsert();
+      }
     }
 
 

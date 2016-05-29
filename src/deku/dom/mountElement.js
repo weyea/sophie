@@ -10,7 +10,7 @@ function mountAfterElement(vnode){
         var output = component.vnode;
 
         if(component.componentAfterMount){
-          component.mountAfterElement();
+          component.componentAfterMount();
 
         }
         output.children.forEach(function (node, index) {
@@ -21,10 +21,7 @@ function mountAfterElement(vnode){
 
         });
 
-        if(component.componentAfterMount){
-          component.componentAfterMount();
 
-        }
 
       }
       else {

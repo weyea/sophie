@@ -2982,7 +2982,7 @@
 	    var output = component.vnode;
 
 	    if (component.componentAfterMount) {
-	      component.mountAfterElement();
+	      component.componentAfterMount();
 	    }
 	    output.children.forEach(function (node, index) {
 	      if (node === null || node === undefined) {
@@ -2990,10 +2990,6 @@
 	      }
 	      var child = mountAfterElement(node);
 	    });
-
-	    if (component.componentAfterMount) {
-	      component.componentAfterMount();
-	    }
 	  } else {
 	    var children = vnode.children;
 	    if (children) {

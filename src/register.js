@@ -144,8 +144,8 @@ function register(inName, inOptions) {
         }
       }
       this._update()
-      if(child.componentDidInsert){
-        child.componentDidInsert();
+      if(target.componentDidInsert){
+        target.componentDidInsert();
       }
     }
 
@@ -161,8 +161,8 @@ function register(inName, inOptions) {
         }
       }
       this._update()
-      if(child.componentDidInserted){
-        child.componentDidInsert();
+      if(target.componentDidInserted){
+        target.componentDidInsert();
       }
     }
 

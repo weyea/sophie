@@ -238,8 +238,8 @@
 	      }
 	    }
 	    this._update();
-	    if (child.componentDidInsert) {
-	      child.componentDidInsert();
+	    if (target.componentDidInsert) {
+	      target.componentDidInsert();
 	    }
 	  };
 
@@ -255,8 +255,8 @@
 	      }
 	    }
 	    this._update();
-	    if (child.componentDidInserted) {
-	      child.componentDidInsert();
+	    if (target.componentDidInserted) {
+	      target.componentDidInsert();
 	    }
 	  };
 

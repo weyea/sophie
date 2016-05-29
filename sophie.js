@@ -2972,7 +2972,41 @@
 	'use strict';
 
 	var _element = __webpack_require__(8);
-	function mountElement(vnode) {
+
+	function mountAfterElement(vnode) {
+
+	  if ((0, _element.isThunk)(vnode)) {
+
+	    var component = vnode.component;
+	    //保留输出，setState，进行对比
+	    var output = component.vnode;
+
+	    if (component.componentAfterMount) {
+	      component.mountAfterElement();
+	    }
+	    output.children.forEach(function (node, index) {
+	      if (node === null || node === undefined) {
+	        return;
+	      }
+	      var child = mountAfterElement(node);
+	    });
+
+	    if (component.componentAfterMount) {
+	      component.componentAfterMount();
+	    }
+	  } else {
+	    var children = vnode.children;
+	    if (children) {
+	      children.forEach(function (node, index) {
+	        if (node === null || node === undefined) {
+	          return;
+	        }
+	        var child = mountAfterElement(node);
+	      });
+	    }
+	  }
+	}
+	function mountBeforeElement(vnode) {
 
 	  if ((0, _element.isThunk)(vnode)) {
 
@@ -2983,7 +3017,7 @@
 	      if (node === null || node === undefined) {
 	        return;
 	      }
-	      var child = mountElement(node);
+	      var child = mountBeforeElement(node);
 	    });
 
 	    if (component.onCreate) component.onCreate();
@@ -2997,10 +3031,15 @@
 	        if (node === null || node === undefined) {
 	          return;
 	        }
-	        var child = mountElement(node);
+	        var child = mountBeforeElement(node);
 	      });
 	    }
 	  }
+	}
+
+	function mountElement(vnode) {
+	  mountBeforeElement(vnode);
+	  mountAfterElement(vnode);
 	}
 
 	module.exports = mountElement;

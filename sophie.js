@@ -183,8 +183,9 @@
 	    var oldVnode = this.vnode;
 	    var newVnode = this.render();
 	    var changes = diff.diffNode(oldVnode, newVnode, vnode.createPath(this.path, oldVnode.key || "0"));
-	    this.node = changes.reduce(dom.patch({}, this.ovnode), this.node);
 	    this.vnode = newVnode;
+	    this.node = changes.reduce(dom.patch({}, this), this.node);
+
 	    return this.node;
 	  };
 

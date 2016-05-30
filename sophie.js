@@ -1515,7 +1515,7 @@
 	 */
 
 	var isSameThunk = exports.isSameThunk = function isSameThunk(left, right) {
-	  return isThunk(left) && isThunk(right) && left.component === right.component;
+	  return isThunk(left) && isThunk(right) && left === right;
 	};
 
 	/**
@@ -2625,23 +2625,21 @@
 	      oldNativeNode = vnode.nativeNode;
 	    }
 
+	    if (oldNativeNode) {
+	      return oldNativeNode;
+	    }
+
 	    var output = component.render();
 	    var _DOMElement;
 	    if (output) {
 
-	      if (oldNativeNode) {
+	      _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, vnode);
 
-	        _DOMElement = oldNativeNode;
-	      } else {
-
-	        _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, vnode);
-
-	        if (vnode.attributes["id"]) {
-	          (0, _setAttribute.setAttribute)(_DOMElement, "id", vnode.attributes["id"]);
-	        }
-	        if (vnode.attributes["key"]) {
-	          (0, _setAttribute.setAttribute)(_DOMElement, "key", vnode.attributes["key"]);
-	        }
+	      if (vnode.attributes["id"]) {
+	        (0, _setAttribute.setAttribute)(_DOMElement, "id", vnode.attributes["id"]);
+	      }
+	      if (vnode.attributes["key"]) {
+	        (0, _setAttribute.setAttribute)(_DOMElement, "key", vnode.attributes["key"]);
 	      }
 	    }
 

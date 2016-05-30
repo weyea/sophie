@@ -185,7 +185,7 @@ var isText = exports.isText = function isText(node) {
  */
 
 var isSameThunk = exports.isSameThunk = function isSameThunk(left, right) {
-  return isThunk(left) && isThunk(right) && left.component === right.component;
+  return isThunk(left) && isThunk(right) && left === right;
 };
 
 /**

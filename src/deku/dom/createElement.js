@@ -57,17 +57,14 @@ function createElement(vnode, path, dispatch, context) {
       oldNativeNode = vnode.nativeNode;
     }
 
-
+    if(oldNativeNode){
+      return  oldNativeNode;
+    }
 
     var output = component.render();
     var _DOMElement ;
     if(output){
 
-      if(oldNativeNode){
-
-          _DOMElement =  oldNativeNode
-      }
-      else {
 
       _DOMElement = createElement(output, (0, _element.createPath)(path, output.key || '0'), dispatch, vnode);
 
@@ -76,9 +73,6 @@ function createElement(vnode, path, dispatch, context) {
       }
       if(vnode.attributes["key"]){
         (0, _setAttribute.setAttribute)(_DOMElement, "key", vnode.attributes["key"]);
-      }
-
-
       }
 
     }

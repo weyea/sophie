@@ -191,7 +191,7 @@
 
 	  createFun.prototype.element = function () {
 	    var vnode = element.apply(null, arguments);
-	    vnode.compontentContext = this.ovnode;
+	    vnode.compontentContext = this;
 
 	    if (vnode.attributes && vnode.attributes["ref"]) {
 	      var refValue = vnode.attributes["ref"];

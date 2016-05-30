@@ -106,17 +106,17 @@ function patch(dispatch, context) {
 function removeThunks(vnode) {
 
   while ((0, _element.isThunk)(vnode)) {
-
+  
     var component = vnode;
 
     if(component.componentWillUnmount){
         component.componentWillUnmount()
     }
-    var output = component.vnode;
+    vnode = component.vnode;
   }
 
-  if (output.children) {
-    for (var i = 0; i < output.children.length; i++) {
+  if (vnode.children) {
+    for (var i = 0; i < vnode.children.length; i++) {
       removeThunks(vnode.children[i]);
     }
   }

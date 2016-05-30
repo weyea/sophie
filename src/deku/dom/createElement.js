@@ -40,26 +40,15 @@ function createElement(vnode, path, dispatch, context) {
     var type = component.type || "div";
 
 
-  //  为了元素增加一个包装原始
-
-    var childrenWrap = _element.create("children",{}, children);
-    component.children = children
-    component.content = childrenWrap
-
-
-
     if(component.componentWillMount){
       component.componentWillMount();
     }
 
-    var oldNativeNode;
-    if(vnode.nativeNode){
-      oldNativeNode = vnode.nativeNode;
+
+    if(component.nativeNode){
+      return  component.nativeNode
     }
 
-    if(oldNativeNode){
-      return  oldNativeNode;
-    }
 
     var output = component.render();
     var _DOMElement ;

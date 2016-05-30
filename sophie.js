@@ -2610,23 +2610,12 @@
 	    var props = component.props;
 	    var type = component.type || "div";
 
-	    //  为了元素增加一个包装原始
-
-	    var childrenWrap = _element.create("children", {}, children);
-	    component.children = children;
-	    component.content = childrenWrap;
-
 	    if (component.componentWillMount) {
 	      component.componentWillMount();
 	    }
 
-	    var oldNativeNode;
-	    if (vnode.nativeNode) {
-	      oldNativeNode = vnode.nativeNode;
-	    }
-
-	    if (oldNativeNode) {
-	      return oldNativeNode;
+	    if (component.nativeNode) {
+	      return component.nativeNode;
 	    }
 
 	    var output = component.render();
@@ -3132,11 +3121,11 @@
 	    if (component.componentWillUnmount) {
 	      component.componentWillUnmount();
 	    }
-	    var output = component.vnode;
+	    vnode = component.vnode;
 	  }
 
-	  if (output.children) {
-	    for (var i = 0; i < output.children.length; i++) {
+	  if (vnode.children) {
+	    for (var i = 0; i < vnode.children.length; i++) {
 	      removeThunks(vnode.children[i]);
 	    }
 	  }

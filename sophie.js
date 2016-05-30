@@ -433,7 +433,7 @@
 
 	  if ((0, dom.element.isThunk)(vnode)) {
 
-	    var component = vnode.component;
+	    var component = vnode;
 
 	    //保留输出，setState，进行对比
 	    var output = component.vnode;
@@ -1473,7 +1473,6 @@
 
 	  component.key = key;
 	  component.type = "#thunk";
-	  component.component = component;
 
 	  for (var i = 0; i < children.length; i++) {
 	    if (!children[i]) continue;
@@ -1491,15 +1490,6 @@
 	  var defaultState = component.getInitialState && component.getInitialState();
 	  var newState = merge.recursive({}, defaultState || {});
 	  component.state = newState;
-
-	  var result = {
-	    type: '#thunk',
-	    children: children,
-	    props: newProps,
-	    attributes: newProps,
-	    component: component,
-	    key: key
-	  };
 
 	  return component;
 	}
@@ -2606,12 +2596,7 @@
 
 	function createElement(vnode, path, dispatch, context) {
 
-	  //设置上下文
 	  vnode.context = context;
-	  //给ref符值
-	  // if(vnode.attributes&&vnode.attributes["ref"]&&vnode.componentContext&&vnode.componentContext.refs){
-	  //         vnode.componentContext.refs[vnode.attributes["ref"]] = vnode.component || vnode
-	  // }
 
 	  if ((0, _element.isText)(vnode)) {
 	    var value = typeof vnode.nodeValue === 'string' || typeof vnode.nodeValue === 'number' ? vnode.nodeValue : '';
@@ -2620,26 +2605,16 @@
 
 	  if ((0, _element.isThunk)(vnode)) {
 
-	    var component = vnode.component;
+	    var component = vnode;
 	    var children = component.children;
 	    var props = component.props;
 	    var type = component.type || "div";
-	    component.ovnode = vnode;
 
 	    //  为了元素增加一个包装原始
 
 	    var childrenWrap = _element.create("children", {}, children);
 	    component.children = children;
 	    component.content = childrenWrap;
-
-	    //生成ref引用
-	    var model = {
-	      children: children,
-	      props: props,
-	      path: path,
-	      dispatch: dispatch,
-	      context: context
-	    };
 
 	    if (component.componentWillMount) {
 	      component.componentWillMount();
@@ -2650,7 +2625,7 @@
 	      oldNativeNode = vnode.nativeNode;
 	    }
 
-	    var output = component.render(model);
+	    var output = component.render();
 	    var _DOMElement;
 	    if (output) {
 
@@ -2685,7 +2660,7 @@
 	    //   component.componentDidMount();
 	    // }
 
-	    _DOMElement.vnode = vnode;
+	    _DOMElement.vnode = component;
 
 	    return _DOMElement;
 	  }
@@ -2978,7 +2953,7 @@
 
 	  if ((0, _element.isThunk)(vnode)) {
 
-	    var component = vnode.component;
+	    var component = vnode;
 	    //保留输出，setState，进行对比
 	    var output = component.vnode;
 
@@ -3007,7 +2982,7 @@
 
 	  if ((0, _element.isThunk)(vnode)) {
 
-	    var component = vnode.component;
+	    var component = vnode;
 	    //保留输出，setState，进行对比
 	    var output = component.vnode;
 	    output.children.forEach(function (node, index) {
@@ -3110,25 +3085,19 @@
 	      },
 	      updateThunk: function updateThunk(prev, next, path) {
 
-	        var component = next.component;
+	        var component = next;
 	        var props = component.props;
 	        var children = component.children;
 
 	        var prevNode = prev.vnode;
-	        var model = {
-	          children: children,
-	          props: props,
-	          path: path,
-	          dispatch: dispatch,
-	          context: context
-	        };
+
 	        if (component.componentWillUpdate) {
 	          component.componentWillUpdate();
 	        }
-	        var nextNode = component.render(model);
+	        var nextNode = component.render();
 	        var changes = (0, _diff.diffNode)(prevNode, nextNode, (0, _element.createPath)(path, '0'));
 	        DOMElement = changes.reduce(patch(dispatch, context), DOMElement);
-	        if (component.onUpdate) component.onUpdate(model);
+	        if (component.onUpdate) component.onUpdate();
 
 	        if (component.componentDidUpdate) {
 	          component.componentDidUpdate();
@@ -3159,17 +3128,17 @@
 	function removeThunks(vnode) {
 
 	  while ((0, _element.isThunk)(vnode)) {
-	    var _vnode = vnode;
-	    var component = _vnode.component;
+
+	    var component = vnode;
 
 	    if (component.componentWillUnmount) {
 	      component.componentWillUnmount();
 	    }
-	    vnode = component.vnode;
+	    var output = component.vnode;
 	  }
 
-	  if (vnode.children) {
-	    for (var i = 0; i < vnode.children.length; i++) {
+	  if (output.children) {
+	    for (var i = 0; i < output.children.length; i++) {
 	      removeThunks(vnode.children[i]);
 	    }
 	  }

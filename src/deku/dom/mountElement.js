@@ -5,7 +5,7 @@ function mountAfterElement(vnode){
 
       if ((0, _element.isThunk)(vnode)) {
 
-        var component = vnode.component;
+        var component = vnode;
         //保留输出，setState，进行对比
         var output = component.vnode;
 
@@ -45,7 +45,7 @@ function mountBeforeElement(vnode){
 
     if ((0, _element.isThunk)(vnode)) {
 
-      var component = vnode.component;
+      var component = vnode;
       //保留输出，setState，进行对比
       var output = component.vnode;
       output.children.forEach(function (node, index) {

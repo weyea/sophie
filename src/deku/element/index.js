@@ -136,7 +136,7 @@ function createThunkElement(component, key, props, children) {
 
     component.key = key
     component.type = "#thunk"
-    component.component= component
+
 
     for(var i = 0;i<children.length;i++){
       if(!children[i])continue;
@@ -158,23 +158,6 @@ function createThunkElement(component, key, props, children) {
   var newState = merge.recursive({},defaultState||{})
     component.state = newState
 
-
-
-
-
-
-
-
-
-
-  var result =  {
-    type: '#thunk',
-    children: children,
-    props: newProps,
-    attributes:newProps,
-    component: component,
-    key: key
-  };
 
 
 

@@ -371,7 +371,7 @@ function readyUpgrage(vnode) {
 
   if ((0, dom.element.isThunk)(vnode)) {
 
-    var component = vnode.component;
+    var component = vnode;
 
 
     //保留输出，setState，进行对比

@@ -61,26 +61,20 @@ function patch(dispatch, context) {
       },
       updateThunk: function updateThunk(prev, next, path) {
 
-        var component = next.component;
+        var component = next;
         var props = component.props;
         var children = component.children;
 
 
         var prevNode = prev.vnode;
-        var model = {
-          children: children,
-          props: props,
-          path: path,
-          dispatch: dispatch,
-          context: context
-        };
+
         if(component.componentWillUpdate){
             component.componentWillUpdate()
         }
-        var nextNode = component.render(model);
+        var nextNode = component.render();
         var changes = (0, _diff.diffNode)(prevNode, nextNode, (0, _element.createPath)(path, '0'));
         DOMElement = changes.reduce(patch(dispatch, context), DOMElement);
-        if (component.onUpdate) component.onUpdate(model);
+        if (component.onUpdate) component.onUpdate();
 
         if(component.componentDidUpdate){
             component.componentDidUpdate()
@@ -112,17 +106,17 @@ function patch(dispatch, context) {
 function removeThunks(vnode) {
 
   while ((0, _element.isThunk)(vnode)) {
-    var _vnode = vnode;
-    var component = _vnode.component;
+
+    var component = vnode;
 
     if(component.componentWillUnmount){
         component.componentWillUnmount()
     }
-    vnode = component.vnode;
+    var output = component.vnode;
   }
 
-  if (vnode.children) {
-    for (var i = 0; i < vnode.children.length; i++) {
+  if (output.children) {
+    for (var i = 0; i < output.children.length; i++) {
       removeThunks(vnode.children[i]);
     }
   }

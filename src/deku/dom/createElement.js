@@ -23,12 +23,8 @@ var cache = {};
 function createElement(vnode, path, dispatch, context) {
 
 
-  //设置上下文
+
   vnode.context = context
-  //给ref符值
-  // if(vnode.attributes&&vnode.attributes["ref"]&&vnode.componentContext&&vnode.componentContext.refs){
-  //         vnode.componentContext.refs[vnode.attributes["ref"]] = vnode.component || vnode
-  // }
 
   if ((0, _element.isText)(vnode)) {
     var value = typeof vnode.nodeValue === 'string' || typeof vnode.nodeValue === 'number' ? vnode.nodeValue : '';
@@ -38,11 +34,11 @@ function createElement(vnode, path, dispatch, context) {
 
   if ((0, _element.isThunk)(vnode)) {
 
-    var component = vnode.component;
+    var component = vnode;
     var children = component.children;
     var props = component.props;
     var type = component.type || "div";
-    component.ovnode = vnode
+
 
   //  为了元素增加一个包装原始
 
@@ -50,14 +46,6 @@ function createElement(vnode, path, dispatch, context) {
     component.children = children
     component.content = childrenWrap
 
-    //生成ref引用
-    var model = {
-      children: children,
-      props: props,
-      path: path,
-      dispatch: dispatch,
-      context: context
-    };
 
 
     if(component.componentWillMount){
@@ -71,7 +59,7 @@ function createElement(vnode, path, dispatch, context) {
 
 
 
-    var output = component.render(model);
+    var output = component.render();
     var _DOMElement ;
     if(output){
 
@@ -97,9 +85,6 @@ function createElement(vnode, path, dispatch, context) {
 
 
 
-
-    
-
     //保留输出，setState，进行对比
     component.vnode= output;
 
@@ -117,7 +102,7 @@ function createElement(vnode, path, dispatch, context) {
     //   component.componentDidMount();
     // }
 
-    _DOMElement.vnode = vnode
+    _DOMElement.vnode = component
 
     return _DOMElement;
   }

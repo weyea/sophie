@@ -47,8 +47,11 @@ function patch(dispatch, context) {
               insertAtIndex(DOMElement, index, (0, _createElement2.default)(vnode, path, dispatch, context));
             },
             removeChild: function removeChild(index) {
+              var childNode = childNodes[index]
+              if(childNode&&childNode.parentNode == DOMElement){
+                    DOMElement.removeChild(childNode);
+              }
 
-              DOMElement.removeChild(childNodes[index]);
             },
             updateChild: function updateChild(index, actions) {
               var update = patch(dispatch, context);
@@ -106,7 +109,7 @@ function patch(dispatch, context) {
 function removeThunks(vnode) {
 
   while ((0, _element.isThunk)(vnode)) {
-  
+
     var component = vnode;
 
     if(component.componentWillUnmount){

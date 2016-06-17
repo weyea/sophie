@@ -3058,8 +3058,10 @@
 	              insertAtIndex(DOMElement, index, (0, _createElement2.default)(vnode, path, dispatch, context));
 	            },
 	            removeChild: function removeChild(index) {
-
-	              DOMElement.removeChild(childNodes[index]);
+	              var childNode = childNodes[index];
+	              if (childNode && childNode.parentNode == DOMElement) {
+	                DOMElement.removeChild(childNode);
+	              }
 	            },
 	            updateChild: function updateChild(index, actions) {
 	              var update = patch(dispatch, context);

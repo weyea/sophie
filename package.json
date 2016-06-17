@@ -1,6 +1,7 @@
+
 {
   "name": "sophie",
-  "version": "0.0.53",
+  "version": "0.0.54",
   "main": "./sophie.js",
   "dependencies": {
     "deku": "2.0.0-rc13",
@@ -12,6 +13,8 @@
     "union-type": "^0.2.0",
     "wolfy87-eventemitter": "^4.3.0"
   },
+
+
   "devDependencies": {
     "babel-core": "^6.4.0",
     "babel-eslint": "~4.0.5",
@@ -33,6 +36,7 @@
     "webpack-load-plugins": "^0.1.2",
     "webpack-merge": "^0.1.1"
   },
+
   "scripts": {
     "dev": "TARGET=dev webpack-dev-server --hot --port 8080 --host 0.0.0.0 --colors",
     "bundle": "TARGET=bundle webpack"

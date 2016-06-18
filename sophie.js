@@ -1389,6 +1389,7 @@
 	 */
 
 	function create(type, attributes) {
+
 	  for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
 	    children[_key - 2] = arguments[_key];
 	  }
@@ -1426,9 +1427,8 @@
 
 	  for (var i = 0; i < children.length; i++) {
 	    if (!children[i]) continue;
-	    if (children[i].parent) {} else {
-	      children[i].parent = result;
-	    }
+
+	    children[i].parent = result;
 	  }
 
 	  return result;
@@ -1476,9 +1476,7 @@
 
 	  for (var i = 0; i < children.length; i++) {
 	    if (!children[i]) continue;
-	    if (children[i].parent) {} else {
-	      children[i].parent = component;
-	    }
+	    children[i].parent = component;
 	  }
 	  component.children = children;
 

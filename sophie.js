@@ -1427,8 +1427,9 @@
 
 	  for (var i = 0; i < children.length; i++) {
 	    if (!children[i]) continue;
-
-	    children[i].parent = result;
+	    if (children[i].parent) {} else {
+	      children[i].parent = result;
+	    }
 	  }
 
 	  return result;
@@ -1476,7 +1477,9 @@
 
 	  for (var i = 0; i < children.length; i++) {
 	    if (!children[i]) continue;
-	    children[i].parent = component;
+	    if (children[i].parent) {} else {
+	      children[i].parent = component;
+	    }
 	  }
 	  component.children = children;
 

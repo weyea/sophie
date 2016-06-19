@@ -47,7 +47,7 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
 function create(type, attributes) {
 
 
-
+  
   for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
     children[_key - 2] = arguments[_key];
   }
@@ -86,9 +86,12 @@ function create(type, attributes) {
 
   for(var i = 0;i<children.length;i++){
     if(!children[i])continue;
+    if(children[i].parent){
 
-    children[i].parent = result;
-
+    }
+    else {
+        children[i].parent = result;
+    }
 
   }
 
@@ -140,8 +143,12 @@ function createThunkElement(component, key, props, children) {
 
     for(var i = 0;i<children.length;i++){
       if(!children[i])continue;
-      children[i].parent = component;
+      if(children[i].parent){
 
+      }
+      else {
+          children[i].parent = component;
+      }
     }
     component.children = children
 

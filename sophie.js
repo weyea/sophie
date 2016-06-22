@@ -54,8 +54,8 @@
 	var dom = _require.dom;
 	var element = _require.element;
 
-	var Import = __webpack_require__(32);
-	var StyleSheet = __webpack_require__(33);
+	var Import = __webpack_require__(39);
+	var StyleSheet = __webpack_require__(32);
 	var Compontent = __webpack_require__(40);
 	var Bootstrap = __webpack_require__(41);
 	var EE = __webpack_require__(3);
@@ -108,6 +108,8 @@
 	var dom = _require.dom;
 	var diff = _require.diff;
 	var vnode = _require.vnode;
+
+	var StyleSheet = __webpack_require__(32);
 
 	var registry = {};
 
@@ -259,6 +261,10 @@
 	    if (target.componentDidInserted) {
 	      target.componentDidInsert();
 	    }
+	  };
+
+	  createFun.prototype.createStyleSheet = function (styles, mediaQuery) {
+	    StyleSheet.create(styles, mediaQuery, this.name);
 	  };
 
 	  if (inName !== "undefined") {
@@ -3149,25 +3155,11 @@
 
 /***/ },
 /* 32 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	module.exports = function (url, complete) {
-	  if (jQuery) {
-	    jQuery.getScript(url, complete);
-	  } else {
-	    console.error("不存在getScript方法");
-	  }
-	};
-
-/***/ },
-/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var CSSPropertyOperations = __webpack_require__(34);
+	var CSSPropertyOperations = __webpack_require__(33);
 
 	var ObjectToCssText = function ObjectToCssText(styles, mediaQuery) {
 	  var cssText = "";
@@ -3184,12 +3176,15 @@
 	var head;
 
 	var StyleSheet = {
-	  create: function create(styles, mediaQuery) {
+	  create: function create(styles, mediaQuery, name) {
 	    if (!head) {
 	      head = document.getElementsByTagName("head")[0];
 	    }
 
 	    var style = document.createElement("style");
+	    if (name) {
+	      style.setAttribute("data-name", name);
+	    }
 	    var cssText = ObjectToCssText(styles, mediaQuery);
 	    style.innerText = cssText;
 	    head.appendChild(style);
@@ -3199,7 +3194,7 @@
 	module.exports = StyleSheet;
 
 /***/ },
-/* 34 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -3216,11 +3211,11 @@
 
 	'use strict';
 
-	var CSSProperty = __webpack_require__(35);
+	var CSSProperty = __webpack_require__(34);
 
-	var camelizeStyleName = __webpack_require__(36);
-	var dangerousStyleValue = __webpack_require__(37);
-	var hyphenateStyleName = __webpack_require__(39);
+	var camelizeStyleName = __webpack_require__(35);
+	var dangerousStyleValue = __webpack_require__(36);
+	var hyphenateStyleName = __webpack_require__(38);
 
 	/**
 	 * Memoizes the return value of a function that accepts one string argument.
@@ -3334,7 +3329,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
 
 /***/ },
-/* 35 */
+/* 34 */
 /***/ function(module, exports) {
 
 	/**
@@ -3479,7 +3474,7 @@
 	module.exports = CSSProperty;
 
 /***/ },
-/* 36 */
+/* 35 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3551,7 +3546,7 @@
 	module.exports = camelizeStyleName;
 
 /***/ },
-/* 37 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3567,8 +3562,8 @@
 
 	'use strict';
 
-	var CSSProperty = __webpack_require__(35);
-	var warning = __webpack_require__(38);
+	var CSSProperty = __webpack_require__(34);
+	var warning = __webpack_require__(37);
 
 	var isUnitlessNumber = CSSProperty.isUnitlessNumber;
 	var styleWarnings = {};
@@ -3633,7 +3628,7 @@
 	module.exports = dangerousStyleValue;
 
 /***/ },
-/* 38 */
+/* 37 */
 /***/ function(module, exports) {
 
 	/**
@@ -3693,7 +3688,7 @@
 	module.exports = warning;
 
 /***/ },
-/* 39 */
+/* 38 */
 /***/ function(module, exports) {
 
 	/**
@@ -3753,6 +3748,20 @@
 	module.exports = hyphenateStyleName;
 
 /***/ },
+/* 39 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	module.exports = function (url, complete) {
+	  if (jQuery) {
+	    jQuery.getScript(url, complete);
+	  } else {
+	    console.error("不存在getScript方法");
+	  }
+	};
+
+/***/ },
 /* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -3780,7 +3789,7 @@
 	var Register = __webpack_require__(1);
 	var Element = __webpack_require__(5);
 	var EE = __webpack_require__(3);
-	var StyleSheet = __webpack_require__(33);
+	var StyleSheet = __webpack_require__(32);
 
 	var renderDocument = function renderDocument() {
 	  Register.upgradeDocument(document);

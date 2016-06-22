@@ -2,7 +2,8 @@
 var utils = require("./utils");
 var EE  = require("./event")
 var element = require("./element");
-var {dom,diff,vnode} = require("./deku")
+var {dom,diff,vnode} = require("./deku");
+var StyleSheet = require("./styleSheet")
 
 var registry = {};
 
@@ -165,6 +166,10 @@ function register(inName, inOptions) {
       if(target.componentDidInserted){
         target.componentDidInsert();
       }
+    }
+
+    createFun.prototype.createStyleSheet = function(styles,mediaQuery){
+      StyleSheet.create(styles,mediaQuery, this.name)
     }
 
 

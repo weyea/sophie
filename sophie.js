@@ -263,8 +263,8 @@
 	    }
 	  };
 
-	  createFun.prototype.createStyleSheet = function (styles, mediaQuery) {
-	    StyleSheet.create(styles, mediaQuery, this.name);
+	  createFun.createStyleSheet = function (styles, mediaQuery) {
+	    StyleSheet.create(styles, mediaQuery, inName);
 	  };
 
 	  if (inName !== "undefined") {

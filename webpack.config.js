@@ -14,8 +14,8 @@ var SRC_DIR = 'src';
 var config = {
   paths: {
     src: path.join(ROOT_PATH, SRC_DIR),
-    out:path.join(ROOT_PATH),
-    main: path.join(ROOT_PATH, SRC_DIR, 'sophie.js'),
+    out:path.join(ROOT_PATH,"build"),
+    sophie: path.join(ROOT_PATH, SRC_DIR, 'sophie.js'),
     test:path.join(ROOT_PATH, SRC_DIR, "test.js"),
 
   },
@@ -24,7 +24,7 @@ var config = {
 
 module.exports = {
     entry: {
-      sophie:config.paths.main,
+      sophie:config.paths.sophie,
       test:config.paths.test
     },
     output: {

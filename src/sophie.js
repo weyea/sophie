@@ -2,7 +2,8 @@
 
 var Register = require("./register")
 var Element = require("./element")
-var {dom, element} = require("./deku")
+import {dom,diff,element,vnode} from "deku";
+
 var Import = require("./import")
 var StyleSheet = require("./styleSheet")
 var Compontent = require("./compontent.js");
@@ -40,6 +41,8 @@ var Sophie = {
   }
 
 }
+
+module.exports = Sophie;
 
 
 window.Sophie = Sophie;

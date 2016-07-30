@@ -1,6 +1,3 @@
-//
-//
-//
 
   Sophie.createStyleSheet({
     "my-button":{
@@ -130,7 +127,7 @@ var MyHTMLDiv = Sophie.createClass("my-div",{
 
     })
 
-
+alert(123);
 
 	// console.log(Sophie.renderElement(MyJSDiv))
 

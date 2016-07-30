@@ -1,6 +1,7 @@
 //bootstrap
 
-  var {dom} = require("./deku")
+  import {createElement} from "./create";
+  import {dom,diff,element,vnode,createApp} from "deku";
   var utils = require("./utils")
   var Register = require("./register")
   var Element = require("./element");
@@ -8,9 +9,6 @@
   var StyleSheet = require("./styleSheet")
 
 
-  var renderDocument = function () {
-          Register.upgradeDocument(document);
-  }
 
   var head = document.getElementsByTagName("head")[0];
   var style = document.createElement("style");
@@ -39,10 +37,10 @@
     runApp: function(compontent, container,fire){
       // utils.ready(function () {
           var  container = container?container:document.body
-          let render = dom.createRenderer(document.body)
+          let render = createApp(container)
           var vnode = Element(compontent,{},null);
           Sophie.firstVnode = vnode
-          render(vnode, container)
+          render(vnode);
           isReady = true;
           if(fire !== false)  {
             EE.trigger("ready",[vnode])

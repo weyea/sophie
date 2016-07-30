@@ -55,8 +55,9 @@ function register(inName, inOptions) {
 
     SohpieConstructor.prototype.render = function(){
        currentOwner.target = this;
-       oldRender.apply(this, arguments);
+      var result =  oldRender.apply(this, arguments);
        currentOwner.target = undefined;
+       return result;
     }
 
     // if(Sophie&&Sophie.renderRootElement){

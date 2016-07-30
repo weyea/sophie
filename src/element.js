@@ -12,20 +12,23 @@ module.exports =  function(type, attributes, ...children) {
     key = attributes.key = attributes.id;
   }
 
-  var args = [];
-  for(var i=0;i<arguments.length;i++){
-  args.push(arguments[i]);
-  }
+
+
   //class
   if(typeof type === 'function'){
     type = new type();
     if(type.render){
       var oldRender = type.render;
       type.render = function(){
-        oldRender.apply(type,[])
+       return  oldRender.apply(type,[])
       }
     }
-    args[0] = type;
+
+  }
+
+  var args = [type,attributes];
+  if(children&&children.length&&children[0]){
+    args.push(children);
   }
 
   let result = element.apply(null,args);

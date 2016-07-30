@@ -1,7 +1,7 @@
 var {dom,diff,element,vnode} = require("deku");
 
 var  createElement = function(vnode, path, dispatch, context){
-
+    console.log("create;")
   switch (vnode.type) {
     case 'text':
       return dom.createElement(vnode, path, dispatch, context)
@@ -35,5 +35,6 @@ function createThunk (vnode, path, dispatch, context) {
     DOMElement.vnode = vnode.options;
   }
 }
+
 
 dom.createElement = createElement;

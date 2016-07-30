@@ -1,8 +1,10 @@
 
-
+var createElement = require("./create");
 var Register = require("./register")
 var Element = require("./element")
 import {dom,diff,element,vnode} from "deku";
+
+
 
 var Import = require("./import")
 var StyleSheet = require("./styleSheet")

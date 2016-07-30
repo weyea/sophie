@@ -68,7 +68,6 @@ var MyHTMLDiv = Sophie.createClass("my-div",{
 
   render: function  () {
 
-
     return (
        this.children
     )
@@ -81,12 +80,10 @@ var MyHTMLDiv = Sophie.createClass("my-div",{
   var BaseDiv = Sophie.createClass("base-div",{
 
 
-    render: function  ({ props, children, context, path }) {
-
-
+    render: function() {
       return (
         <div class="baseDiv" data-name={this.name}>
-            {children}
+            {this.props.children}
         </div>
       )
     }
@@ -127,7 +124,7 @@ var MyHTMLDiv = Sophie.createClass("my-div",{
 
     })
 
-alert(123);
+
 
 	// console.log(Sophie.renderElement(MyJSDiv))
 

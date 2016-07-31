@@ -39,7 +39,7 @@ module.exports =  function(type, attributes, ...children) {
 
   let result = element.apply(null,args);
 
-
+  result.attributes =  result.props;
   if(result.type=="thunk"&&result.options){
     result.options.compontentContext = result.options._owner = currentOwner.target;
     result.options.children = result.children;
@@ -56,8 +56,8 @@ module.exports =  function(type, attributes, ...children) {
   }
 
   if(attributes&&attributes["ref"]){
-    var refValue =  vnode.attributes["ref"];
-    if(currentOwner.target)currentOwner.target.refs[refValue] = vnode.options||vnode;
+    var refValue =  result.attributes["ref"];
+    if(currentOwner.target)currentOwner.target.refs[refValue] = result.options||result;
   }
 
 

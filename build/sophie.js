@@ -563,11 +563,13 @@
 /* 4 */
 /***/ function(module, exports) {
 
+	'use strict';
+
 	/**
 	 * Expose isUndefined
 	 */
 
-	module.exports = isUndefined['default'] = isUndefined
+	module.exports = isUndefined['default'] = isUndefined;
 
 	/**
 	 * Check if undefined.
@@ -575,14 +577,15 @@
 	 * @return {Boolean}
 	 */
 
-	function isUndefined (value) {
-	  return typeof value === 'undefined'
+	function isUndefined(value) {
+	  return typeof value === 'undefined';
 	}
-
 
 /***/ },
 /* 5 */
 /***/ function(module, exports) {
+
+	'use strict';
 
 	/**
 	 * Modules
@@ -592,48 +595,50 @@
 	 * Expose reduceArray
 	 */
 
-	module.exports = reduceArray['default'] = reduceArray
+	module.exports = reduceArray['default'] = reduceArray;
 
 	/**
 	 * reduceArray
 	 */
 
-	function reduceArray (cb, init, arr) {
-	  var len = arr.length
-	  var acc = init
-	  if (!arr.length) return init
+	function reduceArray(cb, init, arr) {
+	  var len = arr.length;
+	  var acc = init;
+	  if (!arr.length) return init;
 
 	  for (var i = 0; i < len; i++) {
-	    acc = cb(acc, arr[i], i, arr)
+	    acc = cb(acc, arr[i], i, arr);
 	  }
 
-	  return acc
+	  return acc;
 	}
-
 
 /***/ },
 /* 6 */
 /***/ function(module, exports) {
 
+	'use strict';
+
 	/**
 	 * Expose isString
 	 */
 
-	module.exports = isString['default'] = isString
+	module.exports = isString['default'] = isString;
 
 	/**
 	 * Check if string
 	 * @param  {Mixed}  value
 	 * @return {Boolean}
 	 */
-	function isString (value) {
-	  return typeof value === 'string'
+	function isString(value) {
+	  return typeof value === 'string';
 	}
-
 
 /***/ },
 /* 7 */
 /***/ function(module, exports) {
+
+	'use strict';
 
 	/**
 	 * Modules
@@ -643,35 +648,35 @@
 	 * Expose isNumber
 	 */
 
-	module.exports = isNumber['default'] = isNumber
+	module.exports = isNumber['default'] = isNumber;
 
 	/**
 	 * isNumber
 	 */
 
-	function isNumber (value) {
-	  return typeof value === 'number'
+	function isNumber(value) {
+	  return typeof value === 'number';
 	}
-
 
 /***/ },
 /* 8 */
 /***/ function(module, exports) {
 
+	'use strict';
+
 	/**
 	 * Expose isNull
 	 */
 
-	module.exports = isNull['default'] = isNull
+	module.exports = isNull['default'] = isNull;
 
 	/**
 	 * isNull
 	 */
 
-	function isNull (val) {
-	  return val === null
+	function isNull(val) {
+	  return val === null;
 	}
-
 
 /***/ },
 /* 9 */
@@ -836,7 +841,6 @@
 	exports.MOVE = MOVE;
 	exports.REMOVE = REMOVE;
 
-
 /***/ },
 /* 10 */
 /***/ function(module, exports) {
@@ -894,36 +898,43 @@
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 	var curryN = __webpack_require__(12);
 
-	function isString(s) { return typeof s === 'string'; }
-	function isNumber(n) { return typeof n === 'number'; }
+	function isString(s) {
+	  return typeof s === 'string';
+	}
+	function isNumber(n) {
+	  return typeof n === 'number';
+	}
 	function isObject(value) {
-	  var type = typeof value;
+	  var type = typeof value === 'undefined' ? 'undefined' : _typeof(value);
 	  return !!value && (type == 'object' || type == 'function');
 	}
-	function isFunction(f) { return typeof f === 'function'; }
-	var isArray = Array.isArray || function(a) { return 'length' in a; };
+	function isFunction(f) {
+	  return typeof f === 'function';
+	}
+	var isArray = Array.isArray || function (a) {
+	  return 'length' in a;
+	};
 
-	var mapConstrToFn = curryN(2, function(group, constr) {
-	  return constr === String    ? isString
-	       : constr === Number    ? isNumber
-	       : constr === Object    ? isObject
-	       : constr === Array     ? isArray
-	       : constr === Function  ? isFunction
-	       : constr === undefined ? group
-	                              : constr;
+	var mapConstrToFn = curryN(2, function (group, constr) {
+	  return constr === String ? isString : constr === Number ? isNumber : constr === Object ? isObject : constr === Array ? isArray : constr === Function ? isFunction : constr === undefined ? group : constr;
 	});
 
 	function Constructor(group, name, validators) {
 	  validators = validators.map(mapConstrToFn(group));
-	  var constructor = curryN(validators.length, function() {
-	    var val = [], v, validator;
+	  var constructor = curryN(validators.length, function () {
+	    var val = [],
+	        v,
+	        validator;
 	    for (var i = 0; i < arguments.length; ++i) {
 	      v = arguments[i];
 	      validator = validators[i];
-	      if ((typeof validator === 'function' && validator(v)) ||
-	          (v !== undefined && v !== null && v.of === validator)) {
+	      if (typeof validator === 'function' && validator(v) || v !== undefined && v !== null && v.of === validator) {
 	        val[i] = arguments[i];
 	      } else {
 	        throw new TypeError('wrong value ' + v + ' passed to location ' + i + ' in ' + name);
@@ -938,9 +949,7 @@
 
 	function rawCase(type, cases, action, arg) {
 	  if (type !== action.of) throw new TypeError('wrong type passed to case');
-	  var name = action.name in cases ? action.name
-	           : '_' in cases         ? '_'
-	                                  : undefined;
+	  var name = action.name in cases ? action.name : '_' in cases ? '_' : undefined;
 	  if (name === undefined) {
 	    throw new Error('unhandled value passed to case');
 	  } else {
@@ -963,15 +972,15 @@
 
 	module.exports = Type;
 
-
 /***/ },
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var _curry2 = __webpack_require__(13);
 	var _curryN = __webpack_require__(15);
 	var arity = __webpack_require__(16);
-
 
 	/**
 	 * Returns a curried equivalent of the provided function, with the
@@ -1020,13 +1029,13 @@
 	  return arity(length, _curryN(length, [], fn));
 	});
 
-
 /***/ },
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _curry1 = __webpack_require__(14);
+	'use strict';
 
+	var _curry1 = __webpack_require__(14);
 
 	/**
 	 * Optimized internal two-arity curry function.
@@ -1044,24 +1053,30 @@
 	    } else if (n === 1 && a != null && a['@@functional/placeholder'] === true) {
 	      return f2;
 	    } else if (n === 1) {
-	      return _curry1(function(b) { return fn(a, b); });
-	    } else if (n === 2 && a != null && a['@@functional/placeholder'] === true &&
-	                          b != null && b['@@functional/placeholder'] === true) {
+	      return _curry1(function (b) {
+	        return fn(a, b);
+	      });
+	    } else if (n === 2 && a != null && a['@@functional/placeholder'] === true && b != null && b['@@functional/placeholder'] === true) {
 	      return f2;
 	    } else if (n === 2 && a != null && a['@@functional/placeholder'] === true) {
-	      return _curry1(function(a) { return fn(a, b); });
+	      return _curry1(function (a) {
+	        return fn(a, b);
+	      });
 	    } else if (n === 2 && b != null && b['@@functional/placeholder'] === true) {
-	      return _curry1(function(b) { return fn(a, b); });
+	      return _curry1(function (b) {
+	        return fn(a, b);
+	      });
 	    } else {
 	      return fn(a, b);
 	    }
 	  };
 	};
 
-
 /***/ },
 /* 14 */
 /***/ function(module, exports) {
+
+	'use strict';
 
 	/**
 	 * Optimized internal two-arity curry function.
@@ -1083,13 +1098,13 @@
 	  };
 	};
 
-
 /***/ },
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arity = __webpack_require__(16);
+	'use strict';
 
+	var arity = __webpack_require__(16);
 
 	/**
 	 * Internal curryN function.
@@ -1101,17 +1116,14 @@
 	 * @param {Function} fn The function to curry.
 	 */
 	module.exports = function _curryN(length, received, fn) {
-	  return function() {
+	  return function () {
 	    var combined = [];
 	    var argsIdx = 0;
 	    var left = length;
 	    var combinedIdx = 0;
 	    while (combinedIdx < received.length || argsIdx < arguments.length) {
 	      var result;
-	      if (combinedIdx < received.length &&
-	          (received[combinedIdx] == null ||
-	           received[combinedIdx]['@@functional/placeholder'] !== true ||
-	           argsIdx >= arguments.length)) {
+	      if (combinedIdx < received.length && (received[combinedIdx] == null || received[combinedIdx]['@@functional/placeholder'] !== true || argsIdx >= arguments.length)) {
 	        result = received[combinedIdx];
 	      } else {
 	        result = arguments[argsIdx];
@@ -1127,13 +1139,13 @@
 	  };
 	};
 
-
 /***/ },
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _curry2 = __webpack_require__(13);
+	'use strict';
 
+	var _curry2 = __webpack_require__(13);
 
 	/**
 	 * Wraps a function of any arity (including nullary) in a function that accepts exactly `n`
@@ -1162,24 +1174,57 @@
 	 *      // All arguments are passed through to the wrapped function
 	 *      takesOneArg(1, 2); //=> [1, 2]
 	 */
-	module.exports = _curry2(function(n, fn) {
+	module.exports = _curry2(function (n, fn) {
 	  // jshint unused:vars
 	  switch (n) {
-	    case 0: return function() {return fn.apply(this, arguments);};
-	    case 1: return function(a0) {return fn.apply(this, arguments);};
-	    case 2: return function(a0, a1) {return fn.apply(this, arguments);};
-	    case 3: return function(a0, a1, a2) {return fn.apply(this, arguments);};
-	    case 4: return function(a0, a1, a2, a3) {return fn.apply(this, arguments);};
-	    case 5: return function(a0, a1, a2, a3, a4) {return fn.apply(this, arguments);};
-	    case 6: return function(a0, a1, a2, a3, a4, a5) {return fn.apply(this, arguments);};
-	    case 7: return function(a0, a1, a2, a3, a4, a5, a6) {return fn.apply(this, arguments);};
-	    case 8: return function(a0, a1, a2, a3, a4, a5, a6, a7) {return fn.apply(this, arguments);};
-	    case 9: return function(a0, a1, a2, a3, a4, a5, a6, a7, a8) {return fn.apply(this, arguments);};
-	    case 10: return function(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9) {return fn.apply(this, arguments);};
-	    default: throw new Error('First argument to arity must be a non-negative integer no greater than ten');
+	    case 0:
+	      return function () {
+	        return fn.apply(this, arguments);
+	      };
+	    case 1:
+	      return function (a0) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 2:
+	      return function (a0, a1) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 3:
+	      return function (a0, a1, a2) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 4:
+	      return function (a0, a1, a2, a3) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 5:
+	      return function (a0, a1, a2, a3, a4) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 6:
+	      return function (a0, a1, a2, a3, a4, a5) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 7:
+	      return function (a0, a1, a2, a3, a4, a5, a6) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 8:
+	      return function (a0, a1, a2, a3, a4, a5, a6, a7) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 9:
+	      return function (a0, a1, a2, a3, a4, a5, a6, a7, a8) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 10:
+	      return function (a0, a1, a2, a3, a4, a5, a6, a7, a8, a9) {
+	        return fn.apply(this, arguments);
+	      };
+	    default:
+	      throw new Error('First argument to arity must be a non-negative integer no greater than ten');
 	  }
 	});
-
 
 /***/ },
 /* 17 */
@@ -1295,28 +1340,31 @@
 /* 19 */
 /***/ function(module, exports) {
 
+	'use strict';
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 	/**
 	 * Expose isValidAttr
 	 */
 
-	module.exports = isValidAttr
+	module.exports = isValidAttr;
 
 	/**
 	 * isValidAttr
 	 */
 
-	function isValidAttr (val) {
-	  switch (typeof val) {
+	function isValidAttr(val) {
+	  switch (typeof val === 'undefined' ? 'undefined' : _typeof(val)) {
 	    case 'string':
 	    case 'number':
-	      return true
+	      return true;
 	    case 'boolean':
-	      return val
+	      return val;
 	    default:
-	      return false
+	      return false;
 	  }
 	}
-
 
 /***/ },
 /* 20 */
@@ -1645,45 +1693,46 @@
 /* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	/**
 	 * Modules
 	 */
 
-	var svgAttributeNamespace = __webpack_require__(26)
+	var svgAttributeNamespace = __webpack_require__(26);
 
 	/**
 	 * Expose setAttribute
 	 */
 
-	module.exports = setAttribute['default'] = setAttribute
+	module.exports = setAttribute['default'] = setAttribute;
 
 	/**
 	 * setAttribute
 	 */
 
-	function setAttribute (node, name, value) {
-	  var ns = svgAttributeNamespace(name)
-	  return ns
-	    ? node.setAttributeNS(ns, name, value)
-	    : node.setAttribute(name, value)
+	function setAttribute(node, name, value) {
+	  var ns = svgAttributeNamespace(name);
+	  return ns ? node.setAttributeNS(ns, name, value) : node.setAttribute(name, value);
 	}
-
 
 /***/ },
 /* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	/**
 	 * Modules
 	 */
 
-	var namespaces = __webpack_require__(27)
+	var namespaces = __webpack_require__(27);
 
 	/**
 	 * Exports
 	 */
 
-	module.exports = svgAttributeNamespace['default'] = svgAttributeNamespace
+	module.exports = svgAttributeNamespace['default'] = svgAttributeNamespace;
 
 	/**
 	 * Get namespace of svg attribute
@@ -1692,27 +1741,28 @@
 	 * @return {String} namespace
 	 */
 
-	function svgAttributeNamespace (attributeName) {
+	function svgAttributeNamespace(attributeName) {
 	  // if no prefix separator in attributeName, then no namespace
-	  if (attributeName.indexOf(':') === -1) return null
+	  if (attributeName.indexOf(':') === -1) return null;
 
 	  // get prefix from attributeName
-	  var prefix = attributeName.split(':', 1)[0]
+	  var prefix = attributeName.split(':', 1)[0];
 
 	  // if prefix in supported prefixes
 	  if (namespaces.hasOwnProperty(prefix)) {
 	    // then namespace of prefix
-	    return namespaces[prefix]
+	    return namespaces[prefix];
 	  } else {
 	    // else unsupported prefix
-	    throw new Error('svg-attribute-namespace: prefix "' + prefix + '" is not supported by SVG.')
+	    throw new Error('svg-attribute-namespace: prefix "' + prefix + '" is not supported by SVG.');
 	  }
 	}
-
 
 /***/ },
 /* 27 */
 /***/ function(module, exports) {
+
+	'use strict';
 
 	/*
 	 * Supported SVG attribute namespaces by prefix.
@@ -1728,18 +1778,19 @@
 	  xlink: 'http://www.w3.org/1999/xlink',
 	  xml: 'http://www.w3.org/XML/1998/namespace',
 	  xmlns: 'http://www.w3.org/2000/xmlns/'
-	}
+	};
 
 	/**
 	 * Expose svgAttributeNamespaces
 	 */
 
-	module.exports = svgAttributeNamespaces
-
+	module.exports = svgAttributeNamespaces;
 
 /***/ },
 /* 28 */
 /***/ function(module, exports) {
+
+	'use strict';
 
 	/**
 	 * Modules
@@ -1749,16 +1800,15 @@
 	 * Expose isFunction
 	 */
 
-	module.exports = isFunction['default'] = isFunction
+	module.exports = isFunction['default'] = isFunction;
 
 	/**
 	 * isFunction
 	 */
 
-	function isFunction (value) {
-	  return typeof value === 'function'
+	function isFunction(value) {
+	  return typeof value === 'function';
 	}
-
 
 /***/ },
 /* 29 */
@@ -1779,9 +1829,7 @@
 
 	  if (arr == null) return idx;
 	  var len = arr.length;
-	  var i = start < 0
-	    ? (len + start)
-	    : start;
+	  var i = start < 0 ? len + start : start;
 
 	  if (i >= arr.length) {
 	    return -1;
@@ -1797,14 +1845,15 @@
 	  return -1;
 	};
 
-
 /***/ },
 /* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var naturalSelection = __webpack_require__(31);
 
-	module.exports = function(element, value){
+	module.exports = function (element, value) {
 	    var canSet = naturalSelection(element) && element === document.activeElement;
 
 	    if (canSet) {
@@ -1818,17 +1867,17 @@
 	    }
 	};
 
-
 /***/ },
 /* 31 */
 /***/ function(module, exports) {
 
+	'use strict';
+
 	var supportedTypes = ['text', 'search', 'tel', 'url', 'password'];
 
-	module.exports = function(element){
+	module.exports = function (element) {
 	    return !!(element.setSelectionRange && ~supportedTypes.indexOf(element.type));
 	};
-
 
 /***/ },
 /* 32 */
@@ -2080,11 +2129,13 @@
 /* 34 */
 /***/ function(module, exports) {
 
+	'use strict';
+
 	/**
 	 * Expose toArray
 	 */
 
-	module.exports = toArray['default'] = toArray
+	module.exports = toArray['default'] = toArray;
 
 	/**
 	 * Convert to an array from array like
@@ -2092,36 +2143,37 @@
 	 * @return {Array}
 	 */
 
-	function toArray (arr) {
-	  var len = arr.length
-	  var idx = -1
+	function toArray(arr) {
+	  var len = arr.length;
+	  var idx = -1;
 
-	  var array = new Array(len)
+	  var array = new Array(len);
 	  while (++idx < len) {
-	    array[idx] = arr[idx]
+	    array[idx] = arr[idx];
 	  }
-	  return array
+	  return array;
 	}
-
 
 /***/ },
 /* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	/**
 	 * Modules
 	 */
 
-	var isObject = __webpack_require__(36)
-	var isArray = __webpack_require__(37)
-	var forEachObj = __webpack_require__(38)
-	var forEachArr = __webpack_require__(39)
+	var isObject = __webpack_require__(36);
+	var isArray = __webpack_require__(37);
+	var forEachObj = __webpack_require__(38);
+	var forEachArr = __webpack_require__(39);
 
 	/**
 	 * Expose foreach
 	 */
 
-	module.exports = forEach['default'] = forEach
+	module.exports = forEach['default'] = forEach;
 
 	/**
 	 * For each
@@ -2129,33 +2181,34 @@
 	 * @param  {Object}   obj object to iterate over
 	 */
 
-	function forEach (fn, a) {
-	  if (isArray(a)) return forEachArr.call(this, fn, a)
-	  if (isObject(a)) return forEachObj.call(this, fn, a)
+	function forEach(fn, a) {
+	  if (isArray(a)) return forEachArr.call(this, fn, a);
+	  if (isObject(a)) return forEachObj.call(this, fn, a);
 	}
-
 
 /***/ },
 /* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	/**
 	 * Modules
 	 */
 
-	var isFunction = __webpack_require__(28)
+	var isFunction = __webpack_require__(28);
 
 	/**
 	 * Expose isObject
 	 */
 
-	module.exports = isObject
+	module.exports = isObject;
 
 	/**
 	 * Constants
 	 */
 
-	var objString = toString(Object)
+	var objString = toString(Object);
 
 	/**
 	 * Check for plain object.
@@ -2165,103 +2218,106 @@
 	 * @api private
 	 */
 
-	function isObject (val) {
-	  return !!val && (val.constructor === Object || isObjectString(val.constructor))
+	function isObject(val) {
+	  return !!val && (val.constructor === Object || isObjectString(val.constructor));
 	}
 
-	function isObjectString (val) {
-	  return !!val && isFunction(val) && toString(val) === objString
+	function isObjectString(val) {
+	  return !!val && isFunction(val) && toString(val) === objString;
 	}
 
-	function toString (val) {
-	  return Function.prototype.toString.call(val)
+	function toString(val) {
+	  return Function.prototype.toString.call(val);
 	}
-
 
 /***/ },
 /* 37 */
 /***/ function(module, exports) {
 
+	'use strict';
+
 	/**
 	 * Expose isArray
 	 */
 
-	module.exports = isArray['default'] = isArray
+	module.exports = isArray['default'] = isArray;
 
 	/**
 	 * isArray
 	 */
 
-	function isArray (val) {
-	  return Array.isArray(val)
+	function isArray(val) {
+	  return Array.isArray(val);
 	}
-
 
 /***/ },
 /* 38 */
 /***/ function(module, exports) {
 
+	"use strict";
+
 	/**
 	 * Expose forEach
 	 */
 
-	module.exports = forEach
+	module.exports = forEach;
 
 	/**
 	 * forEach
 	 */
 
-	function forEach (fn, obj) {
-	  if (!obj) return
+	function forEach(fn, obj) {
+	  if (!obj) return;
 
-	  var keys = Object.keys(obj)
+	  var keys = Object.keys(obj);
 
 	  for (var i = 0, len = keys.length; i < len; ++i) {
-	    var key = keys[i]
-	    fn.call(this, obj[key], key, i)
+	    var key = keys[i];
+	    fn.call(this, obj[key], key, i);
 	  }
 	}
-
 
 /***/ },
 /* 39 */
 /***/ function(module, exports) {
 
+	'use strict';
+
 	/**
 	 * Expose forEach
 	 */
 
-	module.exports = forEach['default'] = forEach
+	module.exports = forEach['default'] = forEach;
 
 	/**
 	 * forEach
 	 */
 
-	function forEach (fn, arr) {
-	  if (!arr) return
+	function forEach(fn, arr) {
+	  if (!arr) return;
 
 	  for (var i = 0, len = arr.length; i < len; ++i) {
-	    fn.call(this, arr[i], i)
+	    fn.call(this, arr[i], i);
 	  }
 	}
-
 
 /***/ },
 /* 40 */
 /***/ function(module, exports) {
 
+	'use strict';
+
 	/**
 	 * Exports
 	 */
 
-	module.exports = noop['default'] = noop
+	module.exports = noop['default'] = noop;
 
 	/**
 	 * Noop
 	 */
 
-	function noop () {}
-
+	function noop() {}
 
 /***/ },
 /* 41 */
@@ -2338,26 +2394,27 @@
 /* 42 */
 /***/ function(module, exports) {
 
+	"use strict";
+
 	/**
 	 * Expose emptyElement
 	 */
 
-	module.exports = emptyElement
+	module.exports = emptyElement;
 
 	/**
 	 * emptyElement
 	 */
 
-	function emptyElement (el) {
-	  var node
+	function emptyElement(el) {
+	  var node;
 
 	  while (node = el.firstChild) {
-	    el.removeChild(node)
+	    el.removeChild(node);
 	  }
 
-	  return el
+	  return el;
 	}
-
 
 /***/ },
 /* 43 */
@@ -2626,14 +2683,18 @@
 /* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
-	 * EventEmitter v4.2.11 - git.io/ee
+	var __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	/*!
+	 * EventEmitter v5.1.0 - git.io/ee
 	 * Unlicense - http://unlicense.org/
 	 * Oliver Caldwell - http://oli.me.uk/
 	 * @preserve
 	 */
 
-	;(function () {
+	;(function (exports) {
 	    'use strict';
 
 	    /**
@@ -2642,11 +2703,11 @@
 	     *
 	     * @class EventEmitter Manages event registering and emitting.
 	     */
+
 	    function EventEmitter() {}
 
 	    // Shortcuts to improve speed and size
 	    var proto = EventEmitter.prototype;
-	    var exports = this;
 	    var originalGlobalValue = exports.EventEmitter;
 
 	    /**
@@ -2704,8 +2765,7 @@
 	                    response[key] = events[key];
 	                }
 	            }
-	        }
-	        else {
+	        } else {
 	            response = events[evt] || (events[evt] = []);
 	        }
 
@@ -2747,6 +2807,16 @@
 	        return response || listeners;
 	    };
 
+	    function isValidListener(listener) {
+	        if (typeof listener === 'function' || listener instanceof RegExp) {
+	            return true;
+	        } else if (listener && (typeof listener === 'undefined' ? 'undefined' : _typeof(listener)) === 'object') {
+	            return isValidListener(listener.listener);
+	        } else {
+	            return false;
+	        }
+	    }
+
 	    /**
 	     * Adds a listener function to the specified event.
 	     * The listener will not be added if it is a duplicate.
@@ -2758,8 +2828,12 @@
 	     * @return {Object} Current instance of EventEmitter for chaining.
 	     */
 	    proto.addListener = function addListener(evt, listener) {
+	        if (!isValidListener(listener)) {
+	            throw new TypeError('listener must be a function');
+	        }
+
 	        var listeners = this.getListenersAsObject(evt);
-	        var listenerIsWrapped = typeof listener === 'object';
+	        var listenerIsWrapped = (typeof listener === 'undefined' ? 'undefined' : _typeof(listener)) === 'object';
 	        var key;
 
 	        for (key in listeners) {
@@ -2904,21 +2978,19 @@
 	        var multiple = remove ? this.removeListeners : this.addListeners;
 
 	        // If evt is an object then pass each of its properties to this method
-	        if (typeof evt === 'object' && !(evt instanceof RegExp)) {
+	        if ((typeof evt === 'undefined' ? 'undefined' : _typeof(evt)) === 'object' && !(evt instanceof RegExp)) {
 	            for (i in evt) {
 	                if (evt.hasOwnProperty(i) && (value = evt[i])) {
 	                    // Pass the single listener straight through to the singular method
 	                    if (typeof value === 'function') {
 	                        single.call(this, i, value);
-	                    }
-	                    else {
+	                    } else {
 	                        // Otherwise pass back to the multiple function
 	                        multiple.call(this, i, value);
 	                    }
 	                }
 	            }
-	        }
-	        else {
+	        } else {
 	            // So evt must be a string
 	            // And listeners must be an array of listeners
 	            // Loop over it and pass each one to the multiple method
@@ -2941,7 +3013,7 @@
 	     * @return {Object} Current instance of EventEmitter for chaining.
 	     */
 	    proto.removeEvent = function removeEvent(evt) {
-	        var type = typeof evt;
+	        var type = typeof evt === 'undefined' ? 'undefined' : _typeof(evt);
 	        var events = this._getEvents();
 	        var key;
 
@@ -2949,16 +3021,14 @@
 	        if (type === 'string') {
 	            // Remove all listeners for the specified event
 	            delete events[evt];
-	        }
-	        else if (evt instanceof RegExp) {
+	        } else if (evt instanceof RegExp) {
 	            // Remove all events matching the regex.
 	            for (key in events) {
 	                if (events.hasOwnProperty(key) && evt.test(key)) {
 	                    delete events[key];
 	                }
 	            }
-	        }
-	        else {
+	        } else {
 	            // Remove all listeners in all events
 	            delete this._events;
 	        }
@@ -2996,9 +3066,8 @@
 	        for (key in listenersMap) {
 	            if (listenersMap.hasOwnProperty(key)) {
 	                listeners = listenersMap[key].slice(0);
-	                i = listeners.length;
 
-	                while (i--) {
+	                for (i = 0; i < listeners.length; i++) {
 	                    // If the listener returns true then it shall be removed from the event
 	                    // The function is executed either with a basic call or an apply if there is an args array
 	                    listener = listeners[i];
@@ -3061,8 +3130,7 @@
 	    proto._getOnceReturnValue = function _getOnceReturnValue() {
 	        if (this.hasOwnProperty('_onceReturnValue')) {
 	            return this._onceReturnValue;
-	        }
-	        else {
+	        } else {
 	            return true;
 	        }
 	    };
@@ -3092,15 +3160,12 @@
 	        !(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
 	            return EventEmitter;
 	        }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	    }
-	    else if (typeof module === 'object' && module.exports){
+	    } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
 	        module.exports = EventEmitter;
-	    }
-	    else {
+	    } else {
 	        exports.EventEmitter = EventEmitter;
 	    }
-	}.call(this));
-
+	})(undefined || {});
 
 /***/ },
 /* 47 */
@@ -3185,7 +3250,11 @@
 /* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {/*!
+	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	/*!
 	 * @name JavaScript/NodeJS Merge v1.2.0
 	 * @author yeikos
 	 * @repository https://github.com/yeikos/js.merge
@@ -3194,122 +3263,112 @@
 	 * https://raw.github.com/yeikos/js.merge/master/LICENSE
 	 */
 
-	;(function(isNode) {
+	;(function (isNode) {
 
 		/**
-		 * Merge one or more objects 
-		 * @param bool? clone
-		 * @param mixed,... arguments
-		 * @return object
-		 */
+	  * Merge one or more objects 
+	  * @param bool? clone
+	  * @param mixed,... arguments
+	  * @return object
+	  */
 
-		var Public = function(clone) {
+		var Public = function Public(clone) {
 
 			return merge(clone === true, false, arguments);
-
-		}, publicName = 'merge';
+		},
+		    publicName = 'merge';
 
 		/**
-		 * Merge two or more objects recursively 
-		 * @param bool? clone
-		 * @param mixed,... arguments
-		 * @return object
-		 */
+	  * Merge two or more objects recursively 
+	  * @param bool? clone
+	  * @param mixed,... arguments
+	  * @return object
+	  */
 
-		Public.recursive = function(clone) {
+		Public.recursive = function (clone) {
 
 			return merge(clone === true, true, arguments);
-
 		};
 
 		/**
-		 * Clone the input removing any reference
-		 * @param mixed input
-		 * @return mixed
-		 */
+	  * Clone the input removing any reference
+	  * @param mixed input
+	  * @return mixed
+	  */
 
-		Public.clone = function(input) {
+		Public.clone = function (input) {
 
 			var output = input,
-				type = typeOf(input),
-				index, size;
+			    type = typeOf(input),
+			    index,
+			    size;
 
 			if (type === 'array') {
 
 				output = [];
 				size = input.length;
 
-				for (index=0;index<size;++index)
+				for (index = 0; index < size; ++index) {
 
 					output[index] = Public.clone(input[index]);
-
+				}
 			} else if (type === 'object') {
 
 				output = {};
 
-				for (index in input)
+				for (index in input) {
 
 					output[index] = Public.clone(input[index]);
-
+				}
 			}
 
 			return output;
-
 		};
 
 		/**
-		 * Merge two objects recursively
-		 * @param mixed input
-		 * @param mixed extend
-		 * @return mixed
-		 */
+	  * Merge two objects recursively
+	  * @param mixed input
+	  * @param mixed extend
+	  * @return mixed
+	  */
 
 		function merge_recursive(base, extend) {
 
-			if (typeOf(base) !== 'object')
-
-				return extend;
+			if (typeOf(base) !== 'object') return extend;
 
 			for (var key in extend) {
 
 				if (typeOf(base[key]) === 'object' && typeOf(extend[key]) === 'object') {
 
 					base[key] = merge_recursive(base[key], extend[key]);
-
 				} else {
 
 					base[key] = extend[key];
-
 				}
-
 			}
 
 			return base;
-
 		}
 
 		/**
-		 * Merge two or more objects
-		 * @param bool clone
-		 * @param bool recursive
-		 * @param array argv
-		 * @return object
-		 */
+	  * Merge two or more objects
+	  * @param bool clone
+	  * @param bool recursive
+	  * @param array argv
+	  * @return object
+	  */
 
 		function merge(clone, recursive, argv) {
 
 			var result = argv[0],
-				size = argv.length;
+			    size = argv.length;
 
-			if (clone || typeOf(result) !== 'object')
+			if (clone || typeOf(result) !== 'object') result = {};
 
-				result = {};
-
-			for (var index=0;index<size;++index) {
+			for (var index = 0; index < size; ++index) {
 
 				var item = argv[index],
-
-					type = typeOf(item);
+				    type = typeOf(item);
 
 				if (type !== 'object') continue;
 
@@ -3320,63 +3379,55 @@
 					if (recursive) {
 
 						result[key] = merge_recursive(result[key], sitem);
-
 					} else {
 
 						result[key] = sitem;
-
 					}
-
 				}
-
 			}
 
 			return result;
-
 		}
 
 		/**
-		 * Get type of variable
-		 * @param mixed input
-		 * @return string
-		 *
-		 * @see http://jsperf.com/typeofvar
-		 */
+	  * Get type of variable
+	  * @param mixed input
+	  * @return string
+	  *
+	  * @see http://jsperf.com/typeofvar
+	  */
 
 		function typeOf(input) {
 
-			return ({}).toString.call(input).slice(8, -1).toLowerCase();
-
+			return {}.toString.call(input).slice(8, -1).toLowerCase();
 		}
 
 		if (isNode) {
 
 			module.exports = Public;
-
 		} else {
 
 			window[publicName] = Public;
-
 		}
-
-	})(typeof module === 'object' && module && typeof module.exports === 'object' && module.exports);
+	})(( false ? 'undefined' : _typeof(module)) === 'object' && module && _typeof(module.exports) === 'object' && module.exports);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(50)(module)))
 
 /***/ },
 /* 50 */
 /***/ function(module, exports) {
 
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
+	"use strict";
+
+	module.exports = function (module) {
+		if (!module.webpackPolyfill) {
+			module.deprecate = function () {};
 			module.paths = [];
 			// module.parent = undefined by default
 			module.children = [];
 			module.webpackPolyfill = 1;
 		}
 		return module;
-	}
-
+	};
 
 /***/ },
 /* 51 */
@@ -3557,6 +3608,8 @@
 /* 53 */
 /***/ function(module, exports) {
 
+	'use strict';
+
 	// shim for using process in browser
 
 	var process = module.exports = {};
@@ -3585,7 +3638,7 @@
 	    draining = true;
 
 	    var len = queue.length;
-	    while(len) {
+	    while (len) {
 	        currentQueue = queue;
 	        queue = [];
 	        while (++queueIndex < len) {
@@ -3643,12 +3696,15 @@
 	    throw new Error('process.binding is not supported');
 	};
 
-	process.cwd = function () { return '/' };
+	process.cwd = function () {
+	    return '/';
+	};
 	process.chdir = function (dir) {
 	    throw new Error('process.chdir is not supported');
 	};
-	process.umask = function() { return 0; };
-
+	process.umask = function () {
+	    return 0;
+	};
 
 /***/ },
 /* 54 */

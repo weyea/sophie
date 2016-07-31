@@ -128,5 +128,8 @@ var MyHTMLDiv = Sophie.createClass("my-div",{
 
 
 	// console.log(Sophie.renderElement(MyJSDiv))
+Sophie.on("ready", function(){
+  console.log("ready");
+})
 
  Sophie.runApp(MyJSDiv)

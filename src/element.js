@@ -46,6 +46,7 @@ module.exports =  function(type, attributes, ...children) {
     result.options.children = result.children;
     result.options.attributes=result.options.props = merge(result.options.props, result.props);
     result.options.props.children = result.children;
+    result.options.type = result.type;
   }
 
   var children = result.children;

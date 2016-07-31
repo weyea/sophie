@@ -2,7 +2,7 @@
   "name": "sophie",
 
   "version": "0.1.1",
-  "main": "./build/sophie.js",
+  "main": "./src/sophie.js",
   "dependencies": {
     "deku": "^2.0.0-rc16",
     "@f/create-element": "1.0.0",

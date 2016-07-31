@@ -81,6 +81,7 @@ var MyHTMLDiv = Sophie.createClass("my-div",{
 
 
     render: function() {
+      
       return (
         <div class="baseDiv" data-name={this.name}>
             {this.props.children}
@@ -113,8 +114,8 @@ var MyHTMLDiv = Sophie.createClass("my-div",{
       render: function  () {
         return (
           <div class="container">
-              <div>
-                basediv{this.state.name}
+              <div class="123">
+                <BaseDiv>basediv{this.state.name}</BaseDiv>
               </div>
 
           </div>

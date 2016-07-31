@@ -41,9 +41,11 @@ module.exports =  function(type, attributes, ...children) {
 
 
   if(result.type=="thunk"&&result.options){
+
     result.options.compontentContext = result.options._owner = currentOwner.target;
     result.options.children = result.children;
     result.options.attributes=result.options.props = merge(result.options.props, result.props);
+    result.options.props.children = result.children;
   }
 
   var children = result.children;

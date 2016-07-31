@@ -57,7 +57,7 @@ module.exports =  function(type, attributes, ...children) {
   }
 
   if(attributes&&attributes["ref"]){
-    var refValue =  result.attributes["ref"];
+    var refValue = attributes["ref"];
     if(currentOwner.target)currentOwner.target.refs[refValue] = result.options||result;
   }
 

@@ -81,7 +81,7 @@ var MyHTMLDiv = Sophie.createClass("my-div",{
 
 
     render: function() {
-      
+
       return (
         <div class="baseDiv" data-name={this.name}>
             {this.props.children}
@@ -102,7 +102,7 @@ var MyHTMLDiv = Sophie.createClass("my-div",{
       },
       componentDidMount:function(){
 
-
+          console.log(this.refs["baseDiv"])
 
         setInterval(()=>{
           this.num++;
@@ -115,7 +115,7 @@ var MyHTMLDiv = Sophie.createClass("my-div",{
         return (
           <div class="container">
               <div class="123">
-                <BaseDiv>basediv{this.state.name}</BaseDiv>
+                <BaseDiv ref="baseDiv">basediv{this.state.name}</BaseDiv>
               </div>
 
           </div>

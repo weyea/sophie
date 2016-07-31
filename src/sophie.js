@@ -45,7 +45,5 @@ var Sophie = {
 
 }
 
-module.exports = Sophie;
-
-
 window.Sophie = Sophie;
+module.exports = Sophie;

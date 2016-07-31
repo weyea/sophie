@@ -1,0 +1,7 @@
+node_modules
+.DS_Store
+_book
+dist
+lib
+es
+npm-debug.log

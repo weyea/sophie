@@ -2,7 +2,11 @@
 
 var Register = require("./register")
 var Element = require("./element")
-var {dom, element} = require("./deku")
+var mount = require("./mount");
+import {dom,diff,element,vnode}  from "../lib/deku/src/index";
+
+
+
 var Import = require("./import")
 var StyleSheet = require("./styleSheet")
 var Compontent = require("./compontent.js");
@@ -13,7 +17,7 @@ var Sophie = {
   runApp:Bootstrap.runApp,
   ready:Bootstrap.ready,
   renderElement:Bootstrap.renderElement,
-  mountElement:dom.mountElement,
+  mountElement:mount,
   createVnodeByTagName:Bootstrap.createVnodeByTagName,
 
   createElementByVnode:Bootstrap.createElementByVnode,
@@ -40,6 +44,8 @@ var Sophie = {
   }
 
 }
+
+module.exports = Sophie;
 
 
 window.Sophie = Sophie;

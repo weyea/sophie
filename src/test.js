@@ -1,6 +1,3 @@
-//
-//
-//
 
   Sophie.createStyleSheet({
     "my-button":{
@@ -71,7 +68,6 @@ var MyHTMLDiv = Sophie.createClass("my-div",{
 
   render: function  () {
 
-
     return (
        this.children
     )
@@ -84,12 +80,10 @@ var MyHTMLDiv = Sophie.createClass("my-div",{
   var BaseDiv = Sophie.createClass("base-div",{
 
 
-    render: function  ({ props, children, context, path }) {
-
-
+    render: function() {
       return (
         <div class="baseDiv" data-name={this.name}>
-            {children}
+            {this.props.children}
         </div>
       )
     }
@@ -102,16 +96,16 @@ var MyHTMLDiv = Sophie.createClass("my-div",{
 
 
       componentWillMount:function(){
-        this.state.name=123
+
+        this.num = 0;
       },
       componentDidMount:function(){
 
-        this.setState({name:123})
-        console.log("gogog")
+
 
         setInterval(()=>{
           this.num++;
-        this.setState({name:[this.num,123]})
+          this.setState({name:this.num})
 
         },1000)
       },
@@ -120,7 +114,7 @@ var MyHTMLDiv = Sophie.createClass("my-div",{
         return (
           <div class="container">
               <div>
-                <BaseDiv class="my-button">basediv</BaseDiv>
+                basediv{this.state.name}
               </div>
 
           </div>

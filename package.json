@@ -1,20 +1,33 @@
-
 {
   "name": "sophie",
-  "version": "0.1.0",
-  "main": "./sophie.js",
+
+  "version": "0.1.1",
+  "main": "./build/sophie.js",
   "dependencies": {
-    "deku": "2.0.0-rc16",
-    "dift": "^0.1.12",
-    "index-of": "^0.2.0",
+    "deku": "^2.0.0-rc16",
+    "@f/create-element": "1.0.0",
+    "@f/empty-element": "^1.0.0",
+    "@f/foreach": "1.2.2",
+    "@f/is-function": "1.1.1",
+    "@f/is-null": "1.0.0",
+    "@f/is-number": "1.1.1",
+    "@f/is-string": "1.1.1",
+    "@f/is-undefined": "1.1.1",
+    "@f/is-valid-attr": "1.0.0",
+    "@f/noop": "1.2.0",
+    "@f/reduce-array": "^0.2.1",
+    "@f/set-attribute": "1.0.1",
+    "@f/to-array": "1.1.1",
+    "dift": "0.1.12",
+    "index-of": "0.2.0",
+    "setify": "1.0.3",
+    "union-type": "0.1.6",
+
     "merge": "^1.2.0",
     "redux": "^3.0.5",
-    "setify": "^1.0.3",
-    "union-type": "^0.2.0",
+
     "wolfy87-eventemitter": "^4.3.0"
   },
-
-
   "devDependencies": {
     "babel-core": "^6.4.0",
     "babel-eslint": "~4.0.5",
@@ -36,7 +49,6 @@
     "webpack-load-plugins": "^0.1.2",
     "webpack-merge": "^0.1.1"
   },
-
   "scripts": {
     "dev": "TARGET=dev webpack-dev-server --hot --port 8080 --host 0.0.0.0 --colors",
     "bundle": "TARGET=bundle webpack"

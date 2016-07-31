@@ -1,16 +1,15 @@
 //bootstrap
 
-  var {dom} = require("./deku")
+
+  import {dom,diff,element,vnode,createApp}  from "../lib/deku/src/index";
   var utils = require("./utils")
   var Register = require("./register")
   var Element = require("./element");
   var EE  = require("./event")
-  var StyleSheet = require("./styleSheet")
+  var StyleSheet = require("./styleSheet");
+  var mount = require("./mount");
 
 
-  var renderDocument = function () {
-          Register.upgradeDocument(document);
-  }
 
   var head = document.getElementsByTagName("head")[0];
   var style = document.createElement("style");
@@ -38,11 +37,13 @@
   module.exports = {
     runApp: function(compontent, container,fire){
       // utils.ready(function () {
+
           var  container = container?container:document.body
-          let render = dom.createRenderer(document.body)
+          let render = createApp(container)
           var vnode = Element(compontent,{},null);
           Sophie.firstVnode = vnode
-          render(vnode, container)
+          render(vnode);
+          mount(vnode);
           isReady = true;
           if(fire !== false)  {
             EE.trigger("ready",[vnode])

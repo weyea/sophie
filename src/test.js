@@ -96,16 +96,16 @@ var MyHTMLDiv = Sophie.createClass("my-div",{
 
 
       componentWillMount:function(){
-        this.state.name=123
+
+        this.num = 0;
       },
       componentDidMount:function(){
 
-        this.setState({name:123})
-        console.log("gogog")
+
 
         setInterval(()=>{
           this.num++;
-        this.setState({name:[this.num,123]})
+          this.setState({name:this.num})
 
         },1000)
       },
@@ -114,7 +114,7 @@ var MyHTMLDiv = Sophie.createClass("my-div",{
         return (
           <div class="container">
               <div>
-                <BaseDiv class="my-button">basediv</BaseDiv>
+                basediv{this.state.name}
               </div>
 
           </div>

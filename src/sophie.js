@@ -1,8 +1,9 @@
 
-var createElement = require("./create");
+
 var Register = require("./register")
 var Element = require("./element")
-import {dom,diff,element,vnode} from "deku";
+var mount = require("./mount");
+import {dom,diff,element,vnode}  from "../lib/deku/src/index";
 
 
 
@@ -16,7 +17,7 @@ var Sophie = {
   runApp:Bootstrap.runApp,
   ready:Bootstrap.ready,
   renderElement:Bootstrap.renderElement,
-  mountElement:dom.mountElement,
+  mountElement:mount,
   createVnodeByTagName:Bootstrap.createVnodeByTagName,
 
   createElementByVnode:Bootstrap.createElementByVnode,

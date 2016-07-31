@@ -1,5 +1,5 @@
 
-import {dom,diff,element,vnode} from "deku";
+import {dom,diff,element,vnode} from "../lib/deku/src/index";
 var currentOwner = require("./currentOwner");
 var merge = require("merge");
 
@@ -11,7 +11,6 @@ module.exports =  function(type, attributes, ...children) {
   if(!key){
     key = attributes.key = attributes.id;
   }
-
 
 
   //class
@@ -27,8 +26,15 @@ module.exports =  function(type, attributes, ...children) {
   }
 
   var args = [type,attributes];
-  if(children&&children.length&&children[0]){
-    args.push(children);
+  if(children&&children.length){
+    var newChildren = [];
+    for(var i=0;i<children.length;i++){
+      if(children[i]){
+          newChildren.push(children[i]);
+      }
+    }
+    args.push(newChildren)
+
   }
 
   let result = element.apply(null,args);

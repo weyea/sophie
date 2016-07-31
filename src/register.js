@@ -2,11 +2,10 @@
 var utils = require("./utils");
 var EE  = require("./event")
 var element = require("./element");
-import {dom,diff,vnode}  from "deku";
+import {dom,diff,vnode}   from "../lib/deku/src/index";
 var StyleSheet = require("./styleSheet");
 var merge = require("merge");
 var currentOwner = require("./currentOwner");
-
 var registry = {};
 
 function register(inName, inOptions) {
@@ -101,14 +100,19 @@ function register(inName, inOptions) {
 
 
     SohpieConstructor.prototype.forceUpdate=SohpieConstructor.prototype._update = function(){
-
+        // debugger
         var oldVnode = this.rootVnode;
         var newVnode = this.render();
-        var changes = diff.diffNode(oldVnode, newVnode, this.id || '0');
-        this.rootVnode = newVnode;
-        this.rootNode = changes.reduce(dom.patch({}, this), this.rootVnode);
 
-        this.node = this.rootNode;
+
+        let changes = diff.diffNode(oldVnode, newVnode, this.id || '0')
+        var node = changes.reduce(dom.updateElement(function(){}, this), this.nativeNode)
+
+        this.rootVnode = newVnode;
+        this.nativeNode = node;
+        return node
+
+      
     }
 
 

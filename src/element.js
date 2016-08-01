@@ -56,11 +56,13 @@ module.exports =  function(type, attributes, ...children) {
     options.attributes=options.props = merge(options.props, result.props);
 
     options.props.children = result.children;
-    options.compontentContext = options._owner = currentOwner.target;
+
     //保持deku的结构
     options.options = options;
     result = options;
   }
+
+
 
   var children = result.children;
   for(var i = 0;i<children.length;i++){
@@ -69,6 +71,8 @@ module.exports =  function(type, attributes, ...children) {
         children[i].parent = result;
     }
   }
+
+    result.compontentContext = result._owner = currentOwner.target;
 
   if(attributes&&attributes["ref"]){
     var refValue = attributes["ref"];

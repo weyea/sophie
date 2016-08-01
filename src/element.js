@@ -12,7 +12,6 @@ module.exports =  function(type, attributes, ...children) {
     key = attributes.key = attributes.id;
   }
 
-
   //class
   if(typeof type === 'function'){
     type = new type();
@@ -41,12 +40,24 @@ module.exports =  function(type, attributes, ...children) {
 
 
   if(result.type=="thunk"&&result.options){
-    result.attributes = result.options.props;
-    result.options.compontentContext = result.options._owner = currentOwner.target;
-    result.options.children = result.children;
-    result.options.attributes=result.options.props = merge(result.options.props, result.props);
-    result.options.props.children = result.children;
-    result.options.type = result.type;
+
+
+    // type: 'thunk',
+    // fn,
+    // children,
+    // props,
+    // options,
+    // key
+    var options = result.options;
+    options.type = result.type;
+    options.children = result.children;
+    options.attributes=options.props = merge(options.props, result.props);
+
+    options.props.children = result.children;
+    options.compontentContext = options._owner = currentOwner.target;
+    //保持deku的结构
+    options.options = options;
+    result = options;
   }
 
   var children = result.children;
@@ -54,16 +65,13 @@ module.exports =  function(type, attributes, ...children) {
     if(!children[i])continue;
     if(!children[i].parent){
         children[i].parent = result;
-        if(children[i].options)children[i].options.parent = result
     }
   }
 
   if(attributes&&attributes["ref"]){
     var refValue = attributes["ref"];
-    if(currentOwner.target)currentOwner.target.refs[refValue] = result.options||result;
+    if(currentOwner.target)currentOwner.target.refs[refValue] = result;
   }
-
-
 
   return result;
 }

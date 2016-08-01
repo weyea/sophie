@@ -17,14 +17,21 @@ var Sophie = {
   runApp:Bootstrap.runApp,
   ready:Bootstrap.ready,
   renderElement:Bootstrap.renderElement,
-  mountElement:mount,
+  renderToJSON:Bootstrap.renderToJSON,
+  renderFromJSON:Bootstrap.renderFromJSON,
+  isBaseVnode:Bootstrap.isBaseVnode,
+  getOwner:Bootstrap.getOwner,
+  getParent:Bootstrap.getParent,
+  closestBaseParent:Bootstrap.closestBaseParent,
+  getBaseParent:Bootstrap.getBaseParent,
+
   createVnodeByTagName:Bootstrap.createVnodeByTagName,
 
   createElementByVnode:Bootstrap.createElementByVnode,
 
   createElementByTagName:Bootstrap.createElementByTagName,
 
-
+  mountElement:mount,
   element : Element,
   register:Register.register,
   createClass:Compontent,

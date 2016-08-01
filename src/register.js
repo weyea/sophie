@@ -112,7 +112,7 @@ function register(inName, inOptions) {
         this.nativeNode = node;
         return node
 
-      
+
     }
 
 
@@ -125,7 +125,6 @@ function register(inName, inOptions) {
     SohpieConstructor.prototype.append =function(child){
           var children = this.children;
           child.parent = this
-          child.compontentContext = this.compontentContext
           children.push(child);
           this._update()
           if(child.componentDidInsert){
@@ -156,7 +155,7 @@ function register(inName, inOptions) {
       for(var i=0; i<children.length;i++){
         if(children[i] == before){
           children.splice(i,0, target)
-            target.compontentContext = this.compontentContext
+
           target.parent = parent
           break;
         }
@@ -174,7 +173,7 @@ function register(inName, inOptions) {
         if(children[i] == after){
           children.splice(i+1,0, target)
             target.parent = parent
-              target.compontentContext = this.compontentContext
+
             break;
         }
       }

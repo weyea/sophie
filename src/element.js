@@ -50,6 +50,8 @@ module.exports =  function(type, attributes, ...children) {
     // key
     var options = result.options;
     options.type = result.type;
+    options.fn = result.fn;
+    options.key = result.key;
     options.children = result.children;
     options.attributes=options.props = merge(options.props, result.props);
 

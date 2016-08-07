@@ -47,7 +47,7 @@ var Sophie = {
   registry:Register.registry,
   upgradeDocument:Register.upgradeDocument,
   isThunk:function (node) {
-    return node.type === '#thunk';
+    return node.type === 'thunk';
   }
 
 }

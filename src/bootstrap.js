@@ -71,7 +71,7 @@
           var component = vnode
           children = vnode.children
 
-          currentData.type="#thunk"
+          currentData.type="thunk"
           // currentData.state = component.state
           var attributes = {};
           for(var p in component.attributes){
@@ -81,13 +81,13 @@
           currentData.attributes = attributes
           currentData.name = component.name
         }
-        else if(vnode.type=="#text"){
+        else if(vnode.type=="text"){
           currentData.type =  vnode.type
           currentData.nodeValue = vnode.nodeValue
 
         }
-        else {
-          currentData.type =  vnode.type;
+        else if(vnode.type =="native"){
+          currentData.tagName =  vnode.tagName;
           var attributes = {};
           for(var p in vnode.attributes){
             if(p == "children")continue;
@@ -120,18 +120,18 @@
               var result = []
               for(var i=0;i<children.length;i++){
                  var c = children[i];
-                 if(c.type=="#thunk"){
+                 if(c.type=="thunk"){
                    result.push(self.element(Sophie.registry[c.name],c.attributes,func(c.children)))
                  }
-                 else if(c.type=="#text"){
+                 else if(c.type=="text"){
 
                   result.push({
-                      type: '#text',
+                      type: 'text',
                       nodeValue: c.nodeValue
                     })
                  }
                  else {
-                   result.push(self.element(c.type,c.attributes,func(c.children)))
+                   result.push(self.element(c.tagName,c.attributes,func(c.children)))
                  }
               }
 

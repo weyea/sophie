@@ -29,12 +29,7 @@
      }
   }
 
- var fireReady = function(){
-   if(!isReady) return;
-   for(var i=0;i<callbacks.length;i++){
-     callbacks[i]&&callbacks[i]();
-   }
- }
+
 
   module.exports = {
     runApp: function(compontent, container,fire){
@@ -46,11 +41,14 @@
           Sophie.firstVnode = vnode
           render(vnode);
           mount(vnode);
-          isReady = true;
-          if(fire !== false)  {
-            EE.trigger("ready",[vnode])
-            fireReady();
+          if(!isReady){
+            isReady = true;
+            if(fire !== false)  {
+              EE.trigger("ready",[vnode])
+              fireReady();
+            }
           }
+
       // })
 
     },

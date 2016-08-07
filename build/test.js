@@ -121,6 +121,7 @@
 	var BaseDiv = Sophie.createClass("base-div", {
 
 	  render: function render() {
+
 	    return this.element(
 	      "div",
 	      { "class": "baseDiv", "data-name": this.name },
@@ -138,6 +139,8 @@
 	  componentDidMount: function componentDidMount() {
 	    var _this2 = this;
 
+	    console.log(this.refs["baseDiv"]);
+
 	    setInterval(function () {
 	      _this2.num++;
 	      _this2.setState({ name: _this2.num });
@@ -150,9 +153,13 @@
 	      { "class": "container" },
 	      this.element(
 	        "div",
-	        null,
-	        "basediv",
-	        this.state.name
+	        { "class": "123" },
+	        this.element(
+	          BaseDiv,
+	          { ref: "baseDiv" },
+	          "basediv",
+	          this.state.name
+	        )
 	      )
 	    );
 	  }
@@ -160,6 +167,9 @@
 	});
 
 	// console.log(Sophie.renderElement(MyJSDiv))
+	Sophie.on("ready", function () {
+	  console.log("ready");
+	});
 
 	Sophie.runApp(MyJSDiv);
 

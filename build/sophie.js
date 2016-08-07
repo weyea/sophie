@@ -62,13 +62,21 @@
 	  runApp: Bootstrap.runApp,
 	  ready: Bootstrap.ready,
 	  renderElement: Bootstrap.renderElement,
-	  mountElement: mount,
+	  renderToJSON: Bootstrap.renderToJSON,
+	  renderFromJSON: Bootstrap.renderFromJSON,
+	  isBaseVnode: Bootstrap.isBaseVnode,
+	  getOwner: Bootstrap.getOwner,
+	  getParent: Bootstrap.getParent,
+	  closestBaseParent: Bootstrap.closestBaseParent,
+	  getBaseParent: Bootstrap.getBaseParent,
+
 	  createVnodeByTagName: Bootstrap.createVnodeByTagName,
 
 	  createElementByVnode: Bootstrap.createElementByVnode,
 
 	  createElementByTagName: Bootstrap.createElementByTagName,
 
+	  mountElement: mount,
 	  element: Element,
 	  register: Register.register,
 	  createClass: Compontent,
@@ -89,9 +97,8 @@
 
 	};
 
-	module.exports = Sophie;
-
 	window.Sophie = Sophie;
+	module.exports = Sophie;
 
 /***/ },
 /* 1 */
@@ -1395,14 +1402,39 @@
 	});
 	exports.createElement = createElement;
 
+	var _createElement = __webpack_require__(22);
+
+	var _createElement2 = _interopRequireDefault(_createElement);
+
 	var _element = __webpack_require__(3);
 
-	var _create = __webpack_require__(22);
+	var _setAttribute = __webpack_require__(23);
+
+	var _isUndefined = __webpack_require__(4);
+
+	var _isUndefined2 = _interopRequireDefault(_isUndefined);
+
+	var _isString = __webpack_require__(6);
+
+	var _isString2 = _interopRequireDefault(_isString);
+
+	var _isNumber = __webpack_require__(7);
+
+	var _isNumber2 = _interopRequireDefault(_isNumber);
+
+	var _isNull = __webpack_require__(8);
+
+	var _isNull2 = _interopRequireDefault(_isNull);
+
+	var _create = __webpack_require__(32);
 
 	var create = _interopRequireWildcard(_create);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var cache = {};
 	function createElement(vnode, path, dispatch, context) {
 
 	  switch (vnode.type) {
@@ -1413,8 +1445,16 @@
 	    case 'thunk':
 	      return createThunk(vnode, path, dispatch, context);
 	    case 'native':
-	      return create.createElement(vnode, path, dispatch, context);
+	      return createHTMLElement(vnode, path, dispatch, context);
 	  }
+	}
+
+	function getCachedElement(type) {
+	  var cached = cache[type];
+	  if ((0, _isUndefined2.default)(cached)) {
+	    cached = cache[type] = (0, _createElement2.default)(type);
+	  }
+	  return cached.cloneNode(false);
 	}
 
 	function createThunk(vnode, path, dispatch, context) {
@@ -1437,34 +1477,435 @@
 	  };
 	  var output = vnode.fn(model);
 	  var childPath = (0, _element.createPath)(path, output.key || '0');
-	  var DOMElement = create.createElement(output, childPath, dispatch, context);
+	  var DOMElement = createElement(output, childPath, dispatch, context);
 	  if (onCreate) dispatch(onCreate(model));
-	  vnode.state = {
-	    vnode: output,
-	    model: model
-	  };
+
+	  //++
+	  if (output.type == "thunk") {
+	    throw new Error("组件的跟元素必须是DOM元素");
+	  }
+	  //保留输出，setState，进行对比
+	  vnode.options.vnode = vnode.options.rootVnode = output;
+	  vnode.options.node = vnode.options.nativeNode = vnode.options.rootNode = DOMElement;
+	  vnode.options.output = output;
+	  vnode.nativeNode = DOMElement;
+	  DOMElement.vnode = vnode.options;
+	  DOMElement.vnodeInstance = vnode;
 
 	  if (vnode.options.componentWillMount) {
 	    vnode.options.componentWillMount();
 	  }
 
-	  //++
+	  return DOMElement;
+	}
 
-	  if (vnode.state.vnode.type == "thunk") {
-	    throw new Error("组件的跟元素必须是DOM元素");
+	function createHTMLElement(vnode, path, dispatch, context) {
+	  var tagName = vnode.tagName;
+	  var attributes = vnode.attributes;
+	  var children = vnode.children;
+
+	  var DOMElement = getCachedElement(tagName);
+
+	  for (var name in attributes) {
+	    (0, _setAttribute.setAttribute)(DOMElement, name, attributes[name]);
 	  }
-	  //保留输出，setState，进行对比
-	  vnode.options.vnode = vnode.options.rootVnode = vnode.state.vnode;
-	  vnode.options.node = vnode.options.nativeNode = vnode.options.rootNode = DOMElement;
-	  vnode.options.output = vnode.state.vnode;
-	  vnode.nativeNode = DOMElement;
-	  DOMElement.vnode = vnode.options;
+
+	  children.forEach(function (node, index) {
+	    if ((0, _isNull2.default)(node) || (0, _isUndefined2.default)(node)) return;
+	    var childPath = (0, _element.createPath)(path, node.key || index);
+	    var child = createElement(node, childPath, dispatch, context);
+	    DOMElement.appendChild(child);
+	  });
+
+	  DOMElement.vnode = vnode;
 
 	  return DOMElement;
 	}
 
 /***/ },
 /* 22 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	module.exports = function (type) {
+	  return document.createElement(type);
+	};
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.removeAttribute = removeAttribute;
+	exports.setAttribute = setAttribute;
+
+	var _setAttribute = __webpack_require__(24);
+
+	var _setAttribute2 = _interopRequireDefault(_setAttribute);
+
+	var _isValidAttr = __webpack_require__(19);
+
+	var _isValidAttr2 = _interopRequireDefault(_isValidAttr);
+
+	var _isFunction = __webpack_require__(27);
+
+	var _isFunction2 = _interopRequireDefault(_isFunction);
+
+	var _indexOf = __webpack_require__(28);
+
+	var _indexOf2 = _interopRequireDefault(_indexOf);
+
+	var _setify = __webpack_require__(29);
+
+	var _setify2 = _interopRequireDefault(_setify);
+
+	var _events = __webpack_require__(31);
+
+	var _events2 = _interopRequireDefault(_events);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function removeAttribute(DOMElement, name, previousValue) {
+	  var eventType = _events2.default[name];
+	  if (eventType && (0, _isFunction2.default)(previousValue)) {
+	    DOMElement.removeEventListener(eventType, previousValue);
+	    return;
+	  }
+	  switch (name) {
+	    case 'checked':
+	    case 'disabled':
+	    case 'selected':
+	      DOMElement[name] = false;
+	      break;
+	    case 'innerHTML':
+	    case 'nodeValue':
+	    case 'value':
+	      DOMElement[name] = '';
+	      break;
+	    default:
+	      DOMElement.removeAttribute(name);
+	      break;
+	  }
+	}
+
+	function setAttribute(DOMElement, name, value, previousValue) {
+	  var eventType = _events2.default[name];
+	  if (value === previousValue) {
+	    return;
+	  }
+	  if (eventType) {
+	    if ((0, _isFunction2.default)(previousValue)) {
+	      DOMElement.removeEventListener(eventType, previousValue);
+	    }
+	    DOMElement.addEventListener(eventType, value);
+	    return;
+	  }
+	  if (!(0, _isValidAttr2.default)(value)) {
+	    removeAttribute(DOMElement, name, previousValue);
+	    return;
+	  }
+	  switch (name) {
+	    case 'checked':
+	    case 'disabled':
+	    case 'innerHTML':
+	    case 'nodeValue':
+	      DOMElement[name] = value;
+	      break;
+	    case 'selected':
+	      DOMElement.selected = value;
+	      // Fix for IE/Safari where select is not correctly selected on change
+	      if (DOMElement.tagName === 'OPTION' && DOMElement.parentNode) {
+	        var select = DOMElement.parentNode;
+	        select.selectedIndex = (0, _indexOf2.default)(select.options, DOMElement);
+	      }
+	      break;
+	    case 'value':
+	      (0, _setify2.default)(DOMElement, value);
+	      break;
+	    default:
+	      (0, _setAttribute2.default)(DOMElement, name, value);
+	      break;
+	  }
+	}
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	/**
+	 * Modules
+	 */
+
+	var svgAttributeNamespace = __webpack_require__(25);
+
+	/**
+	 * Expose setAttribute
+	 */
+
+	module.exports = setAttribute['default'] = setAttribute;
+
+	/**
+	 * setAttribute
+	 */
+
+	function setAttribute(node, name, value) {
+	  var ns = svgAttributeNamespace(name);
+	  return ns ? node.setAttributeNS(ns, name, value) : node.setAttribute(name, value);
+	}
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	/**
+	 * Modules
+	 */
+
+	var namespaces = __webpack_require__(26);
+
+	/**
+	 * Exports
+	 */
+
+	module.exports = svgAttributeNamespace['default'] = svgAttributeNamespace;
+
+	/**
+	 * Get namespace of svg attribute
+	 *
+	 * @param {String} attributeName
+	 * @return {String} namespace
+	 */
+
+	function svgAttributeNamespace(attributeName) {
+	  // if no prefix separator in attributeName, then no namespace
+	  if (attributeName.indexOf(':') === -1) return null;
+
+	  // get prefix from attributeName
+	  var prefix = attributeName.split(':', 1)[0];
+
+	  // if prefix in supported prefixes
+	  if (namespaces.hasOwnProperty(prefix)) {
+	    // then namespace of prefix
+	    return namespaces[prefix];
+	  } else {
+	    // else unsupported prefix
+	    throw new Error('svg-attribute-namespace: prefix "' + prefix + '" is not supported by SVG.');
+	  }
+	}
+
+/***/ },
+/* 26 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	/*
+	 * Supported SVG attribute namespaces by prefix.
+	 *
+	 * References:
+	 * - http://www.w3.org/TR/SVGTiny12/attributeTable.html
+	 * - http://www.w3.org/TR/SVG/attindex.html
+	 * - http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-ElSetAttrNS
+	 */
+
+	var svgAttributeNamespaces = {
+	  ev: 'http://www.w3.org/2001/xml-events',
+	  xlink: 'http://www.w3.org/1999/xlink',
+	  xml: 'http://www.w3.org/XML/1998/namespace',
+	  xmlns: 'http://www.w3.org/2000/xmlns/'
+	};
+
+	/**
+	 * Expose svgAttributeNamespaces
+	 */
+
+	module.exports = svgAttributeNamespaces;
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	/**
+	 * Modules
+	 */
+
+	/**
+	 * Expose isFunction
+	 */
+
+	module.exports = isFunction['default'] = isFunction;
+
+	/**
+	 * isFunction
+	 */
+
+	function isFunction(value) {
+	  return typeof value === 'function';
+	}
+
+/***/ },
+/* 28 */
+/***/ function(module, exports) {
+
+	/*!
+	 * index-of <https://github.com/jonschlinkert/index-of>
+	 *
+	 * Copyright (c) 2014-2015 Jon Schlinkert.
+	 * Licensed under the MIT license.
+	 */
+
+	'use strict';
+
+	module.exports = function indexOf(arr, ele, start) {
+	  start = start || 0;
+	  var idx = -1;
+
+	  if (arr == null) return idx;
+	  var len = arr.length;
+	  var i = start < 0 ? len + start : start;
+
+	  if (i >= arr.length) {
+	    return -1;
+	  }
+
+	  while (i < len) {
+	    if (arr[i] === ele) {
+	      return i;
+	    }
+	    i++;
+	  }
+
+	  return -1;
+	};
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var naturalSelection = __webpack_require__(30);
+
+	module.exports = function (element, value) {
+	    var canSet = naturalSelection(element) && element === document.activeElement;
+
+	    if (canSet) {
+	        var start = element.selectionStart,
+	            end = element.selectionEnd;
+
+	        element.value = value;
+	        element.setSelectionRange(start, end);
+	    } else {
+	        element.value = value;
+	    }
+	};
+
+/***/ },
+/* 30 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var supportedTypes = ['text', 'search', 'tel', 'url', 'password'];
+
+	module.exports = function (element) {
+	    return !!(element.setSelectionRange && ~supportedTypes.indexOf(element.type));
+	};
+
+/***/ },
+/* 31 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	/**
+	 * Special attributes that map to DOM events.
+	 */
+
+	exports.default = {
+	  onAbort: 'abort',
+	  onAnimationStart: 'animationstart',
+	  onAnimationIteration: 'animationiteration',
+	  onAnimationEnd: 'animationend',
+	  onBlur: 'blur',
+	  onCanPlay: 'canplay',
+	  onCanPlayThrough: 'canplaythrough',
+	  onChange: 'change',
+	  onClick: 'click',
+	  onContextMenu: 'contextmenu',
+	  onCopy: 'copy',
+	  onCut: 'cut',
+	  onDoubleClick: 'dblclick',
+	  onDrag: 'drag',
+	  onDragEnd: 'dragend',
+	  onDragEnter: 'dragenter',
+	  onDragExit: 'dragexit',
+	  onDragLeave: 'dragleave',
+	  onDragOver: 'dragover',
+	  onDragStart: 'dragstart',
+	  onDrop: 'drop',
+	  onDurationChange: 'durationchange',
+	  onEmptied: 'emptied',
+	  onEncrypted: 'encrypted',
+	  onEnded: 'ended',
+	  onError: 'error',
+	  onFocus: 'focus',
+	  onInput: 'input',
+	  onInvalid: 'invalid',
+	  onKeyDown: 'keydown',
+	  onKeyPress: 'keypress',
+	  onKeyUp: 'keyup',
+	  onLoad: 'load',
+	  onLoadedData: 'loadeddata',
+	  onLoadedMetadata: 'loadedmetadata',
+	  onLoadStart: 'loadstart',
+	  onPause: 'pause',
+	  onPlay: 'play',
+	  onPlaying: 'playing',
+	  onProgress: 'progress',
+	  onMouseDown: 'mousedown',
+	  onMouseEnter: 'mouseenter',
+	  onMouseLeave: 'mouseleave',
+	  onMouseMove: 'mousemove',
+	  onMouseOut: 'mouseout',
+	  onMouseOver: 'mouseover',
+	  onMouseUp: 'mouseup',
+	  onPaste: 'paste',
+	  onRateChange: 'ratechange',
+	  onReset: 'reset',
+	  onScroll: 'scroll',
+	  onSeeked: 'seeked',
+	  onSeeking: 'seeking',
+	  onSubmit: 'submit',
+	  onStalled: 'stalled',
+	  onSuspend: 'suspend',
+	  onTimeUpdate: 'timeupdate',
+	  onTransitionEnd: 'transitionend',
+	  onTouchCancel: 'touchcancel',
+	  onTouchEnd: 'touchend',
+	  onTouchMove: 'touchmove',
+	  onTouchStart: 'touchstart',
+	  onVolumeChange: 'volumechange',
+	  onWaiting: 'waiting',
+	  onWheel: 'wheel'
+	};
+
+/***/ },
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1474,13 +1915,13 @@
 	});
 	exports.createElement = createElement;
 
-	var _createElement = __webpack_require__(23);
+	var _createElement = __webpack_require__(22);
 
 	var _createElement2 = _interopRequireDefault(_createElement);
 
 	var _element = __webpack_require__(3);
 
-	var _setAttribute = __webpack_require__(24);
+	var _setAttribute = __webpack_require__(23);
 
 	var _isUndefined = __webpack_require__(4);
 
@@ -1579,388 +2020,6 @@
 	}
 
 /***/ },
-/* 23 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	module.exports = function (type) {
-	  return document.createElement(type);
-	};
-
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.removeAttribute = removeAttribute;
-	exports.setAttribute = setAttribute;
-
-	var _setAttribute = __webpack_require__(25);
-
-	var _setAttribute2 = _interopRequireDefault(_setAttribute);
-
-	var _isValidAttr = __webpack_require__(19);
-
-	var _isValidAttr2 = _interopRequireDefault(_isValidAttr);
-
-	var _isFunction = __webpack_require__(28);
-
-	var _isFunction2 = _interopRequireDefault(_isFunction);
-
-	var _indexOf = __webpack_require__(29);
-
-	var _indexOf2 = _interopRequireDefault(_indexOf);
-
-	var _setify = __webpack_require__(30);
-
-	var _setify2 = _interopRequireDefault(_setify);
-
-	var _events = __webpack_require__(32);
-
-	var _events2 = _interopRequireDefault(_events);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function removeAttribute(DOMElement, name, previousValue) {
-	  var eventType = _events2.default[name];
-	  if (eventType && (0, _isFunction2.default)(previousValue)) {
-	    DOMElement.removeEventListener(eventType, previousValue);
-	    return;
-	  }
-	  switch (name) {
-	    case 'checked':
-	    case 'disabled':
-	    case 'selected':
-	      DOMElement[name] = false;
-	      break;
-	    case 'innerHTML':
-	    case 'nodeValue':
-	    case 'value':
-	      DOMElement[name] = '';
-	      break;
-	    default:
-	      DOMElement.removeAttribute(name);
-	      break;
-	  }
-	}
-
-	function setAttribute(DOMElement, name, value, previousValue) {
-	  var eventType = _events2.default[name];
-	  if (value === previousValue) {
-	    return;
-	  }
-	  if (eventType) {
-	    if ((0, _isFunction2.default)(previousValue)) {
-	      DOMElement.removeEventListener(eventType, previousValue);
-	    }
-	    DOMElement.addEventListener(eventType, value);
-	    return;
-	  }
-	  if (!(0, _isValidAttr2.default)(value)) {
-	    removeAttribute(DOMElement, name, previousValue);
-	    return;
-	  }
-	  switch (name) {
-	    case 'checked':
-	    case 'disabled':
-	    case 'innerHTML':
-	    case 'nodeValue':
-	      DOMElement[name] = value;
-	      break;
-	    case 'selected':
-	      DOMElement.selected = value;
-	      // Fix for IE/Safari where select is not correctly selected on change
-	      if (DOMElement.tagName === 'OPTION' && DOMElement.parentNode) {
-	        var select = DOMElement.parentNode;
-	        select.selectedIndex = (0, _indexOf2.default)(select.options, DOMElement);
-	      }
-	      break;
-	    case 'value':
-	      (0, _setify2.default)(DOMElement, value);
-	      break;
-	    default:
-	      (0, _setAttribute2.default)(DOMElement, name, value);
-	      break;
-	  }
-	}
-
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	/**
-	 * Modules
-	 */
-
-	var svgAttributeNamespace = __webpack_require__(26);
-
-	/**
-	 * Expose setAttribute
-	 */
-
-	module.exports = setAttribute['default'] = setAttribute;
-
-	/**
-	 * setAttribute
-	 */
-
-	function setAttribute(node, name, value) {
-	  var ns = svgAttributeNamespace(name);
-	  return ns ? node.setAttributeNS(ns, name, value) : node.setAttribute(name, value);
-	}
-
-/***/ },
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	/**
-	 * Modules
-	 */
-
-	var namespaces = __webpack_require__(27);
-
-	/**
-	 * Exports
-	 */
-
-	module.exports = svgAttributeNamespace['default'] = svgAttributeNamespace;
-
-	/**
-	 * Get namespace of svg attribute
-	 *
-	 * @param {String} attributeName
-	 * @return {String} namespace
-	 */
-
-	function svgAttributeNamespace(attributeName) {
-	  // if no prefix separator in attributeName, then no namespace
-	  if (attributeName.indexOf(':') === -1) return null;
-
-	  // get prefix from attributeName
-	  var prefix = attributeName.split(':', 1)[0];
-
-	  // if prefix in supported prefixes
-	  if (namespaces.hasOwnProperty(prefix)) {
-	    // then namespace of prefix
-	    return namespaces[prefix];
-	  } else {
-	    // else unsupported prefix
-	    throw new Error('svg-attribute-namespace: prefix "' + prefix + '" is not supported by SVG.');
-	  }
-	}
-
-/***/ },
-/* 27 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	/*
-	 * Supported SVG attribute namespaces by prefix.
-	 *
-	 * References:
-	 * - http://www.w3.org/TR/SVGTiny12/attributeTable.html
-	 * - http://www.w3.org/TR/SVG/attindex.html
-	 * - http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-ElSetAttrNS
-	 */
-
-	var svgAttributeNamespaces = {
-	  ev: 'http://www.w3.org/2001/xml-events',
-	  xlink: 'http://www.w3.org/1999/xlink',
-	  xml: 'http://www.w3.org/XML/1998/namespace',
-	  xmlns: 'http://www.w3.org/2000/xmlns/'
-	};
-
-	/**
-	 * Expose svgAttributeNamespaces
-	 */
-
-	module.exports = svgAttributeNamespaces;
-
-/***/ },
-/* 28 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	/**
-	 * Modules
-	 */
-
-	/**
-	 * Expose isFunction
-	 */
-
-	module.exports = isFunction['default'] = isFunction;
-
-	/**
-	 * isFunction
-	 */
-
-	function isFunction(value) {
-	  return typeof value === 'function';
-	}
-
-/***/ },
-/* 29 */
-/***/ function(module, exports) {
-
-	/*!
-	 * index-of <https://github.com/jonschlinkert/index-of>
-	 *
-	 * Copyright (c) 2014-2015 Jon Schlinkert.
-	 * Licensed under the MIT license.
-	 */
-
-	'use strict';
-
-	module.exports = function indexOf(arr, ele, start) {
-	  start = start || 0;
-	  var idx = -1;
-
-	  if (arr == null) return idx;
-	  var len = arr.length;
-	  var i = start < 0 ? len + start : start;
-
-	  if (i >= arr.length) {
-	    return -1;
-	  }
-
-	  while (i < len) {
-	    if (arr[i] === ele) {
-	      return i;
-	    }
-	    i++;
-	  }
-
-	  return -1;
-	};
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var naturalSelection = __webpack_require__(31);
-
-	module.exports = function (element, value) {
-	    var canSet = naturalSelection(element) && element === document.activeElement;
-
-	    if (canSet) {
-	        var start = element.selectionStart,
-	            end = element.selectionEnd;
-
-	        element.value = value;
-	        element.setSelectionRange(start, end);
-	    } else {
-	        element.value = value;
-	    }
-	};
-
-/***/ },
-/* 31 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	var supportedTypes = ['text', 'search', 'tel', 'url', 'password'];
-
-	module.exports = function (element) {
-	    return !!(element.setSelectionRange && ~supportedTypes.indexOf(element.type));
-	};
-
-/***/ },
-/* 32 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	/**
-	 * Special attributes that map to DOM events.
-	 */
-
-	exports.default = {
-	  onAbort: 'abort',
-	  onAnimationStart: 'animationstart',
-	  onAnimationIteration: 'animationiteration',
-	  onAnimationEnd: 'animationend',
-	  onBlur: 'blur',
-	  onCanPlay: 'canplay',
-	  onCanPlayThrough: 'canplaythrough',
-	  onChange: 'change',
-	  onClick: 'click',
-	  onContextMenu: 'contextmenu',
-	  onCopy: 'copy',
-	  onCut: 'cut',
-	  onDoubleClick: 'dblclick',
-	  onDrag: 'drag',
-	  onDragEnd: 'dragend',
-	  onDragEnter: 'dragenter',
-	  onDragExit: 'dragexit',
-	  onDragLeave: 'dragleave',
-	  onDragOver: 'dragover',
-	  onDragStart: 'dragstart',
-	  onDrop: 'drop',
-	  onDurationChange: 'durationchange',
-	  onEmptied: 'emptied',
-	  onEncrypted: 'encrypted',
-	  onEnded: 'ended',
-	  onError: 'error',
-	  onFocus: 'focus',
-	  onInput: 'input',
-	  onInvalid: 'invalid',
-	  onKeyDown: 'keydown',
-	  onKeyPress: 'keypress',
-	  onKeyUp: 'keyup',
-	  onLoad: 'load',
-	  onLoadedData: 'loadeddata',
-	  onLoadedMetadata: 'loadedmetadata',
-	  onLoadStart: 'loadstart',
-	  onPause: 'pause',
-	  onPlay: 'play',
-	  onPlaying: 'playing',
-	  onProgress: 'progress',
-	  onMouseDown: 'mousedown',
-	  onMouseEnter: 'mouseenter',
-	  onMouseLeave: 'mouseleave',
-	  onMouseMove: 'mousemove',
-	  onMouseOut: 'mouseout',
-	  onMouseOver: 'mouseover',
-	  onMouseUp: 'mouseup',
-	  onPaste: 'paste',
-	  onRateChange: 'ratechange',
-	  onReset: 'reset',
-	  onScroll: 'scroll',
-	  onSeeked: 'seeked',
-	  onSeeking: 'seeking',
-	  onSubmit: 'submit',
-	  onStalled: 'stalled',
-	  onSuspend: 'suspend',
-	  onTimeUpdate: 'timeupdate',
-	  onTransitionEnd: 'transitionend',
-	  onTouchCancel: 'touchcancel',
-	  onTouchEnd: 'touchend',
-	  onTouchMove: 'touchmove',
-	  onTouchStart: 'touchstart',
-	  onVolumeChange: 'volumechange',
-	  onWaiting: 'waiting',
-	  onWheel: 'wheel'
-	};
-
-/***/ },
 /* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1972,7 +2031,7 @@
 	exports.insertAtIndex = undefined;
 	exports.updateElement = updateElement;
 
-	var _setAttribute2 = __webpack_require__(24);
+	var _setAttribute2 = __webpack_require__(23);
 
 	var _element = __webpack_require__(3);
 
@@ -2196,7 +2255,7 @@
 	 * Modules
 	 */
 
-	var isFunction = __webpack_require__(28);
+	var isFunction = __webpack_require__(27);
 
 	/**
 	 * Expose isObject
@@ -2538,7 +2597,6 @@
 	  }, SohpieConstructor.prototype.append = function (child) {
 	    var children = this.children;
 	    child.parent = this;
-	    child.compontentContext = this.compontentContext;
 	    children.push(child);
 	    this._update();
 	    if (child.componentDidInsert) {
@@ -2569,7 +2627,7 @@
 	    for (var i = 0; i < children.length; i++) {
 	      if (children[i] == before) {
 	        children.splice(i, 0, target);
-	        target.compontentContext = this.compontentContext;
+
 	        target.parent = parent;
 	        break;
 	      }
@@ -2587,7 +2645,7 @@
 	      if (children[i] == after) {
 	        children.splice(i + 1, 0, target);
 	        target.parent = parent;
-	        target.compontentContext = this.compontentContext;
+
 	        break;
 	      }
 	    }
@@ -3215,9 +3273,25 @@
 	  var result = _index.element.apply(null, args);
 
 	  if (result.type == "thunk" && result.options) {
-	    result.options.compontentContext = result.options._owner = currentOwner.target;
-	    result.options.children = result.children;
-	    result.options.attributes = result.options.props = merge(result.options.props, result.props);
+
+	    // type: 'thunk',
+	    // fn,
+	    // children,
+	    // props,
+	    // options,
+	    // key
+	    var options = result.options;
+	    options.type = result.type;
+	    options.fn = result.fn;
+	    options.key = result.key;
+	    options.children = result.children;
+	    options.attributes = options.props = merge(options.props, result.props);
+
+	    options.props.children = result.children;
+
+	    //保持deku的结构
+	    options.options = options;
+	    result = options;
 	  }
 
 	  var children = result.children;
@@ -3228,9 +3302,11 @@
 	    }
 	  }
 
+	  result.compontentContext = result._owner = currentOwner.target;
+
 	  if (attributes && attributes["ref"]) {
-	    var refValue = _index.vnode.attributes["ref"];
-	    if (currentOwner.target) currentOwner.target.refs[refValue] = _index.vnode.options || _index.vnode;
+	    var refValue = attributes["ref"];
+	    if (currentOwner.target) currentOwner.target.refs[refValue] = result;
 	  }
 
 	  return result;
@@ -4135,7 +4211,7 @@
 
 	function mountAfterElement(mountVnode) {
 	  if (_index.vnode.isThunk(mountVnode)) {
-	    var component = mountVnode.options;
+	    var component = mountVnode;
 	    //保留输出，setState，进行对比
 	    var output = component.rootVnode;
 
@@ -4164,7 +4240,7 @@
 
 	  if (_index.vnode.isThunk(mountVnode)) {
 
-	    var component = mountVnode.options;
+	    var component = mountVnode;
 	    //保留输出，setState，进行对比
 	    var output = component.rootVnode;;
 	    output.children.forEach(function (node, index) {
@@ -4239,6 +4315,8 @@
 	var StyleSheet = __webpack_require__(51);
 	var mount = __webpack_require__(59);
 
+	var currentOwner = __webpack_require__(48);
+
 	var head = document.getElementsByTagName("head")[0];
 	var style = document.createElement("style");
 	style.innerText = "body{opacity:0;filter:alpha(opacity=0)}";
@@ -4253,13 +4331,6 @@
 	  }
 	};
 
-	var fireReady = function fireReady() {
-	  if (!isReady) return;
-	  for (var i = 0; i < callbacks.length; i++) {
-	    callbacks[i] && callbacks[i]();
-	  }
-	};
-
 	module.exports = {
 	  runApp: function runApp(compontent, container, fire) {
 	    // utils.ready(function () {
@@ -4270,19 +4341,143 @@
 	    Sophie.firstVnode = vnode;
 	    render(vnode);
 	    mount(vnode);
-	    isReady = true;
-	    if (fire !== false) {
-	      EE.trigger("ready", [vnode]);
-	      fireReady();
+	    if (!isReady) {
+	      isReady = true;
+	      if (fire !== false) {
+	        EE.trigger("ready", [vnode]);
+	        fireReady();
+	      }
 	    }
+
 	    // })
 	  },
 
 	  ready: ready,
+	  renderToJSON: function renderToJSON() {
+	    // app
+	    var outVnode = Sophie.firstVnode.rootVnode;
+	    var walk = function walk(vnode) {
+
+	      var currentData = {};
+	      var children = vnode.children;
+
+	      if (Sophie.isThunk(vnode)) {
+	        var component = vnode;
+	        children = vnode.children;
+
+	        currentData.type = "#thunk";
+	        // currentData.state = component.state
+	        var attributes = {};
+	        for (var p in component.attributes) {
+	          if (p == "children") continue;
+	          attributes[p] = component.attributes[p];
+	        }
+	        currentData.attributes = attributes;
+	        currentData.name = component.name;
+	      } else if (vnode.type == "#text") {
+	        currentData.type = vnode.type;
+	        currentData.nodeValue = vnode.nodeValue;
+	      } else {
+	        currentData.type = vnode.type;
+	        var attributes = {};
+	        for (var p in vnode.attributes) {
+	          if (p == "children") continue;
+	          attributes[p] = vnode.attributes[p];
+	        }
+	        currentData.attributes = attributes;
+	      }
+	      currentData.children = [];
+	      if (children && children.length) {
+	        for (var i = 0; i < children.length; i++) {
+	          if (children[i]) currentData.children.push(walk(children[i]));
+	        }
+	      }
+	      return currentData;
+	    };
+
+	    var data = walk(outVnode);
+	    return data;
+	  },
+	  renderFromJSON: function renderFromJSON(data, container, callback) {
+	    var htmlData = data;
+	    if (htmlData) {
+	      var site = htmlData;
+	      var APP = Sophie.createClass("app", {
+	        render: function render() {
+	          var self = this;
+	          var func = function func(children) {
+	            var result = [];
+	            for (var i = 0; i < children.length; i++) {
+	              var c = children[i];
+	              if (c.type == "#thunk") {
+	                result.push(self.element(Sophie.registry[c.name], c.attributes, func(c.children)));
+	              } else if (c.type == "#text") {
+
+	                result.push({
+	                  type: '#text',
+	                  nodeValue: c.nodeValue
+	                });
+	              } else {
+	                result.push(self.element(c.type, c.attributes, func(c.children)));
+	              }
+	            }
+
+	            return result;
+	          };
+	          return this.element("app", {}, func(site.children));
+	        }
+
+	      });
+
+	      Sophie.runApp(APP, container || $("#dotlinkface").get(0), true);
+	    }
+
+	    setTimeout(function () {
+	      callback && callback();
+	    }, 0);
+	  },
+	  //第个组件生成元素
+	  isBaseVnode: function isBaseVnode(vnode) {
+	    return vnode._owner && vnode._owner.name == Sophie.firstVnode.name;
+	  },
+
+	  getOwner: function getOwner(vnode) {
+	    if (Sophie.isThunk(vnode)) {
+	      return vnode;
+	    } else {
+	      return vnode._owner;
+	    }
+	  },
+
+	  getParent: function getParent(vnode) {
+	    return vnode.parent;
+	  },
+	  closestBaseParent: function closestBaseParent(vnode) {
+	    if (this.isBaseVnode(vnode)) {
+	      return vnode;
+	    } else {
+	      var owner = this.getOwner(vnode);
+	      return this.closestBaseParent(owner);
+	    }
+	  },
+	  getBaseParent: function getBaseParent(vnode) {
+	    var parent = this.getParent(vnode);
+	    if (this.isBaseVnode(parent)) {
+	      return parent;
+	    } else {
+	      var owner = this.getOwner(parent);
+	      return this.closestBaseParent(owner);
+	    }
+	  },
 
 	  createVnodeByTagName: function createVnodeByTagName(name) {
 	    var compontent = Register.registry[name];
+	    if (!compontent) throw new Error("name 没有注册");
+
+	    currentOwner.target = Sophie.firstVnode;
+
 	    var vnode = Element(compontent, {}, null);
+	    currentOwner.target = undefined;
 	    return vnode;
 	  },
 

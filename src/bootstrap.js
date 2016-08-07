@@ -87,6 +87,7 @@
 
         }
         else if(vnode.type =="native"){
+          currentData.type = "native"
           currentData.tagName =  vnode.tagName;
           var attributes = {};
           for(var p in vnode.attributes){
@@ -130,7 +131,7 @@
                       nodeValue: c.nodeValue
                     })
                  }
-                 else {
+                 else if(c.type = "native"){
                    result.push(self.element(c.tagName,c.attributes,func(c.children)))
                  }
               }

@@ -5,6 +5,8 @@ var merge = require("merge");
 
 module.exports =  function(type, attributes, ...children) {
 
+  
+
   attributes = attributes||{};
   var key = typeof attributes.key === 'string' || typeof attributes.key === 'number' ? attributes.key : undefined;
   //id,自动生成Key

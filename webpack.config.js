@@ -17,6 +17,7 @@ var config = {
     out:path.join(ROOT_PATH,"build"),
     sophie: path.join(ROOT_PATH, SRC_DIR, 'sophie.js'),
     test:path.join(ROOT_PATH, SRC_DIR, "test.js"),
+    react:path.join(ROOT_PATH, SRC_DIR, "ReactTest.js"),
 
   },
 }
@@ -25,7 +26,8 @@ var config = {
 module.exports = {
     entry: {
       sophie:config.paths.sophie,
-      test:config.paths.test
+      test:config.paths.test,
+      react:config.paths.react
     },
     output: {
         path: config.paths.out,
@@ -36,7 +38,7 @@ module.exports = {
       loaders: [
         {
           test: /\.js$/,
-        
+
           loader: ["babel-loader"],
           query: {}
         }

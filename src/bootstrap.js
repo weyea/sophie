@@ -163,11 +163,9 @@
     },
 
     getOwner:function(vnode){
-      if(Sophie.isThunk(vnode)){
-        return vnode;
-      }else {
+
         return vnode._owner;
-      }
+      
     },
 
     getParent:function(vnode){

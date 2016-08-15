@@ -5,7 +5,7 @@ var merge = require("merge");
 
 module.exports =  function(type, attributes, ...children) {
 
-  
+
 
   attributes = attributes||{};
   var key = typeof attributes.key === 'string' || typeof attributes.key === 'number' ? attributes.key : undefined;
@@ -58,6 +58,13 @@ module.exports =  function(type, attributes, ...children) {
     options.attributes=options.props = merge(options.props, result.props);
 
     options.props.children = result.children;
+
+    if(!options.props.children||options.props.children ==0){
+      if(options.getInitialChildren){
+        options.props.children = options.getInitialChildren(); 
+      }
+    }
+
 
     //保持deku的结构
     options.options = options;

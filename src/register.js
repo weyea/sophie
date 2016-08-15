@@ -48,8 +48,18 @@ function register(inName, inOptions) {
     var oldComponentWillMount = definition.componentWillMount
     var componentDidInsert = definition.componentDidInsert
     var componentDidInsert = definition.componentDidInsert
+    var getInitialChildren = definition.getInitialChildren;
 
-    SohpieConstructor.prototype = definition
+    SohpieConstructor.prototype = definition;
+
+    if(getInitialChildren){
+      SohpieConstructor.prototype.getInitialChildren = function(){
+        currentOwner.target = this._owner;
+       var result =  getInitialChildren.apply(this, arguments);
+        currentOwner.target = undefined;
+        return currentOwner;
+      }
+    }
 
 
     SohpieConstructor.prototype.render = function(){

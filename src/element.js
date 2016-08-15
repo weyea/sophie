@@ -61,7 +61,7 @@ module.exports =  function(type, attributes, ...children) {
 
     if(!options.props.children||options.props.children ==0){
       if(options.getInitialChildren){
-        options.props.children = options.getInitialChildren(); 
+        options.props.children = options.getDefaultChildren(); 
       }
     }
 

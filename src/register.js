@@ -48,14 +48,14 @@ function register(inName, inOptions) {
     var oldComponentWillMount = definition.componentWillMount
     var componentDidInsert = definition.componentDidInsert
     var componentDidInsert = definition.componentDidInsert
-    var getInitialChildren = definition.getInitialChildren;
+    var getDefaultChildren = definition.getDefaultChildren;
 
     SohpieConstructor.prototype = definition;
 
-    if(getInitialChildren){
-      SohpieConstructor.prototype.getInitialChildren = function(){
+    if(getDefaultChildren){
+      SohpieConstructor.prototype.getDefaultChildren = function(){
         currentOwner.target = this._owner;
-       var result =  getInitialChildren.apply(this, arguments);
+       var result =  getDefaultChildren.apply(this, arguments);
         currentOwner.target = undefined;
         return currentOwner;
       }

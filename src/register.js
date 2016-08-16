@@ -32,12 +32,12 @@ function register(inName, inOptions) {
       this.refs = {}
 
       var defaultProps = this.getDefaultProps&&this.getDefaultProps();
-      var newProps = merge.recursive(defaultProps||{}, this.props)
+      var newProps = merge(defaultProps||{}, this.props)
       this.props = newProps;
       this.attributes = newProps
 
       var defaultState = this.getInitialState&&this.getInitialState()
-      var newState = merge.recursive({},defaultState||{})
+      var newState = merge({},defaultState||{})
       this.state = newState
 
     }
@@ -56,7 +56,7 @@ function register(inName, inOptions) {
       SohpieConstructor.prototype.getDefaultChildren = function(){
 
        var result =  getDefaultChildren.apply(this, arguments);
-    
+
         return result;
       }
     }

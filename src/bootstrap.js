@@ -165,7 +165,7 @@
     getOwner:function(vnode){
 
         return vnode._owner;
-      
+
     },
 
     getParent:function(vnode){
@@ -195,13 +195,13 @@
     },
 
 
-    createVnodeByTagName:function(name){
+    createVnodeByTagName:function(name, attributes){
         var compontent = Register.registry[name];
         if(!compontent)throw new Error("name 没有注册");
 
         currentOwner.target =  Sophie.firstVnode
 
-        var vnode = Element(compontent,{},null);
+        var vnode = Element(compontent,attributes||{},null);
           currentOwner.target =  undefined;
         return vnode;
     },
@@ -211,9 +211,9 @@
         return   dom.createElement(vnode,0)
     },
 
-    createElementByTagName:function(name){
+    createElementByTagName:function(name,attributes){
 
-        var vnode = this.createVnodeByTagName(name)
+        var vnode = this.createVnodeByTagName(name,attributes)
 
         return   this.createElementByVnode(vnode)
     }

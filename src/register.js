@@ -54,9 +54,9 @@ function register(inName, inOptions) {
 
     if(getDefaultChildren){
       SohpieConstructor.prototype.getDefaultChildren = function(){
-        currentOwner.target = this._owner;
+
        var result =  getDefaultChildren.apply(this, arguments);
-        currentOwner.target = undefined;
+    
         return result;
       }
     }

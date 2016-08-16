@@ -1,4 +1,6 @@
-var  currentOwner  = {};
+var  currentOwner  = {
+  target:undefined
+};
 
 
 module.exports = currentOwner;

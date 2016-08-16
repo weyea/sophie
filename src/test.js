@@ -132,4 +132,7 @@ Sophie.on("ready", function(){
   console.log("ready");
 })
 
+
+
  Sophie.runApp(MyJSDiv)
+ Sophie.createVnodeByTagName("my-js-div")

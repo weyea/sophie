@@ -97,7 +97,7 @@ function register(inName, inOptions) {
 
     SohpieConstructor.prototype.setState = function(value){
 
-       this.state =  merge.recursive(this.state ,value);
+       this.state =  merge(this.state ,value);
        this._update();
 
     }

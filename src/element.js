@@ -60,8 +60,8 @@ module.exports =  function(type, attributes, ...children) {
     options.props.children = result.children;
 
     if(!options.props.children||options.props.children ==0){
-      if(options.getInitialChildren){
-        options.props.children = options.getDefaultChildren(); 
+      if(options.getDefaultChildren){
+        options.props.children = options.getDefaultChildren();
       }
     }
 

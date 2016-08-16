@@ -57,7 +57,7 @@ function register(inName, inOptions) {
         currentOwner.target = this._owner;
        var result =  getDefaultChildren.apply(this, arguments);
         currentOwner.target = undefined;
-        return currentOwner;
+        return result;
       }
     }
 

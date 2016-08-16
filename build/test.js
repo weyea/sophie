@@ -172,6 +172,7 @@
 	});
 
 	Sophie.runApp(MyJSDiv);
+	Sophie.createVnodeByTagName("my-js-div");
 
 /***/ }
 /******/ ]);

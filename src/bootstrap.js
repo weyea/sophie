@@ -195,13 +195,13 @@
     },
 
 
-    createVnodeByTagName:function(name, attributes){
+    createVnodeByTagName:function(name, attributes, children){
         var compontent = Register.registry[name];
         if(!compontent)throw new Error("name 没有注册");
 
         currentOwner.target =  Sophie.firstVnode
 
-        var vnode = Element(compontent,attributes||{},null);
+        var vnode = Element(compontent,attributes||{},children||null);
           currentOwner.target =  undefined;
         return vnode;
     },
@@ -211,9 +211,9 @@
         return   dom.createElement(vnode,0)
     },
 
-    createElementByTagName:function(name,attributes){
+    createElementByTagName:function(name,attributes,children){
 
-        var vnode = this.createVnodeByTagName(name,attributes)
+        var vnode = this.createVnodeByTagName(name,attributes,children||null)
 
         return   this.createElementByVnode(vnode)
     }

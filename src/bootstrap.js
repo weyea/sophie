@@ -205,6 +205,17 @@
           currentOwner.target =  undefined;
         return vnode;
     },
+    cloneVnode:function(vnode){
+      var name = vnode.name;
+
+      var newVnode = createVnodeByTagName(name);
+      newVnode.attributes =  newVnode.props =  vnode.attributes
+      newVnode.state = vnode.state;
+
+
+
+
+    },
 
     createElementByVnode:function(vnode){
 

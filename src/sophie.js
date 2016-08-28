@@ -26,6 +26,7 @@ var Sophie = {
   getBaseParent:Bootstrap.getBaseParent,
 
   createVnodeByTagName:Bootstrap.createVnodeByTagName,
+  createVnodeByFun:Bootstrap.createVnodeByFun,
 
   createElementByVnode:Bootstrap.createElementByVnode,
 

@@ -216,6 +216,12 @@
 
 
     },
+    createVnodeByFun:function(fun){
+      currentOwner.target =  Sophie.firstVnode;
+      var vnode = fun();
+      currentOwner.target =  undefined;
+      return vnode;
+    },
 
     createElementByVnode:function(vnode){
 

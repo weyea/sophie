@@ -69,7 +69,7 @@
 
         if(Sophie.isThunk(vnode)){
           var component = vnode
-          children = vnode.children
+          children = vnode.props.children;
 
           currentData.type="thunk"
           // currentData.state = component.state

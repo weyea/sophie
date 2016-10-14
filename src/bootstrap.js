@@ -81,6 +81,10 @@
               children = vnode.props.children;
           }
 
+          if(!Array.isArray(children)){
+              children = [children];
+          }
+
 
         if(Sophie.isThunk(vnode)){
           var component = vnode;

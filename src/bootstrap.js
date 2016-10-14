@@ -65,7 +65,7 @@
       var walk = function(vnode){
 
          var currentData = {};
-         var children=vnode.children || vnode.attributes&&vnode.attributes.children;
+         var children=vnode.children&&vnode.children.length || vnode.attributes&&vnode.attributes.children;
 
         if(Sophie.isThunk(vnode)){
           var component = vnode;

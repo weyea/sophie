@@ -65,11 +65,10 @@
       var walk = function(vnode){
 
          var currentData = {};
-         var children= vnode.children;
+         var children= vnode.props.children;
 
         if(Sophie.isThunk(vnode)){
-          var component = vnode
-          children = vnode.props.children;
+          var component = vnode;
 
           currentData.type="thunk"
           // currentData.state = component.state

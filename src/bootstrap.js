@@ -213,16 +213,7 @@
     },
 
 
-    createVnodeByTagName:function(name, attributes, children){
-        var compontent = Register.registry[name];
-        if(!compontent)throw new Error("name 没有注册");
 
-        currentOwner.target =  Sophie.firstVnode
-
-        var vnode = Element(compontent,attributes||{},children||null);
-          currentOwner.target =  undefined;
-        return vnode;
-    },
     cloneVnode:function(vnode){
       var name = vnode.name;
 
@@ -234,6 +225,16 @@
 
 
     },
+      createVnodeByTagName:function(name, attributes, children){
+          var compontent = Register.registry[name];
+          if(!compontent)throw new Error("name 没有注册");
+
+          currentOwner.target =  Sophie.firstVnode
+
+          var vnode = Element(compontent,attributes||{},children||null);
+          currentOwner.target =  undefined;
+          return vnode;
+      },
     createVnodeByFun:function(fun){
       currentOwner.target =  Sophie.firstVnode;
       var vnode = fun();

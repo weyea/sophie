@@ -16,7 +16,7 @@ module.exports =  function(type, attributes, ...children) {
 
   //class
   if(typeof type === 'function'){
-    type = new type();
+    type = new type(attributes);
     if(type.render){
       var oldRender = type.render;
       type.render = function(){

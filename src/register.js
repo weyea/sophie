@@ -25,14 +25,14 @@ function register(inName, inOptions) {
     resolveTagName(definition);
     resolveMixin(definition);
 
-    var SohpieConstructor = function () {
+    var SohpieConstructor = function (props) {
       this.state = {}
       this.props = {}
       this.children = []
       this.refs = {}
 
       var defaultProps = this.getDefaultProps&&this.getDefaultProps();
-      var newProps = merge(defaultProps||{}, this.props)
+      var newProps = merge(defaultProps||{}, props||{})
       this.props = newProps;
       this.attributes = newProps
 

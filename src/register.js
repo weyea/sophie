@@ -142,6 +142,16 @@ function register(inName, inOptions) {
           }
     }
 
+    SohpieConstructor.prototype.setChildren =function(children){
+        var result = [];
+        for(var i = 0; i < children.length; i++){
+            var child = children[i];
+            child.parent = this;
+            result.push(child)
+        }
+        this.props.children = this.children = this.attributes.children = result;
+    }
+
     SohpieConstructor.prototype.remove =function(child){
       var parent = this;
       var children = parent.children;

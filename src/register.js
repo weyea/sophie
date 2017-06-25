@@ -27,10 +27,9 @@ function register(inName, inOptions) {
 
     var SohpieConstructor = function (props) {
       this.state = {}
-      this.props = {}
+      this.props = props || {}
       this.children = []
       this.refs = {}
-
       var defaultProps = this.getDefaultProps&&this.getDefaultProps();
       var newProps = merge(defaultProps||{}, props||{})
       this.props = newProps;

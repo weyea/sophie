@@ -116,8 +116,7 @@ function resolveTagName(inDefinition) {
 function resolveMixin(inDefinition) {
     var mixin= inDefinition.mixin||[];
     for(var i=0;i<mixin.length;i++){
-        var pName = mixin[i];
-      var pDefinition = registry[pName] || {};
+        var pDefinition = mixin[i];
       for (var p in pDefinition) {
           if (!inDefinition[p]) {
               inDefinition[p] = pDefinition[p];

@@ -7,8 +7,9 @@ var StyleSheet = require("./styleSheet");
 var merge = require("merge");
 var currentOwner = require("./currentOwner");
 var registry = {};
+var SophieBaseClass = require("./BaseClass")
 
-function register(inName, inOptions) {
+function register(inName, inOptions, ExtendClass) {
 
     if(!inOptions){
       inOptions = inName;
@@ -25,19 +26,22 @@ function register(inName, inOptions) {
     resolveTagName(definition);
     resolveMixin(definition);
 
-    var SohpieConstructor = function (props) {
-      this.state = {}
-      this.props = props || {}
-      this.children = []
-      this.refs = {}
-      var defaultProps = this.getDefaultProps&&this.getDefaultProps();
-      var newProps = merge(defaultProps||{}, props||{})
-      this.props = newProps;
-      this.attributes = newProps
+    ExtendClass = ExtendClass || SophieBaseClass
 
-      var defaultState = this.getInitialState&&this.getInitialState()
-      var newState = merge({},defaultState||{})
-      this.state = newState
+    //只能扩展Sophie类
+    if(ExtendClass == SophieBaseClass || ExtendClass.prototype instanceof  SophieBaseClass){
+        var SohpieConstructor = function (props) {
+            ExtendClass.apply(this, props)
+        }
+
+        SohpieConstructor.prototype = Object.create(ExtendClass.prototype)
+    }
+    else{
+        var SohpieConstructor = function (props) {
+            SophieBaseClass.apply(this, props)
+
+        }
+        SohpieConstructor.prototype = Object.create(SophieBaseClass.prototype)
 
     }
 
@@ -49,174 +53,58 @@ function register(inName, inOptions) {
     var componentDidInsert = definition.componentDidInsert
     var getDefaultChildren = definition.getDefaultChildren;
 
-    SohpieConstructor.prototype = definition;
+
 
     if(getDefaultChildren){
-      SohpieConstructor.prototype.getDefaultChildren = function(){
-
-       var result =  getDefaultChildren.apply(this, arguments);
-
-        return result;
-      }
-    }
-
-
-    SohpieConstructor.prototype.render = function(){
-       currentOwner.target = this;
-      var result =  oldRender.apply(this, arguments);
-       currentOwner.target = undefined;
-       return result;
-    }
-
-    // if(Sophie&&Sophie.renderRootElement){
-    //   SohpieConstructor.prototype.render = function(){
-    //     return this.element(this.name, this.attributes, oldRender.apply(this, arguments))
-    //   }
-    // }
-
-
-    SohpieConstructor.prototype.componentDidMount = function(){
-     oldComponentDidMount&&oldComponentDidMount.apply(this, arguments)
-       EE.trigger("componentDidMount",[this.node])
-    }
-
-    SohpieConstructor.prototype.componentDidInserted = function(){
-      oldComponentDidInserted&&oldComponentDidInserted.apply(this, arguments)
-       EE.trigger("componentDidInsert",[this.node])
-    }
-
-    SohpieConstructor.prototype.componentWillMount = function(){
-      oldComponentWillMount&&oldComponentWillMount.apply(this, arguments)
-       EE.trigger("oldComponentWillMount",[this.node])
+        definition.getDefaultChildren = function(){
+            var result =  getDefaultChildren.apply(this, arguments);
+            return result;
+        }
     }
 
     //for decleare
     // SohpieConstructor.prototype.getDefaultProps = function(){}
     // SohpieConstructor.prototype.getInitialState = function(){}
 
-    SohpieConstructor.prototype.setState = function(value){
 
-       this.state =  merge(this.state ,value);
-       this._update();
-
-    }
-
-    // //重置render方法，生成根元素
-    // var oRender = definition.render;
-    // SohpieConstructor.prototype.render = function(){
-    //   return element(this.name,this.props,oRender.apply(this,arguments));
-    // }
-
-
-    SohpieConstructor.prototype.forceUpdate=SohpieConstructor.prototype._update = function(){
-        // debugger
-        var oldVnode = this.rootVnode;
-        var newVnode = this.render();
-
-
-        let changes = diff.diffNode(oldVnode, newVnode, this.id || '0')
-        var node = changes.reduce(dom.updateElement(function(){}, this), this.nativeNode)
-
-        this.rootVnode = newVnode;
-        this.nativeNode = node;
-        return node
-
-
-    }
-
-
-    SohpieConstructor.prototype.element = function(){
-      var vnode = element.apply(null, arguments)
-
-      return vnode;
+    definition.render =  function(){
+        currentOwner.target = this;
+        var result =  oldRender.apply(this, arguments);
+        currentOwner.target = undefined;
+        return result;
     },
 
-    SohpieConstructor.prototype.append =function(child){
-          var children = this.children;
-          child.parent = this
-          children.push(child);
-          this._update()
-          if(child.componentDidInsert){
-            child.componentDidInsert();
-          }
+    definition.componentDidMount = function(){
+        oldComponentDidMount&&oldComponentDidMount.apply(this, arguments)
+        EE.trigger("componentDidMount",[this.node])
     }
 
-    SohpieConstructor.prototype.setChildren =function(children){
-        var result = [];
-        for(var i = 0; i < children.length; i++){
-            var child = children[i];
-            child.parent = this;
-            result.push(child)
-        }
-        this.props.children = this.children = this.attributes.children = result;
+    definition.componentDidInserted = function(){
+        oldComponentDidInserted&&oldComponentDidInserted.apply(this, arguments)
+        EE.trigger("componentDidInsert",[this.node])
     }
 
-    SohpieConstructor.prototype.remove =function(child){
-      var parent = this;
-      var children = parent.children;
-      for(var i=0; i<children.length;i++){
-        if(children[i] == child){
-        //  children[i].parent = undefined
-          children.splice(i,1)
-
-          break;
-        }
-      }
-      this._update()
-      if(child.componentDidRemove){
-        child.componentDidRemove();
-      }
+    definition.componentWillMount = function(){
+        oldComponentWillMount&&oldComponentWillMount.apply(this, arguments)
+        EE.trigger("oldComponentWillMount",[this.node])
     }
 
-    SohpieConstructor.prototype.insertBefore =function(target, before){
-      var parent = this;
-      var children = parent.children;
-      for(var i=0; i<children.length;i++){
-        if(children[i] == before){
-          children.splice(i,0, target)
+    merge(SohpieConstructor.prototype ,definition);
+    SohpieConstructor.prototype.constructor = SohpieConstructor
 
-          target.parent = parent
-          break;
-        }
-      }
-      this._update()
-      if(target.componentDidInsert){
-        target.componentDidInsert();
-      }
-    }
-
-    SohpieConstructor.prototype.insertAfter =function(target, after){
-      var parent = this;
-      var children = parent.children;
-      for(var i=0; i<children.length;i++){
-        if(children[i] == after){
-          children.splice(i+1,0, target)
-            target.parent = parent
-
-            break;
-        }
-      }
-      this._update()
-      if(target.componentDidInserted){
-        target.componentDidInsert();
-      }
-    }
 
     SohpieConstructor.createStyleSheet = function(styles,mediaQuery){
-      StyleSheet.create(styles,mediaQuery, inName)
+        StyleSheet.create(styles,mediaQuery, inName)
     }
 
 
 
-  if(inName!=="undefined"){
-    registerDefinition(inName, SohpieConstructor);
-    document.createElement(inName);
-  }
+    if(inName!=="undefined"){
+        registerDefinition(inName, SohpieConstructor);
+        document.createElement(inName);
+    }
 
-  SohpieConstructor.prototype.constructor = SohpieConstructor
-
-
-  return SohpieConstructor;
+    return SohpieConstructor;
 }
 
 function resolveTagName(inDefinition) {
@@ -245,11 +133,6 @@ function registerDefinition(inName, inDefinition) {
 
 
 
-
-
-
-
-
 function isLeaf(inElement){
     if(inElement){
         var name = inElement.tagName.toLowerCase();
@@ -262,9 +145,7 @@ var isReady = false;
 
 
 module.exports = {
-
   registry : registry,
   isLeaf : isLeaf,
-
   register : register
 }

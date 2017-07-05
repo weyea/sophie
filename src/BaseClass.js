@@ -9,11 +9,11 @@ var SohpieConstructor = function (props) {
     this.children = []
     this.refs = {}
     var defaultProps = this.getDefaultProps&&this.getDefaultProps();
-    var newProps = merge.recursive(defaultProps||{}, props||{})
+    var newProps = merge(defaultProps||{}, props||{})
     this.props = newProps;
     this.attributes = newProps
     var defaultState = this.getInitialState&&this.getInitialState()
-    var newState = merge.recursive({},defaultState||{})
+    var newState = merge({},defaultState||{})
     this.state = newState
 
 }
@@ -42,11 +42,11 @@ var baseClassPrototype = {
         return node
     },
     setState : function(value){
-        this.state =  merge.recursive(this.state ,value);
+        this.state =  merge(this.state ,value);
         this._update();
     },
     setProps: function(value){
-        this.state =  merge.recursive(this.props ,value);
+        this.state =  merge(this.props ,value);
         this._update();
     },
     element : function(){
@@ -55,6 +55,7 @@ var baseClassPrototype = {
     },
     render : function(){
     },
+
     append :function(child){
         var children = this.children;
         child.parent = this

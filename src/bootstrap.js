@@ -8,6 +8,7 @@
   var EE  = require("./event")
   var StyleSheet = require("./styleSheet");
   var mount = require("./mount");
+var merge = require("merge");
 
   var currentOwner = require("./currentOwner");
 
@@ -65,26 +66,20 @@
       var walk = function(vnode){
 
          var currentData = {};
-
-
          var children;
 
           if(vnode.children&&vnode.children.length){
               children  = vnode.children;
           }
-
           if(vnode.attributes&&vnode.attributes.children){
               children = vnode.attributes.children;
           }
-
           if(vnode.props&&vnode.props.children){
               children = vnode.props.children;
           }
-
           if(!Array.isArray(children)){
               children = [children];
           }
-
 
         if(Sophie.isThunk(vnode)){
           var component = vnode;
@@ -92,11 +87,12 @@
           currentData.type="thunk"
           // currentData.state = component.state
           var attributes = {};
-          for(var p in component.attributes){
+
+          for(var p in component.props){
             if(p == "children")continue;
-            attributes[p] = component.attributes[p];
+            attributes[p] = merge.recursive(true,component.props[p])
           }
-          currentData.attributes = attributes
+          currentData.props = attributes
           currentData.name = component.name
         }
         else if(vnode.type=="text"){
@@ -108,11 +104,11 @@
           currentData.type = "native"
           currentData.tagName =  vnode.tagName;
           var attributes = {};
-          for(var p in vnode.attributes){
+          for(var p in vnode.props){
             if(p == "children")continue;
-            attributes[p] = vnode.attributes[p];
+            attributes[p] = merge.recursive(true, vnode.props[p]);
           }
-          currentData.attributes = attributes
+          currentData.props = attributes
 
         }
         currentData.children = [];
@@ -145,7 +141,7 @@
                   if(!c||!c.type) continue;
 
                  if(c.type=="thunk"){
-                   result.push(self.element(Sophie.registry[c.name],c.attributes,func(c.children)))
+                   result.push(self.element(Sophie.registry[c.name],c.props,func(c.children)))
                  }
                  else if(c.type=="text"){
 
@@ -155,7 +151,7 @@
                     })
                  }
                  else if(c.type = "native"){
-                   result.push(self.element(c.tagName,c.attributes,func(c.children)))
+                   result.push(self.element(c.tagName,c.props,func(c.children)))
                  }
               }
 

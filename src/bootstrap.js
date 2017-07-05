@@ -90,7 +90,7 @@ var merge = require("merge");
 
           for(var p in component.props){
             if(p == "children")continue;
-            attributes[p] = merge.recursive(true,component.props[p])
+            attributes[p] = component.props[p]
           }
           currentData.props = attributes
           currentData.name = component.name
@@ -106,7 +106,7 @@ var merge = require("merge");
           var attributes = {};
           for(var p in vnode.props){
             if(p == "children")continue;
-            attributes[p] = merge.recursive(true, vnode.props[p]);
+            attributes[p] = vnode.props[p];
           }
           currentData.props = attributes
 

@@ -56,9 +56,15 @@ var baseClassPrototype = {
     render : function(){
     },
 
-    append :function(child){
-        var children = this.children;
+    addChild:function(child){
         child.parent = this
+        var children = this.props.children;
+        children.push(child);
+    },
+
+    append :function(child){
+        child.parent = this
+        var children = this.props.children;
         children.push(child);
         this._update()
         if(child.componentDidInsert){

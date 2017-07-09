@@ -261,6 +261,4 @@ var merge = require("merge");
 
   }
 
-module.exports.getMainDocumentParent = module.exports.getBaseParent
-module.exports.isMainDocumentEl = module.exports.isBaseVnode
-module.exports.getMainDocumentEl = module.exports.closestBaseParent
+

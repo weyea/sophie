@@ -20,10 +20,15 @@ var Sophie = {
   renderToJSON:Bootstrap.renderToJSON,
   renderFromJSON:Bootstrap.renderFromJSON,
   isBaseVnode:Bootstrap.isBaseVnode,
+
   getOwner:Bootstrap.getOwner,
   getParent:Bootstrap.getParent,
   closestBaseParent:Bootstrap.closestBaseParent,
   getBaseParent:Bootstrap.getBaseParent,
+
+  getMainDocumentParent : Bootstrap.getBaseParent,
+  isMainDocumentEl : Bootstrap.isBaseVnode,
+  getMainDocumentEl : Bootstrap.closestBaseParent,
 
   createVnodeByTagName:Bootstrap.createVnodeByTagName,
   createVnodeByFun:Bootstrap.createVnodeByFun,

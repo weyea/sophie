@@ -1,3 +1,12 @@
+/**
+ * parent: 为元素创建时所在vnode结构外层元素
+ * creater：为元素创建时render方法所属于的元素
+ * rootVnode：是组件的每一个根元素，根元素无parent，但有creater
+ * nativeNode:是组件的每一个根元素相对应的dom元素，render方法渲染完成时生成
+ */
+
+
+
 var merge = require("merge");
 
 var element = require("./element");

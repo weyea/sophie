@@ -76,6 +76,8 @@ module.exports =  function(type, attributes, ...children) {
   var children = result.children;
   for(var i = 0;i<children.length;i++){
     if(!children[i])continue;
+
+    //创建时的parent
     if(!children[i].parent){
         children[i].parent = result;
     }

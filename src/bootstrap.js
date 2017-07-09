@@ -1,6 +1,7 @@
 //bootstrap
 
 
+
   import {dom,diff,element,vnode,createApp}  from "../lib/deku/src/index";
   var utils = require("./utils")
   var Register = require("./register")
@@ -36,6 +37,9 @@ var merge = require("merge");
      callbacks[i]&&callbacks[i]();
    }
  }
+
+
+
 
   module.exports = {
     runApp: function(compontent, container,fire){
@@ -176,6 +180,7 @@ var merge = require("merge");
         return vnode._owner&&vnode._owner.name == Sophie.firstVnode.name
     },
 
+
     getOwner:function(vnode){
 
         return vnode._owner;
@@ -209,7 +214,6 @@ var merge = require("merge");
       else {
         var owner = this.getOwner(parent);
         return this.closestBaseParent(owner);
-
       }
     },
 
@@ -256,3 +260,7 @@ var merge = require("merge");
     }
 
   }
+
+module.exports.getMainDocumentParent = module.exports.getBaseParent
+module.exports.isMainDocumentEl = module.exports.isBaseVnode
+module.exports.getMainDocumentEl = module.exports.closestBaseParent

@@ -48,7 +48,7 @@ var merge = require("merge");
           var  container = container?container:document.body
           let render = createApp(container)
           var vnode = Element(compontent,{},null);
-          Sophie.firstVnode = Sophie.app = avnode
+          Sophie.firstVnode = Sophie.app = vnode
           render(vnode);
           mount(vnode);
           if(!isReady){

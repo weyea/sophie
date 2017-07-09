@@ -44,7 +44,7 @@ var merge = require("merge");
           var  container = container?container:document.body
           let render = createApp(container)
           var vnode = Element(compontent,{},null);
-          Sophie.firstVnode = vnode
+          Sophie.firstVnode = Sophie.app = avnode
           render(vnode);
           mount(vnode);
           if(!isReady){
@@ -181,6 +181,11 @@ var merge = require("merge");
         return vnode._owner;
 
     },
+      getCreater:function(vnode){
+
+          return vnode._owner;
+
+      },
 
     getParent:function(vnode){
         return vnode.parent;

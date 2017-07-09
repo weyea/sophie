@@ -81,7 +81,8 @@ module.exports =  function(type, attributes, ...children) {
     }
   }
 
-    result.compontentContext = result._owner = currentOwner.target;
+  result.creater = result.compontentContext = result._owner = currentOwner.target;
+   result._owner = currentOwner.target;
 
   if(attributes&&attributes["ref"]){
     var refValue = attributes["ref"];

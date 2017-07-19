@@ -39,7 +39,8 @@ module.exports =  function(type, attributes, ...children) {
   }
 
   let result = element.apply(null,args);
-
+  result.creater = result.compontentContext = result._owner = currentOwner.target;
+  result._owner = currentOwner.target;
 
   if(result.type=="thunk"&&result.options){
 
@@ -58,6 +59,7 @@ module.exports =  function(type, attributes, ...children) {
     options.attributes=options.props = merge(options.props, result.props);
 
     options.props.children = result.children;
+
 
     if(!options.props.children||options.props.children ==0){
       if(options.getDefaultChildren){
@@ -83,8 +85,7 @@ module.exports =  function(type, attributes, ...children) {
     }
   }
 
-  result.creater = result.compontentContext = result._owner = currentOwner.target;
-   result._owner = currentOwner.target;
+
 
   if(attributes&&attributes["ref"]){
     var refValue = attributes["ref"];

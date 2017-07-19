@@ -76,8 +76,8 @@ var baseClassPrototype = {
         var children = this.props.children;
         children.push(child);
         this._update()
-        if(child.componentDidInsert){
-            child.componentDidInsert();
+        if(child.componentDidInsertChild){
+            child.componentDidInsertChild(child);
         }
     },
 
@@ -89,6 +89,9 @@ var baseClassPrototype = {
             result.push(child)
         }
         this.props.children = this.children = this.attributes.children = result;
+        if(child.componentDidSetChildren){
+            child.componentDidSetChildren(children);
+        }
     },
 
     remove : function(child){
@@ -103,8 +106,8 @@ var baseClassPrototype = {
             }
         }
         this._update()
-        if(child.componentDidRemove){
-            child.componentDidRemove();
+        if(child.componentDidRemoveChild){
+            child.componentDidRemoveChild(child);
         }
     },
     insertBefore :function(target, before){
@@ -135,8 +138,8 @@ var baseClassPrototype = {
             }
         }
         this._update()
-        if(target.componentDidInserted){
-            target.componentDidInsert();
+        if(target.componentDidInsertChild){
+            target.componentDidInsertChild();
         }
     }
 }

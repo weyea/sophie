@@ -49,15 +49,21 @@ function register(inName, inOptions, ExtendClass) {
     var oldRender =  definition.render
     var oldComponentDidMount = definition.componentDidMount
     var oldComponentWillMount = definition.componentWillMount
-    var componentDidInsert = definition.componentDidInsert
-    var componentDidInsert = definition.componentDidInsert
+    var componentDidInsertChild = definition.componentDidInsertChild
+
     var getDefaultChildren = definition.getDefaultChildren;
+    var componentDidSetChildren = definition.componentDidSetChildren;
 
 
 
     if(getDefaultChildren){
         definition.getDefaultChildren = function(){
+            currentOwner.target = this.creater;
             var result =  getDefaultChildren.apply(this, arguments);
+            for(var i = 0;i<result.length;i++){
+                result.parent = this;
+            }
+            currentOwner.target = undefined;
             return result;
         }
     }
@@ -74,19 +80,24 @@ function register(inName, inOptions, ExtendClass) {
         return result;
     },
 
+
     definition.componentDidMount = function(){
         oldComponentDidMount&&oldComponentDidMount.apply(this, arguments)
-        EE.trigger("componentDidMount",[this.node])
+        EE.trigger("componentDidMount",[this])
     }
 
     definition.componentDidInserted = function(){
-        oldComponentDidInserted&&oldComponentDidInserted.apply(this, arguments)
-        EE.trigger("componentDidInsert",[this.node])
+        componentDidInsertChild&&componentDidInsertChild.apply(this, arguments)
+        EE.trigger("componentDidInsertChild",[this])
+    }
+    definition.componentDidSetChildren = function(){
+        componentDidSetChildren&&componentDidSetChildren.apply(this, arguments)
+        EE.trigger("componentDidSetChildren",[this])
     }
 
     definition.componentWillMount = function(){
         oldComponentWillMount&&oldComponentWillMount.apply(this, arguments)
-        EE.trigger("oldComponentWillMount",[this.node])
+        EE.trigger("oldComponentWillMount",[this])
     }
 
     merge(SohpieConstructor.prototype ,definition);

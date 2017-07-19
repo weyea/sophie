@@ -58,12 +58,12 @@ function register(inName, inOptions, ExtendClass) {
 
     if(getDefaultChildren){
         definition.getDefaultChildren = function(){
-            currentOwner.target = this.creater;
+
             var result =  getDefaultChildren.apply(this, arguments);
             for(var i = 0;i<result.length;i++){
                 result[i].parent = this;
             }
-            currentOwner.target = undefined;
+
             return result;
         }
     }

@@ -61,7 +61,7 @@ function register(inName, inOptions, ExtendClass) {
             currentOwner.target = this.creater;
             var result =  getDefaultChildren.apply(this, arguments);
             for(var i = 0;i<result.length;i++){
-                result.parent = this;
+                result[i].parent = this;
             }
             currentOwner.target = undefined;
             return result;

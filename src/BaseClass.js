@@ -76,8 +76,8 @@ var baseClassPrototype = {
         var children = this.props.children;
         children.push(child);
         this._update()
-        if(child.componentDidInsertChild){
-            child.componentDidInsertChild(child);
+        if(this.componentDidInsertChild){
+            this.componentDidInsertChild(child);
         }
     },
 
@@ -89,8 +89,8 @@ var baseClassPrototype = {
             result.push(child)
         }
         this.props.children = this.children = this.attributes.children = result;
-        if(child.componentDidSetChildren){
-            child.componentDidSetChildren(children);
+        if(this.componentDidSetChildren){
+            this.componentDidSetChildren(children);
         }
     },
 

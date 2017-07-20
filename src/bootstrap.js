@@ -9,7 +9,7 @@
   var EE  = require("./event")
   var StyleSheet = require("./styleSheet");
   var mount = require("./mount");
-var merge = require("merge");
+  var merge = require("merge");
 
   var currentOwner = require("./currentOwner");
 
@@ -37,8 +37,6 @@ var merge = require("merge");
      callbacks[i]&&callbacks[i]();
    }
  }
-
-
 
 
   module.exports = {

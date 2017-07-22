@@ -38,7 +38,7 @@ var SohpieConstructor = function (props) {
 
 
 var baseClassPrototype = {
-    forceUpdate: function(){
+    forceUpdate: function(updateChildren){
         // debugger
         var oldVnode = this.rootVnode;
         var newVnode = this.render();
@@ -48,6 +48,16 @@ var baseClassPrototype = {
 
         this.rootVnode = newVnode;
         this.nativeNode = node;
+
+        if(updateChildren&&this.props.children&&this.props.children.length){
+            for(var i = 0;i<this.props.children.length;i++){
+                var child = this.props.children[i];
+                if(child.forceUpdate){
+                    child.forceUpdate();
+                }
+            }
+        }
+
         return node
     },
     setState : function(value){

@@ -53,7 +53,7 @@ var baseClassPrototype = {
             for(var i = 0;i<this.props.children.length;i++){
                 var child = this.props.children[i];
                 if(child.forceUpdate){
-                    child.forceUpdate();
+                    child.forceUpdate(updateChildren);
                 }
             }
         }

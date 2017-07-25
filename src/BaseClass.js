@@ -83,6 +83,7 @@ var baseClassPrototype = {
 
     append :function(child){
         child.parent = this
+        child.owner = child.creater = this.owner
         var children = this.props.children;
         children.push(child);
         this._update()
@@ -96,6 +97,7 @@ var baseClassPrototype = {
         for(var i = 0; i < children.length; i++){
             var child = children[i];
             child.parent = this;
+            child.owner = child.creater = this.owner
             result.push(child)
         }
         this.props.children = this.children = this.attributes.children = result;

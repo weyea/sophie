@@ -102,6 +102,11 @@
           currentData.nodeValue = vnode.nodeValue
 
         }
+        else if(vnode.type=="html"){
+            currentData.type =  vnode.type
+            currentData.nodeValue = vnode.nodeValue
+
+        }
         else if(vnode.type =="native"){
           currentData.type = "native"
           currentData.tagName =  vnode.tagName;
@@ -151,6 +156,13 @@
                       type: 'text',
                       nodeValue: c.nodeValue
                     })
+                 }
+                 else if(c.type=="html"){
+
+                     result.push({
+                         type: 'html',
+                         nodeValue: c.nodeValue
+                     })
                  }
                  else if(c.type = "native"){
                    result.push(self.element(c.tagName,c.props,func(c.children)))

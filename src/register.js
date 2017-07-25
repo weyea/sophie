@@ -33,7 +33,6 @@ function register(inName, inOptions, ExtendClass) {
         var SohpieConstructor = function (props) {
             ExtendClass.apply(this, [props])
         }
-
         SohpieConstructor.prototype = Object.create(ExtendClass.prototype)
     }
     else{
@@ -42,7 +41,6 @@ function register(inName, inOptions, ExtendClass) {
 
         }
         SohpieConstructor.prototype = Object.create(SophieBaseClass.prototype)
-
     }
 
 
@@ -58,12 +56,10 @@ function register(inName, inOptions, ExtendClass) {
 
     if(getDefaultChildren){
         definition.getDefaultChildren = function(){
-
             var result =  getDefaultChildren.apply(this, arguments);
             for(var i = 0;i<result.length;i++){
                 result[i].parent = this;
             }
-
             return result;
         }
     }

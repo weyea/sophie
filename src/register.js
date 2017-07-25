@@ -69,32 +69,46 @@ function register(inName, inOptions, ExtendClass) {
     // SohpieConstructor.prototype.getInitialState = function(){}
 
 
-    definition.render =  function(){
-        currentOwner.target = this;
-        var result =  oldRender.apply(this, arguments);
-        currentOwner.target = undefined;
-        return result;
-    },
-
-
-    definition.componentDidMount = function(){
-        oldComponentDidMount&&oldComponentDidMount.apply(this, arguments)
-        EE.trigger("componentDidMount",[this])
+    if(oldRender){
+        definition.render =  function(){
+            currentOwner.target = this;
+            var result =  oldRender.apply(this, arguments);
+            currentOwner.target = undefined;
+            return result;
+        }
     }
 
-    definition.componentDidInserted = function(){
-        componentDidInsertChild&&componentDidInsertChild.apply(this, arguments)
-        EE.trigger("componentDidInsertChild",[this])
-    }
-    definition.componentDidSetChildren = function(){
-        componentDidSetChildren&&componentDidSetChildren.apply(this, arguments)
-        EE.trigger("componentDidSetChildren",[this])
+    if(oldComponentDidMount){
+        definition.componentDidMount = function(){
+            oldComponentDidMount&&oldComponentDidMount.apply(this, arguments)
+            EE.trigger("componentDidMount",[this])
+        }
     }
 
-    definition.componentWillMount = function(){
-        oldComponentWillMount&&oldComponentWillMount.apply(this, arguments)
-        EE.trigger("oldComponentWillMount",[this])
+
+    if(componentDidInsertChild){
+        definition.componentDidInserted = function(){
+            componentDidInsertChild&&componentDidInsertChild.apply(this, arguments)
+            EE.trigger("componentDidInsertChild",[this])
+        }
     }
+
+    if(componentDidSetChildren){
+        definition.componentDidSetChildren = function(){
+            componentDidSetChildren&&componentDidSetChildren.apply(this, arguments)
+            EE.trigger("componentDidSetChildren",[this])
+        }
+    }
+
+    if(oldComponentWillMount){
+        definition.componentWillMount = function(){
+            oldComponentWillMount&&oldComponentWillMount.apply(this, arguments)
+            EE.trigger("oldComponentWillMount",[this])
+        }
+    }
+
+
+
 
     merge(SohpieConstructor.prototype ,definition);
     SohpieConstructor.prototype.constructor = SohpieConstructor

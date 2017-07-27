@@ -16,7 +16,7 @@ module.exports =  function(type, attributes, ...children) {
 
   //class
   if(typeof type === 'function'){
-    type = new type(attributes);
+    type = new type(attributes, currentOwner.target);
     if(type.render){
       var oldRender = type.render;
       type.render = function(){
@@ -39,7 +39,7 @@ module.exports =  function(type, attributes, ...children) {
   }
 
   let result = element.apply(null,args);
-  result.creater = result.compontentContext = result._owner = currentOwner.target;
+  result.creater = result.compontentContext = result.owner = result._owner = currentOwner.target;
 
 
   if(result.type=="thunk"&&result.options){

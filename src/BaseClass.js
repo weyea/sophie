@@ -12,7 +12,10 @@ var merge = require("merge");
 var element = require("./element");
 import {dom,diff,vnode}   from "../lib/deku/src/index";
 
-var SohpieConstructor = function (props) {
+var SohpieConstructor = function (props,owner) {
+    if(owner){
+        this.owner = owner
+    }
     this.state = {}
     this.props = props || {}
     this.children = []
@@ -24,7 +27,6 @@ var SohpieConstructor = function (props) {
     var defaultState = this.getInitialState&&this.getInitialState()
     var newState = merge({},defaultState||{})
     this.state = newState
-
 }
 
 

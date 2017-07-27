@@ -23,7 +23,8 @@
     "redux": "^3.0.5",
     "setify": "1.0.3",
     "union-type": "0.1.6",
-    "wolfy87-eventemitter": "^5.1.0"
+    "wolfy87-eventemitter": "^5.1.0",
+    "bit-vector": "^0.1.0"
   },
   "devDependencies": {
     "babel-core": "^6.4.0",

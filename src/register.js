@@ -34,6 +34,8 @@ function register(inName, inOptions, ExtendClass) {
             ExtendClass.apply(this, [props])
         }
         SohpieConstructor.prototype = Object.create(ExtendClass.prototype)
+        SohpieConstructor.prototype.constructor = SohpieConstructor
+
     }
     else{
         var SohpieConstructor = function (props) {
@@ -41,6 +43,8 @@ function register(inName, inOptions, ExtendClass) {
 
         }
         SohpieConstructor.prototype = Object.create(SophieBaseClass.prototype)
+        SohpieConstructor.prototype.constructor = SohpieConstructor
+
     }
 
 

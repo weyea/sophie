@@ -67,8 +67,16 @@ var baseClassPrototype = {
         this._update();
     },
     setProps: function(value){
-        this.state =  merge(this.props ,value);
+        if(this.componentWillSetProps){
+            this.componentWillSetProps(value);
+        }
+        //设置属性
+        this.props =  merge(this.props ,value);
+        if(this.componentDidSetProps){
+            this.componentDidSetProps(value);
+        }
         this._update();
+
     },
     element : function(){
         var vnode = element.apply(null, arguments)

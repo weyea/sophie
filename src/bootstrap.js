@@ -187,18 +187,18 @@
     },
     //第个组件生成元素
     isBaseVnode:function(vnode){
-        return vnode._owner&&vnode._owner.name == Sophie.firstVnode.name
+        return vnode.owner&&vnode.owner.name == Sophie.firstVnode.name
     },
 
 
     getOwner:function(vnode){
 
-        return vnode._owner;
+        return vnode.owner||vnode._owner;
 
     },
       getCreater:function(vnode){
 
-          return vnode._owner;
+          return vnode.owner||vnode._owner;
 
       },
 

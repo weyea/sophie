@@ -54,7 +54,7 @@ module.exports =  function(type, attributes, ...children) {
     var options = result.options;
     options.type = result.type;
     options.fn = result.fn;
-    options.key = result.key;
+    options.key = options.id =  (result.key || result.id);
     options.children = result.children;
     options.attributes=options.props = merge(options.props, result.props);
 

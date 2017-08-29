@@ -10,7 +10,7 @@
 var merge = require("merge");
 
 var element = require("./element");
-import {dom,diff,vnode}   from "../lib/deku/src/index";
+import {dom, diff, vnode}   from "../lib/deku/src/index";
 
 var SohpieConstructor = function (props,owner) {
     if(owner){
@@ -28,7 +28,6 @@ var SohpieConstructor = function (props,owner) {
     var newState = merge({},defaultState||{})
     this.state = newState
 }
-
 
 
 // //重置render方法，生成根元素

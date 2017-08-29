@@ -56,13 +56,13 @@ module.exports =  function(type, attributes, ...children) {
     options.fn = result.fn;
     options.key = options.id =  (result.key || result.id);
     options.children = result.children;
-    options.attributes=options.props = merge(options.props, result.props);
+    options.attributes= options.props = merge(options.props, result.props);
 
     options.props.children = result.children;
-    options.creater =options.owner =  options.compontentContext = options._owner = currentOwner.target;
+    options.creater = options.owner =  options.compontentContext = options._owner = currentOwner.target;
 
 
-    if(!options.props.children||options.props.children.length ==0){
+    if(!options.props.children || options.props.children.length ==0){
       if(options.getDefaultChildren){
         options.props.children = options.getDefaultChildren();
       }
@@ -85,8 +85,6 @@ module.exports =  function(type, attributes, ...children) {
         children[i].parent = result;
     }
   }
-
-
 
   if(attributes&&attributes["ref"]){
     var refValue = attributes["ref"];

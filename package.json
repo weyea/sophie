@@ -3,6 +3,7 @@
   "version": "0.1.12",
   "main": "./src/sophie.js",
   "dependencies": {
+    "@f/create-element": "^1.0.1",
     "@f/empty-element": "^1.0.0",
     "@f/foreach": "1.2.2",
     "@f/is-function": "1.1.1",
@@ -15,6 +16,7 @@
     "@f/reduce-array": "^0.2.1",
     "@f/set-attribute": "1.0.1",
     "@f/to-array": "1.1.1",
+    "bit-vector": "^0.1.6",
     "dift": "0.1.12",
     "index-of": "0.2.0",
     "merge": "^1.2.0",
@@ -23,8 +25,7 @@
     "redux": "^3.0.5",
     "setify": "1.0.3",
     "union-type": "0.1.6",
-    "wolfy87-eventemitter": "^5.1.0",
-    "bit-vector": "^0.1.0"
+    "wolfy87-eventemitter": "^5.1.0"
   },
   "devDependencies": {
     "babel-core": "^6.4.0",

@@ -31,7 +31,9 @@ function register(inName, inOptions, ExtendClass) {
     //只能扩展Sophie类
     if(ExtendClass == SophieBaseClass || ExtendClass.prototype instanceof  SophieBaseClass){
         var SohpieConstructor = function (props) {
+
             ExtendClass.apply(this, [props])
+            if(this._constructor)this._constructor();
         }
         SohpieConstructor.prototype = Object.create(ExtendClass.prototype)
         SohpieConstructor.prototype.constructor = SohpieConstructor
@@ -40,6 +42,7 @@ function register(inName, inOptions, ExtendClass) {
     else{
         var SohpieConstructor = function (props) {
             SophieBaseClass.apply(this, [props])
+            if(this._constructor)this._constructor();
 
         }
         SohpieConstructor.prototype = Object.create(SophieBaseClass.prototype)
@@ -48,6 +51,7 @@ function register(inName, inOptions, ExtendClass) {
     }
 
 
+    var oldConstructor =  definition.constructor
     var oldRender =  definition.render
     var oldComponentDidMount = definition.componentDidMount
     var oldComponentWillMount = definition.componentWillMount
@@ -57,6 +61,13 @@ function register(inName, inOptions, ExtendClass) {
     var componentDidSetChildren = definition.componentDidSetChildren;
 
 
+
+    if(oldConstructor) {
+        definition._constructor = oldConstructor;
+    }
+    else{
+        definition._constructor = function(){}
+    }
 
     if(getDefaultChildren){
         definition.getDefaultChildren = function(){

@@ -22,8 +22,8 @@ var SohpieConstructor = function (props,owner) {
     this.refs = {}
     var defaultProps = this.getDefaultProps&&this.getDefaultProps();
     var newProps = merge(defaultProps||{}, props||{})
-    this.props = newProps;
-    this.attributes = newProps
+    this.props =this.attributes =  newProps;
+
     var defaultState = this.getInitialState&&this.getInitialState()
     var newState = merge({},defaultState||{})
     this.state = newState

@@ -30,6 +30,10 @@ module.exports =  function(type, attributes, ...children) {
   if(children&&children.length){
     var newChildren = [];
     for(var i=0;i<children.length;i++){
+      if(typeof children[i] == "string"&&children[i].trim() == ""){
+        continue;
+      }
+
       if(children[i]){
           newChildren.push(children[i]);
       }

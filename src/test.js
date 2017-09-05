@@ -1,7 +1,59 @@
+var Div1 = Sophie.createClass("my-js-div-1",{
+    getDefaultProps:function(){
+      return {
+          id:"div-1"
+      }
+    },
+    render: function() {
+        return (
+            <div  id={this.props.id} class="div-1">
+               div-1
+            </div>
+        )
+    }
+})
+
+
+var Div2 = Sophie.createClass("my-js-div-2",{
+    getDefaultProps:function(){
+        return {
+            id:"div-2"
+        }
+    },
+    render: function  () {
+        return (
+            <div id={this.props.id} class="div-2">
+                div-2
+            </div>
+        )
+    }
+})
+
+
+var Div3 = Sophie.createClass("my-js-div-3",{
+    getDefaultProps:function(){
+
+        return {
+            id:"div-3"
+        }
+    },
+    render: function  () {
+        return (
+            <div id={this.props.id} class="div-3">
+                div-3
+            </div>
+        )
+    }
+})
 
 
 
-    var MyJSDiv = Sophie.createClass("my-js-div",{
+
+
+
+
+
+var MyJSDiv = Sophie.createClass("my-js-div",{
 
 
       componentWillMount:function(){
@@ -9,36 +61,42 @@
         this.num = 0;
       },
       componentDidMount:function(){
+        var num = 0;
 
-          console.log(this.refs["baseDiv"])
 
         setInterval(()=>{
-          this.num++;
-          this.setState({name:this.num})
+
+          this.setState({num:num++})
 
         },1000)
       },
 
       render: function  () {
-        return (
-          <div class="container">
-              <div class="123">
-                <svg class="grid-lines"><line x1="150" y1="0" x2="150" y2="100%" class="backLine"></line><line x1="1130" y1="0" x2="1130" y2="100%" class="backLine"></line><line x1="0" y1="128" x2="100%" y2="128" class="backLine"></line><line x1="0" y1="5817" x2="100%" y2="5817" class="backLine"></line><line x1="150" y1="0" x2="150" y2="100%" class="frontLine"></line><line x1="1130" y1="0" x2="1130" y2="100%" class="frontLine"></line><line x1="0" y1="128" x2="100%" y2="128" class="frontLine"> </line><line x1="0" y1="5817" x2="100%" y2="5817" class="frontLine"></line></svg>
+            console.log(this.state.num)
+          if(this.state.num%2 == 0){
+           return   <div class="container">
+                  <Div1/>
+                  <Div2/>
+                  <Div3/>
               </div>
+          }
+          else{
 
-          </div>
+           return    <div class="container">
+                  <div>
+                      <Div1/>
+                      <Div2/>
+                  </div>
+                  <Div3/>
 
-        )
+              </div>
+          }
+
       }
 
     })
 
 
-
-	// console.log(Sophie.renderElement(MyJSDiv))
-Sophie.on("ready", function(){
-  console.log("ready");
-})
 
 
 

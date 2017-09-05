@@ -17,6 +17,7 @@ var BaseDiv = {
 
   onCreate:function(){
   },
+
   render: function  ({ props, children, context, path }) {
 
 
@@ -35,6 +36,15 @@ var MyButton = {
   title:"hello world",
   onCreate:function(){
     console.log("oncreate",this)
+  },
+  componentDidMount:function(){
+    var self = this;
+    var n = 1;
+    setTimeout(function(){
+      self.setState({
+          type: n*-1
+      })
+    },4000)
   },
   render: function  ({ props, children, context, path }) {
       console.log("MyButton",context,this)
@@ -58,7 +68,7 @@ render(
 )
 MyButton.title="hello "
 
-debugger;
+
 
 render(
   <MyButton></MyButton>,

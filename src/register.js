@@ -33,7 +33,7 @@ function register(inName, inOptions, ExtendClass) {
         var SohpieConstructor = function (props) {
 
             ExtendClass.apply(this, [props])
-            if(this._constructor)this._constructor();
+            if(SohpieConstructor.prototype._constructor)SohpieConstructor.prototype._constructor.apply(this,[]);
         }
         SohpieConstructor.prototype = Object.create(ExtendClass.prototype)
         SohpieConstructor.prototype.constructor = SohpieConstructor
@@ -42,7 +42,7 @@ function register(inName, inOptions, ExtendClass) {
     else{
         var SohpieConstructor = function (props) {
             SophieBaseClass.apply(this, [props])
-            if(this._constructor)this._constructor();
+            if(SohpieConstructor.prototype._constructor)SohpieConstructor.prototype._constructor.apply(this,[]);
 
         }
         SohpieConstructor.prototype = Object.create(SophieBaseClass.prototype)

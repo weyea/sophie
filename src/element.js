@@ -26,7 +26,12 @@ module.exports =  function(type, attributes, ...children) {
   }
   //typey
   else if(typeof type === 'function'){
-      type = type(attributes, currentOwner.target)
+      var typeObject = type(attributes, currentOwner.target)
+      type = typeObject.type
+      var attrs = typeObject.attributes || {}
+      for(var p in attrs){
+          attributes[p] =  attrs[p];
+      }
 
   }
 

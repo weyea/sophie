@@ -16,6 +16,7 @@ var SohpieConstructor = function (props,owner) {
     if(owner){
         this.owner = owner
     }
+    
     this.state = {}
     this.props = props || {}
     this.children = []

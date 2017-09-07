@@ -14,15 +14,19 @@ module.exports =  function(type, attributes, ...children) {
     key = attributes.key = attributes.id;
   }
 
-  //class
-  if(typeof type === 'function'){
-    type = new type(attributes, currentOwner.target);
-    if(type.render){
-      var oldRender = type.render;
-      type.render = function(){
-       return  oldRender.apply(type,[])
+
+  if(typeof type === 'function'&&type.prototype.render){
+      type = new type(attributes, currentOwner.target);
+      if(type.render){
+          var oldRender = type.render;
+          type.render = function(){
+              return  oldRender.apply(type,[])
+          }
       }
-    }
+  }
+  //typey
+  else if(typeof type === 'function'){
+      type = type(attributes, currentOwner.target)
 
   }
 

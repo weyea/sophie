@@ -16,7 +16,7 @@ var SohpieConstructor = function (props,owner) {
     if(owner){
         this.owner = owner
     }
-    
+
     this.state = {}
     this.props = props || {}
     this.children = []
@@ -42,8 +42,20 @@ var SohpieConstructor = function (props,owner) {
 var baseClassPrototype = {
     forceUpdate: function(updateChildren){
         // debugger
+
+        if(this.props.children){
+            for(var i = 0;i< this.props.children.length;i++){
+                var props = this.props.children[i].props
+                var key = props.id || props.key
+                this.props.children[i].innerKey  = key || (i+1)
+            }
+        }
         var oldVnode = this.rootVnode;
         var newVnode = this.render();
+
+
+
+
 
         let changes = diff.diffNode(oldVnode, newVnode, this.id || '0')
         var node = changes.reduce(dom.updateElement(function(){}, this), this.nativeNode)

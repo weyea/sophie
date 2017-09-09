@@ -1,14 +1,28 @@
 
+var Div0 = Sophie.createClass("my-js-div-0",{
+    getDefaultProps:function(){
+        return {
+            name:"div-0"
+        }
+    },
+    render: function() {
+        return (
+            <div   class="div-0">
+                {this.props.name+" : "+ (this.props.num || 0)}
+            </div>
+        )
+    }
+})
 var Div1 = Sophie.createClass("my-js-div-1",{
     getDefaultProps:function(){
       return {
-          id:"div-1"
+          name:"div-1"
       }
     },
     render: function() {
         return (
-            <div  id={this.props.id} class="div-1">
-               div-1
+            <div   class="div-1">
+                {this.props.name+" : "+ (this.props.num || 0)}
             </div>
         )
     }
@@ -19,14 +33,14 @@ var Div2 = Sophie.createClass("my-js-div-2",{
 
     getDefaultProps:function(){
         return {
-            id:"div-2"
+            name:"div-2"
         }
     },
 
     render: function  () {
         return (
-            <div id={this.props.id} class="div-2">
-                div-2
+            <div  class="div-2">
+                {this.props.name+" : "+ (this.props.num || 0)}
             </div>
         )
     }
@@ -36,17 +50,33 @@ var Div2 = Sophie.createClass("my-js-div-2",{
 var Div3 = Sophie.createClass("my-js-div-3",{
     getDefaultProps:function(){
         return {
-            id:"div-3"
+            name:"div-3"
         }
     },
     render: function  () {
         return (
-            <div id={this.props.id} class="div-3">
-                div-3
+            <div class="div-3">
+                {this.props.name+" : "+ (this.props.num || 0)}
             </div>
         )
     }
 })
+
+var Div4 = Sophie.createClass("my-js-div-4",{
+    getDefaultProps:function(){
+        return {
+            name:"div-4"
+        }
+    },
+    render: function  () {
+        return (
+            <div  class="div-4">
+                {this.props.name+" : "+ (this.props.num || 0)}
+            </div>
+        )
+    }
+})
+
 
 
 
@@ -58,25 +88,34 @@ var Div3 = Sophie.createClass("my-js-div-3",{
 var MyJSDiv = Sophie.createClass("my-js-div",{
 
       componentWillMount:function(){
-        this.num = 0;
+
+      },
+      getInitialState:function(){
+        return {
+            num:2
+        }
       },
 
         getDefaultChildren:function(){
           return [
-              <Div1/>,
-              <Div2/>,
-              <Div3/>
+              <Div0  num="0"/>,
+              <Div1 num="1"/>,
+              <Div2 num="2"/>,
+              <Div3 num="3"/>,
+              <Div4 num="4"/>,
+              <Div3 num="5"/>,
+
           ]
         },
       componentDidMount:function(){
-        var num = 0;
-        setInterval(()=>{
-          this.setState({num:num++})
-        },1000)
+
+        setTimeout(()=>{
+          this.setState({num:++this.state.num})
+        },3000)
       },
 
       render: function  () {
-            console.log(this.state.num)
+
           if(this.state.num%2 == 0){
            return   <div class="container">
                {this.props.children}
@@ -85,11 +124,18 @@ var MyJSDiv = Sophie.createClass("my-js-div",{
           else{
 
            return    <div class="container">
-                  <div>
-                      {this.props.children[0]}
-                      {this.props.children[1]}
-                  </div>
-               {this.props.children[2]}
+
+                          <div class="grid">
+                              {this.props.children[4]}
+                              {this.props.children[5]}
+                          </div>
+                        {this.props.children[1]}
+               <Div4 num ="6"></Div4>
+                       <div class="grid">
+                           {this.props.children[0]}
+                           {this.props.children[3]}
+                       </div>
+                        {this.props.children[2]}
 
               </div>
           }
@@ -98,7 +144,10 @@ var MyJSDiv = Sophie.createClass("my-js-div",{
 
     })
 
-
+Sophie.createStyleSheet({
+    ".grid":{
+        marginLeft:10}
+})
 
 
 

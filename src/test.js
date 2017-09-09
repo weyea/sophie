@@ -5,6 +5,10 @@ var Div0 = Sophie.createClass("my-js-div-0",{
             name:"div-0"
         }
     },
+    componentDidMount:function(){
+
+        console.log(this.props.name+" : "+ (this.props.num || 0))
+    },
     render: function() {
         return (
             <div   class="div-0">
@@ -18,6 +22,10 @@ var Div1 = Sophie.createClass("my-js-div-1",{
       return {
           name:"div-1"
       }
+    },
+    componentDidMount:function(){
+
+        console.log(this.props.name+" : "+ (this.props.num || 0))
     },
     render: function() {
         return (
@@ -36,6 +44,10 @@ var Div2 = Sophie.createClass("my-js-div-2",{
             name:"div-2"
         }
     },
+    componentDidMount:function(){
+
+        console.log(this.props.name+" : "+ (this.props.num || 0))
+    },
 
     render: function  () {
         return (
@@ -53,6 +65,10 @@ var Div3 = Sophie.createClass("my-js-div-3",{
             name:"div-3"
         }
     },
+    componentDidMount:function(){
+
+        console.log(this.props.name+" : "+ (this.props.num || 0))
+    },
     render: function  () {
         return (
             <div class="div-3">
@@ -67,6 +83,10 @@ var Div4 = Sophie.createClass("my-js-div-4",{
         return {
             name:"div-4"
         }
+    },
+    componentDidMount:function(){
+
+      console.log(this.props.name+" : "+ (this.props.num || 0))
     },
     render: function  () {
         return (
@@ -101,7 +121,7 @@ var MyJSDiv = Sophie.createClass("my-js-div",{
               <Div0  num="0"/>,
               <Div1 num="1"/>,
               <Div2 num="2"/>,
-              <Div3 num="3"/>,
+              <Div3 id="3" num="3"/>,
               <Div4 num="4"/>,
               <Div3 num="5"/>,
 

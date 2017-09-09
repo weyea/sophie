@@ -95,8 +95,12 @@ function register(inName, inOptions, ExtendClass) {
 
     if(oldComponentDidMount){
         definition.componentDidMount = function(){
-            oldComponentDidMount&&oldComponentDidMount.apply(this, arguments)
-            EE.trigger("componentDidMount",[this])
+            if(!this._didMount){
+                this._didMount = true
+                oldComponentDidMount&&oldComponentDidMount.apply(this, arguments)
+                EE.trigger("componentDidMount",[this])
+            }
+
         }
     }
 

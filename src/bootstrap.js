@@ -3,6 +3,7 @@
 
 
   import {dom,diff,element,vnode,createApp}  from "../lib/deku/src/index";
+  import{mountElement} from "../lib/deku/src/dom/mount";
   var utils = require("./utils")
   var Register = require("./register")
   var Element = require("./element");
@@ -48,7 +49,7 @@
           var vnode = Element(compontent,{},null);
           Sophie.firstVnode = Sophie.app = vnode
           render(vnode);
-          mount(vnode);
+           mountElement(vnode);
           if(!isReady){
             isReady = true;
             if(fire !== false)  {

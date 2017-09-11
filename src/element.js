@@ -77,12 +77,12 @@ module.exports =  function(type, attributes, ...children) {
 
     if(!options.props.children || options.props.children.length ==0){
       if(options.getDefaultChildren){
-          var result = options.getDefaultChildren();
-          if(Array.isArray(result)){
-              options.props.children = result;
+          var defaultChildren = options.getDefaultChildren();
+          if(Array.isArray(defaultChildren)){
+              options.props.children = defaultChildren;
           }
           else{
-              options.props.children = [result]
+              options.props.children = [defaultChildren]
           }
 
       }

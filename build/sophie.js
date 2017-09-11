@@ -2819,9 +2819,15 @@
 	    SohpieConstructor.prototype.getDefaultChildren = function () {
 
 	      var result = getDefaultChildren.apply(this, arguments);
-	      for(var i = 0;i<result.length;i++){
-              result[i].parent = this;
-		  }
+			if(Array.isArray(result)){
+                for(var i = 0;i<result.length;i++){
+                    result[i].parent = this;
+                }
+			}
+			else{
+                result.parent = this;
+			}
+
 	      return result;
 	    };
 	  }

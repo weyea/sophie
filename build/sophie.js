@@ -2819,7 +2819,11 @@
 	    SohpieConstructor.prototype.getDefaultChildren = function () {
 
 	      var result = getDefaultChildren.apply(this, arguments);
-
+	      for(var i = 0;i<result.length;i++){
+              if(!result[i].parent){
+                  result[i].parent = this;
+              }
+		  }
 	      return result;
 	    };
 	  }

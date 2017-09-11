@@ -81,12 +81,10 @@ module.exports =  function(type, attributes, ...children) {
       }
     }
 
-
     //保持deku的结构
     options.options = options;
     result = options;
   }
-
 
 
   var children = result.props.children;

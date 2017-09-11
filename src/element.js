@@ -89,7 +89,7 @@ module.exports =  function(type, attributes, ...children) {
 
 
 
-  var children = result.children;
+  var children = result.props.children;
   for(var i = 0;i<children.length;i++){
     if(!children[i])continue;
 

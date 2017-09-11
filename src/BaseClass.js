@@ -46,8 +46,11 @@ var baseClassPrototype = {
         if(this.props.children){
             for(var i = 0;i< this.props.children.length;i++){
                 var props = this.props.children[i].props
-                var key = props.id || props.key
-                this.props.children[i].innerKey  = key || (i+1)
+                if(props){
+                    var key = props.id || props.key
+                    this.props.children[i].innerKey  = key || (i+1)
+                }
+
             }
         }
         var oldVnode = this.rootVnode;

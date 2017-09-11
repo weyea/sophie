@@ -56,8 +56,6 @@ module.exports =  function(type, attributes, ...children) {
 
 
   if(result.type=="thunk"&&result.options){
-
-
     // type: 'thunk',
     // fn,
     // children,
@@ -84,7 +82,6 @@ module.exports =  function(type, attributes, ...children) {
           else{
               options.props.children = [defaultChildren]
           }
-
       }
     }
 

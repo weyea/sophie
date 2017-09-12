@@ -1,5 +1,5 @@
 
-var utils = require("./utils");
+var Utils = require("./utils");
 var EE  = require("./event")
 var element = require("./element");
 import {dom,diff,vnode}   from "../lib/deku/src/index";
@@ -43,11 +43,9 @@ function register(inName, inOptions, ExtendClass) {
         var SohpieConstructor = function (props) {
             SophieBaseClass.apply(this, [props])
             if(SohpieConstructor.prototype._constructor)SohpieConstructor.prototype._constructor.apply(this,[]);
-
         }
         SohpieConstructor.prototype = Object.create(SophieBaseClass.prototype)
         SohpieConstructor.prototype.constructor = SohpieConstructor
-
     }
 
 
@@ -59,8 +57,6 @@ function register(inName, inOptions, ExtendClass) {
 
     var getDefaultChildren = definition.getDefaultChildren;
     var componentDidSetChildren = definition.componentDidSetChildren;
-
-
 
     if(oldConstructor) {
         definition._constructor = oldConstructor;
@@ -82,7 +78,6 @@ function register(inName, inOptions, ExtendClass) {
     //for decleare
     // SohpieConstructor.prototype.getDefaultProps = function(){}
     // SohpieConstructor.prototype.getInitialState = function(){}
-
 
     if(oldRender){
         definition.render =  function(){
@@ -129,7 +124,7 @@ function register(inName, inOptions, ExtendClass) {
 
 
 
-    merge(SohpieConstructor.prototype ,definition);
+    Utils.merge(SohpieConstructor.prototype ,definition);
     SohpieConstructor.prototype.constructor = SohpieConstructor
 
 

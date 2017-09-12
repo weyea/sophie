@@ -12,6 +12,8 @@ var merge = require("merge");
 var element = require("./element");
 import {dom, diff, vnode}   from "../lib/deku/src/index";
 
+var Utils = require('./utils')
+
 var SohpieConstructor = function (props,owner) {
     if(owner){
         this.owner = owner
@@ -185,7 +187,7 @@ var baseClassPrototype = {
 baseClassPrototype._update = baseClassPrototype.forceUpdate
 
 
-merge(SohpieConstructor.prototype ,baseClassPrototype);
+Utils.merge(SohpieConstructor.prototype ,baseClassPrototype);
 
 
 

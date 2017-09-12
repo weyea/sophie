@@ -10,7 +10,10 @@ module.exports = {
                 document.addEventListener("DOMContentLoaded", func, false);
             }
         },
-
-
+        merge:function(o, m){
+            for(var  p in m){
+                o[p] = m
+            }
+        }
 
     }

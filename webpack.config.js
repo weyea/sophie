@@ -16,7 +16,7 @@ var config = {
     src: path.join(ROOT_PATH, SRC_DIR),
     out:path.join(ROOT_PATH,"build"),
     sophie: path.join(ROOT_PATH, SRC_DIR, 'sophie.js'),
-    test:path.join(ROOT_PATH, SRC_DIR, "test.js"),
+    test:path.join(ROOT_PATH, "examples", "test.js"),
     react:path.join(ROOT_PATH, SRC_DIR, "ReactTest.js"),
 
   },

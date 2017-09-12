@@ -12,7 +12,7 @@ module.exports = {
         },
         merge:function(o, m){
             for(var  p in m){
-                o[p] = m
+                o[p] = m[p]
             }
         }
 

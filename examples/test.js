@@ -242,7 +242,7 @@ var extendTest = function(){
 
             var background = "background-image:url("+this.props.src+")";
             return  (
-                <this.root></this.root>
+                <this.root><div>12313</div></this.root>
             );
         },
 

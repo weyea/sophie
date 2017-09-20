@@ -14,14 +14,28 @@ import {dom, diff, vnode}   from "../lib/deku/src/index";
 
 var Utils = require('./utils')
 
-var SohpieConstructor = function (props,owner) {
+var SohpieConstructor = function (props, children, owner) {
     if(owner){
         this.owner = owner
     }
 
     this.state = {}
     this.props = props || {}
-    this.children = []
+    this.children = children
+    this.props.children = children || []
+
+    if (!children ||children.length == 0) {
+        if (this.getDefaultChildren) {
+            var defaultChildren = this.getDefaultChildren();
+            if (Array.isArray(defaultChildren)) {
+                this.props.children = defaultChildren;
+            }
+            else {
+                this.props.children = [defaultChildren]
+            }
+        }
+    }
+
     this.refs = {}
     var defaultProps = this.getDefaultProps&&this.getDefaultProps();
     var newProps = merge(defaultProps||{}, props||{})
@@ -83,7 +97,7 @@ var baseClassPrototype = {
         this.state =  merge(this.state ,value);
         this._update();
     },
-    
+
     setProps: function(value){
         if(this.componentWillSetProps){
             this.componentWillSetProps(value);

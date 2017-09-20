@@ -13,7 +13,7 @@ module.exports = function (type, attributes, ...children) {
         key = attributes.key = attributes.id;
     }
 
-    var args = [type, attributes];
+    let result;
     var newChildren = [];
     if (children && children.length) {
 
@@ -26,20 +26,16 @@ module.exports = function (type, attributes, ...children) {
                 newChildren.push(children[i]);
             }
         }
-        args.push(newChildren)
+
 
     }
 
     if (typeof type === 'function' && type.prototype.render) {
-        type = new type(attributes, newChildren, currentOwner.target);
-        if (type.render) {
-            var oldRender = type.render;
-            type.render = function () {
-                return oldRender.apply(type, [])
-            }
-        }
+       result = new type(attributes, newChildren, currentOwner.target);
+       result.type ="thunk"
+
     }
-    //typey
+    //用方法 返回 属性 来 创建 element
     else if (typeof type === 'function') {
         var typeObject = type(attributes, currentOwner.target)
         type = typeObject.type
@@ -48,37 +44,14 @@ module.exports = function (type, attributes, ...children) {
             attributes[p] = attrs[p];
         }
 
+        result = element.apply(null, [type, attributes, newChildren]);
+
+    }
+    else{
+        result = element.apply(null, [type, attributes, newChildren]);
     }
 
-
-    let result = element.apply(null, args);
-    result.creater = result.compontentContext = result.owner = result._owner = currentOwner.target;
-
-
-    if (result.type == "thunk" && result.options) {
-        // type: 'thunk',
-        // fn,
-        // children,
-        // props,
-        // options,
-        // key
-        var options = result.options;
-        options.type = result.type;
-        options.fn = result.fn;
-        options.key = options.id = (result.key || result.id);
-        options.children = result.children;
-        options.attributes = options.props = merge(options.props, result.props);
-
-        options.props.children = result.children;
-        options.creater = options.owner = options.compontentContext = options._owner = currentOwner.target;
-
-
-
-        //保持deku的结构
-        options.options = options;
-        result = options;
-    }
-
+    result.ownerDocument = result.creater = result.compontentContext = result.owner = result._owner = currentOwner.target;
 
     var children = result.props.children;
     for (var i = 0; i < children.length; i++) {

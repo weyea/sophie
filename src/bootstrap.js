@@ -55,10 +55,7 @@ module.exports = {
                 fireReady();
             }
         }
-
         return vnode;
-
-
     },
 
     ready: ready,

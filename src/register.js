@@ -30,9 +30,9 @@ function register(inName, inOptions, ExtendClass) {
 
     //只能扩展Sophie类
     if(ExtendClass == SophieBaseClass || ExtendClass.prototype instanceof  SophieBaseClass){
-        var SohpieConstructor = function (props) {
+        var SohpieConstructor = function () {
 
-            ExtendClass.apply(this, [props])
+            ExtendClass.apply(this, arguments)
             if(SohpieConstructor.prototype._constructor)SohpieConstructor.prototype._constructor.apply(this,[]);
         }
         SohpieConstructor.prototype = Object.create(ExtendClass.prototype)
@@ -41,7 +41,7 @@ function register(inName, inOptions, ExtendClass) {
     }
     else{
         var SohpieConstructor = function (props) {
-            SophieBaseClass.apply(this, [props])
+            SophieBaseClass.apply(this, arguments)
             if(SohpieConstructor.prototype._constructor)SohpieConstructor.prototype._constructor.apply(this,[]);
         }
         SohpieConstructor.prototype = Object.create(SophieBaseClass.prototype)

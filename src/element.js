@@ -1,5 +1,7 @@
 import {dom, diff, element, vnode} from "../lib/deku/src/index";
 
+import {reduceChildrenArray} from "../lib/deku/src/element/index";
+
 var currentOwner = require("./currentOwner");
 var merge = require("merge");
 
@@ -16,7 +18,6 @@ module.exports = function (type, attributes, ...children) {
     let result;
     var newChildren = [];
     if (children && children.length) {
-
         for (var i = 0; i < children.length; i++) {
             if (typeof children[i] == "string" && children[i].trim() == "") {
                 continue;
@@ -26,9 +27,9 @@ module.exports = function (type, attributes, ...children) {
                 newChildren.push(children[i]);
             }
         }
-
-
     }
+
+    newChildren = reduceChildrenArray(newChildren);
 
     if (typeof type === 'function' && type.prototype.render) {
        result = new type(attributes, newChildren, currentOwner.target);

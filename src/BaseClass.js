@@ -83,6 +83,7 @@ var baseClassPrototype = {
         this.state =  merge(this.state ,value);
         this._update();
     },
+    
     setProps: function(value){
         if(this.componentWillSetProps){
             this.componentWillSetProps(value);

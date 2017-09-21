@@ -53,6 +53,9 @@ function register(inName, inOptions, ExtendClass) {
     var oldRender =  definition.render
     var oldComponentDidMount = definition.componentDidMount
     var oldComponentWillMount = definition.componentWillMount
+    var oldComponentDidUpdate = definition.componentDidUpdate
+
+
     var componentDidInsertChild = definition.componentDidInsertChild
 
     var getDefaultChildren = definition.getDefaultChildren;
@@ -96,6 +99,12 @@ function register(inName, inOptions, ExtendClass) {
                 EE.trigger("componentDidMount",[this])
             }
 
+        }
+    }
+    if(oldComponentDidMount){
+        definition.componentDidUpdate = function(){
+                oldComponentDidUpdate&&oldComponentDidUpdate.apply(this, arguments)
+                EE.trigger("componentDidUpdate",[this])
         }
     }
 

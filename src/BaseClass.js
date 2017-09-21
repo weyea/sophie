@@ -77,6 +77,7 @@ var baseClassPrototype = {
 
 
         let changes = diff.diffNode(oldVnode, newVnode, this.id || '0')
+        //@todo this.nativeNode是个什么角色
         var node = changes.reduce(dom.updateElement(function(){}, this), this.nativeNode)
 
         this.rootVnode = newVnode;
@@ -89,6 +90,10 @@ var baseClassPrototype = {
                     child.forceUpdate(updateChildren);
                 }
             }
+        }
+
+        if(this.componentDidUpdate){
+            this.componentDidUpdate()
         }
 
         return node

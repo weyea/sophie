@@ -10,6 +10,7 @@ var renderTest =  function(){
 
             console.log(this.props.name+" : "+ (this.props.num || 0))
         },
+
         render: function() {
             return (
                 <div   class="div-0">
@@ -89,6 +90,7 @@ var renderTest =  function(){
 
             console.log(this.props.name+" : "+ (this.props.num || 0))
         },
+
         render: function  () {
             return (
                 <div  class="div-4">
@@ -110,6 +112,9 @@ var renderTest =  function(){
 
         componentWillMount:function(){
 
+        },
+        componentDidUpdate:function(){
+            console.log("udpate")
         },
         getInitialState:function(){
             return {

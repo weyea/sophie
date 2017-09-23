@@ -24,6 +24,13 @@ var SohpieConstructor = function (props, children, owner) {
     this.children = children
     this.props.children = children || []
 
+
+
+    this.refs = {}
+    var defaultProps = this.getDefaultProps&&this.getDefaultProps();
+    var newProps = merge(defaultProps||{}, props||{})
+    this.props =this.attributes =  newProps;
+
     if (!children ||children.length == 0) {
         if (this.getDefaultChildren) {
             var defaultChildren = this.getDefaultChildren();
@@ -35,11 +42,6 @@ var SohpieConstructor = function (props, children, owner) {
             }
         }
     }
-
-    this.refs = {}
-    var defaultProps = this.getDefaultProps&&this.getDefaultProps();
-    var newProps = merge(defaultProps||{}, props||{})
-    this.props =this.attributes =  newProps;
 
     var defaultState = this.getInitialState&&this.getInitialState()
     var newState = merge({},defaultState||{})

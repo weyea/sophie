@@ -71,6 +71,9 @@ function register(inName, inOptions, ExtendClass) {
     if(getDefaultChildren){
         definition.getDefaultChildren = function(){
             var result =  getDefaultChildren.apply(this, arguments);
+            if(!result){
+                return []
+            }
             for(var i = 0;i<result.length;i++){
                 result[i].parent = this;
             }

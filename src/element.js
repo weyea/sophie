@@ -16,6 +16,10 @@ module.exports = function (type, attributes, ...children) {
     }
 
     let result;
+
+
+    children = reduceChildrenArray(children);
+
     var newChildren = [];
     if (children && children.length) {
         for (var i = 0; i < children.length; i++) {
@@ -28,8 +32,6 @@ module.exports = function (type, attributes, ...children) {
             }
         }
     }
-
-    newChildren = reduceChildrenArray(newChildren);
 
     if (typeof type === 'function' && type.prototype.render) {
        result = new type(attributes, newChildren, currentOwner.target);

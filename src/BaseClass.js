@@ -88,7 +88,7 @@ var baseClassPrototype = {
         if(updateChildren&&this.props.children&&this.props.children.length){
             for(var i = 0;i<this.props.children.length;i++){
                 var child = this.props.children[i];
-                if(child.forceUpdate){
+                if(child.isRender&&child.forceUpdate){
                     child.forceUpdate(updateChildren);
                 }
             }

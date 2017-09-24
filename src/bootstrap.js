@@ -61,6 +61,7 @@ module.exports = {
     ready: ready,
     renderToJSON: function () {
         // app
+        //isPlainObject
         var outVnode = Sophie.firstVnode.rootVnode;
         var walk = function (vnode) {
 

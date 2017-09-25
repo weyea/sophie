@@ -37,6 +37,7 @@ function register(inName, inOptions, ExtendClass) {
         }
         SohpieConstructor.prototype = Object.create(ExtendClass.prototype)
         SohpieConstructor.prototype.constructor = SohpieConstructor
+        SohpieConstructor.prototype.super = ExtendClass
 
     }
     else{
@@ -46,6 +47,7 @@ function register(inName, inOptions, ExtendClass) {
         }
         SohpieConstructor.prototype = Object.create(SophieBaseClass.prototype)
         SohpieConstructor.prototype.constructor = SohpieConstructor
+        SohpieConstructor.prototype.super = ExtendClass
     }
 
 

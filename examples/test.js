@@ -1,130 +1,123 @@
-var renderTest =  function(){
+var renderTest = function () {
 
-    var Div0 = Sophie.createClass("my-js-div-0",{
-        getDefaultProps:function(){
+    var Div0 = Sophie.createClass("my-js-div-0", {
+        getDefaultProps: function () {
             return {
-                name:"div-0"
+                name: "div-0"
             }
         },
-        componentDidMount:function(){
+        componentDidMount: function () {
 
-            console.log(this.props.name+" : "+ (this.props.num || 0))
+            console.log(this.props.name + " : " + (this.props.num || 0))
         },
 
-        render: function() {
+        render: function () {
             return (
-                <div   class="div-0">
-                    {this.props.name+" : "+ (this.props.num || 0)}
+                <div class="div-0">
+                    {this.props.name + " : " + (this.props.num || 0)}
                 </div>
             )
         }
     })
-    var Div1 = Sophie.createClass("my-js-div-1",{
-        getDefaultProps:function(){
+    var Div1 = Sophie.createClass("my-js-div-1", {
+        getDefaultProps: function () {
             return {
-                name:"div-1"
+                name: "div-1"
             }
         },
-        componentDidMount:function(){
+        componentDidMount: function () {
 
-            console.log(this.props.name+" : "+ (this.props.num || 0))
+            console.log(this.props.name + " : " + (this.props.num || 0))
         },
-        render: function() {
+        render: function () {
             return (
-                <div   class="div-1">
-                    {this.props.name+" : "+ (this.props.num || 0)}
-                </div>
-            )
-        }
-    })
-
-
-    var Div2 = Sophie.createClass("my-js-div-2",{
-
-        getDefaultProps:function(){
-            return {
-                name:"div-2"
-            }
-        },
-        componentDidMount:function(){
-
-            console.log(this.props.name+" : "+ (this.props.num || 0))
-        },
-
-        render: function  () {
-            return (
-                <div  class="div-2">
-                    {this.props.name+" : "+ (this.props.num || 0)}
+                <div class="div-1">
+                    {this.props.name + " : " + (this.props.num || 0)}
                 </div>
             )
         }
     })
 
 
-    var Div3 = Sophie.createClass("my-js-div-3",{
-        getDefaultProps:function(){
+    var Div2 = Sophie.createClass("my-js-div-2", {
+
+        getDefaultProps: function () {
             return {
-                name:"div-3"
+                name: "div-2"
             }
         },
-        componentDidMount:function(){
+        componentDidMount: function () {
 
-            console.log(this.props.name+" : "+ (this.props.num || 0))
+            console.log(this.props.name + " : " + (this.props.num || 0))
         },
-        render: function  () {
+
+        render: function () {
+            return (
+                <div class="div-2">
+                    {this.props.name + " : " + (this.props.num || 0)}
+                </div>
+            )
+        }
+    })
+
+
+    var Div3 = Sophie.createClass("my-js-div-3", {
+        getDefaultProps: function () {
+            return {
+                name: "div-3"
+            }
+        },
+        componentDidMount: function () {
+
+            console.log(this.props.name + " : " + (this.props.num || 0))
+        },
+        render: function () {
             return (
                 <div class="div-3">
-                    {this.props.name+" : "+ (this.props.num || 0)}
+                    {this.props.name + " : " + (this.props.num || 0)}
                 </div>
             )
         }
     })
 
-    var Div4 = Sophie.createClass("my-js-div-4",{
-        getDefaultProps:function(){
+    var Div4 = Sophie.createClass("my-js-div-4", {
+        getDefaultProps: function () {
             return {
-                name:"div-4"
+                name: "div-4"
             }
         },
-        componentDidMount:function(){
+        componentDidMount: function () {
 
-            console.log(this.props.name+" : "+ (this.props.num || 0))
+            console.log(this.props.name + " : " + (this.props.num || 0))
         },
 
-        render: function  () {
+        render: function () {
             return (
-                <div  class="div-4">
-                    {this.props.name+" : "+ (this.props.num || 0)}
+                <div class="div-4">
+                    {this.props.name + " : " + (this.props.num || 0)}
                 </div>
             )
         }
     })
 
 
+    var MyJSDiv = Sophie.createClass("my-js-div", {
 
-
-
-
-
-
-
-    var MyJSDiv = Sophie.createClass("my-js-div",{
-
-        componentWillMount:function(){
+        componentWillMount: function () {
 
         },
-        componentDidUpdate:function(){
+        componentDidUpdate: function () {
             console.log("udpate")
         },
-        getInitialState:function(){
+        getInitialState: function () {
             return {
-                num:2
+                num: 1
             }
         },
 
-        getDefaultChildren:function(){
+        getDefaultChildren: function () {
             return [
-                <Div0  num="0"/>,
+                <Div0 num="0"/>,
                 <Div1 num="1"/>,
                 <Div2 num="2"/>,
                 <Div3 id="3" num="3"/>,
@@ -133,90 +126,90 @@ var renderTest =  function(){
 
             ]
         },
-        componentDidMount:function(){
+        componentDidMount: function () {
+            console.log(this.tagName)
+            console.log(this.props.children)
 
-            setTimeout(()=>{
-                this.setState({num:++this.state.num})
-            },3000)
+            // setTimeout(() => {
+            //     this.setState({num: ++this.state.num})
+            // }, 3000)
         },
 
-        render: function  () {
+        render: function () {
+            return <div class="container">
 
-            if(this.state.num%2 == 0){
-                return   <div class="container">
-                    {this.props.children}
+                <div class="grid">
+                    {this.props.children[4]}
+                    {this.props.children[5]}
                 </div>
-            }
-            else{
-
-                return    <div class="container">
-
-                    <div class="grid">
-                        {this.props.children[4]}
-                        {this.props.children[5]}
-                    </div>
-                    {this.props.children[1]}
-                    <Div4 num ="6"></Div4>
-                    <div class="grid">
-                        {this.props.children[0]}
-                        {this.props.children[3]}
-                    </div>
-                    {this.props.children[2]}
-
+                {this.props.children[1]}
+                <Div4 num="6"></Div4>
+                <div class="grid">
+                    {this.props.children[0]}
+                    {this.props.children[3]}
                 </div>
-            }
+                {this.props.children[2]}
+
+            </div>
 
         }
 
     })
 
     Sophie.createStyleSheet({
-        ".grid":{
-            marginLeft:10}
+        ".grid": {
+            marginLeft: 10
+        }
     })
-
 
 
     Sophie.runApp(MyJSDiv)
 }
 
 
-var extendTest = function(){
+var extendTest = function () {
 
 
-    var Base = Sophie.createClass("p-base",{
+    var Base = Sophie.createClass("p-base", {
 
-        constructor:function(){
+        getDefaultProps: function () {
+            console.log("super")
+            return {
+                name: 123
+            }
+        },
+
+        constructor: function () {
             var className = this.props.class || this.props.className || "";
 
             this.props.layoutFullWidth == false;
 
-            if(this.props.pc){
+            if (this.props.pc) {
                 this.props.pc = {};
             }
-            if(!this.props.phone){
+            if (!this.props.phone) {
                 this.props.phone = {};
             }
             //区分来源，方便css设置
 
-            if(this.props.creatorFrom == "editor"){
+            if (this.props.creatorFrom == "editor") {
 
             }
-            else{
-                className += " " +this.tagName;
+            else {
+                className += " " + this.tagName;
             }
 
             this.props.class = this.props.className = className
 
             var self = this;
 
-            this.root = function(){
+            this.root = function () {
                 return {
-                    type:self.tagName,
-                    attributes:{
-                        class:self.props.className || self.props.class,
-                        id: self.props.id ||  self.props.key,
-                        "data-theme":self.props.theme||""
+                    type: self.tagName,
+                    attributes: {
+                        class: self.props.className || self.props.class,
+                        id: self.props.id || self.props.key,
+                        "data-theme": self.props.theme || ""
                     }
                 }
             }
@@ -227,31 +220,38 @@ var extendTest = function(){
 
         },
 
-        render:function(){
-            return   <this.root></this.root>
+        render: function () {
+            return <this.root></this.root>
         }
 
 
     })
 
 
-    var PIC = Sophie.createClass("p-bg",{
+    var PIC = Sophie.createClass("p-bg", {
 
-
+        getDefaultProps: function () {
+            console.log("suber")
+            return {
+                name: 123
+            }
+        },
         componentDidMount: function () {
 
-          console.log("modunt")
+            console.log("modunt")
         },
 
-        render:function(){
+        render: function () {
 
-            var background = "background-image:url("+this.props.src+")";
-            return  (
-                <this.root><div>12313</div></this.root>
+            var background = "background-image:url(" + this.props.src + ")";
+            return (
+                <this.root>
+                    <div>12313</div>
+                </this.root>
             );
         },
 
-    },Base)
+    }, Base)
 
     Sophie.runApp(PIC)
 
@@ -259,6 +259,6 @@ var extendTest = function(){
 
 
 window.tester = {
-    extendTest:extendTest,
-    renderTest:renderTest
+    extendTest: extendTest,
+    renderTest: renderTest
 }

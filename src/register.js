@@ -9,6 +9,8 @@ var currentOwner = require("./currentOwner");
 var registry = {};
 var SophieBaseClass = require("./BaseClass")
 
+import {initClass} from "./InitClass"
+
 function register(inName, inOptions, ExtendClass) {
 
     if(!inOptions){
@@ -30,24 +32,23 @@ function register(inName, inOptions, ExtendClass) {
 
     //只能扩展Sophie类
     if(ExtendClass == SophieBaseClass || ExtendClass.prototype instanceof  SophieBaseClass){
-        var SohpieConstructor = function () {
+        var SohpieConstructor = function (props, children, owner) {
 
             ExtendClass.apply(this, arguments)
-            if(SohpieConstructor.prototype._constructor)SohpieConstructor.prototype._constructor.apply(this,[]);
+            initClass.apply(this, [SohpieConstructor, ExtendClass, props, children, owner])
         }
         SohpieConstructor.prototype = Object.create(ExtendClass.prototype)
         SohpieConstructor.prototype.constructor = SohpieConstructor
-        SohpieConstructor.prototype.super = ExtendClass
 
     }
     else{
-        var SohpieConstructor = function (props) {
+        var SohpieConstructor = function (props, children, owner) {
             SophieBaseClass.apply(this, arguments)
-            if(SohpieConstructor.prototype._constructor)SohpieConstructor.prototype._constructor.apply(this,[]);
+            initClass.apply(this, [SohpieConstructor, SophieBaseClass, props, children, owner])
         }
         SohpieConstructor.prototype = Object.create(SophieBaseClass.prototype)
         SohpieConstructor.prototype.constructor = SohpieConstructor
-        SohpieConstructor.prototype.super = ExtendClass
+
     }
 
 
@@ -86,6 +87,27 @@ function register(inName, inOptions, ExtendClass) {
     //for decleare
     // SohpieConstructor.prototype.getDefaultProps = function(){}
     // SohpieConstructor.prototype.getInitialState = function(){}
+    definition._initProps = function(props, children, owner){
+        var defaultProps = this.getDefaultProps&&this.getDefaultProps();
+        var newProps = merge(defaultProps||{},this.props||{},  props||{})
+        this.props =this.attributes =  newProps;
+
+        if (!children ||children.length == 0) {
+            if (this.getDefaultChildren) {
+                var defaultChildren = this.getDefaultChildren();
+                if (Array.isArray(defaultChildren)) {
+                    this.props.children = defaultChildren;
+                }
+                else {
+                    this.props.children = [defaultChildren]
+                }
+            }
+        }
+
+        var defaultState = this.getInitialState&&this.getInitialState()
+        var newState = merge({},defaultState||{},this.state||{})
+        this.state = newState
+    }
 
     if(oldRender){
         definition.render =  function(){

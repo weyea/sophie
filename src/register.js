@@ -218,7 +218,6 @@ function isLeaf(inElement){
 }
 
 
-var isReady = false;
 
 
 module.exports = {

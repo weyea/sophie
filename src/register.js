@@ -13,17 +13,17 @@ import {initClass} from "./InitClass"
 
 function register(inName, inOptions, ExtendClass) {
 
-    if(!inOptions){
-      inOptions = inName;
-      inName = "undefined"
+    if(typeof inName !== "string"){
+        ExtendClass = inOptions
+        inOptions  = inName;
+        inName = undefined
     }
+
 
     var definition = inOptions || {};
-    definition.name = inName|| definition.name ;
+    definition.name = inName || definition.name ;
 
-    if (!inName) {
-        throw new Error('Name argument must not be empty');
-    }
+
 
     resolveTagName(definition);
     resolveMixin(definition);
@@ -183,8 +183,11 @@ function register(inName, inOptions, ExtendClass) {
 }
 
 function resolveTagName(inDefinition) {
-    inDefinition.tagName = inDefinition.name;
-    inDefinition.type = inDefinition.name;
+    if(inDefinition.name){
+        inDefinition.tagName = inDefinition.name;
+        inDefinition.type = inDefinition.name;
+    }
+
 }
 
 

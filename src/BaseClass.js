@@ -22,9 +22,10 @@ var SohpieConstructor = function (props, children, owner) {
     }
     this.state = {}
     this.refs = {}
-    this.props = props || {}
-    this.children = children
-    this.props.children = children || []
+    this.props = merge({},props || {})
+
+    this.props.children = [];
+    this.children = []
 
     initClass.apply(this, [SohpieConstructor, undefined, props, children, owner])
 

@@ -23,6 +23,7 @@ var SohpieConstructor = function (props, children, owner) {
     this.state = {}
     this.refs = {}
     this.props = merge({},props || {})
+    this.defaultProps = {}
 
     this.props.children = [];
     this.children = []

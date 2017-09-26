@@ -8,14 +8,13 @@ export function initClass (SohpieConstructor, superConstructor,props, children, 
         this.super = superConstructor
     }
 
-
-    var defaultProps = _self.getDefaultProps && _self.getDefaultProps();
+    var defaultProps = _self.getDefaultProps && _self.getDefaultProps.apply(this,[]);
     var newProps = merge(this.props || {}, defaultProps || {}, this.props || {}, props || {})
     this.props = this.attributes = newProps;
 
     if (!(children&&children.length)) {
         if (_self.getDefaultChildren) {
-            var defaultChildren = _self.getDefaultChildren();
+            var defaultChildren = _self.getDefaultChildren.apply(this,[]);
             if (Array.isArray(defaultChildren)) {
                 this.props.children = defaultChildren;
             }
@@ -26,8 +25,8 @@ export function initClass (SohpieConstructor, superConstructor,props, children, 
     }
 
 
-    var defaultState = _self.getInitialState && _self.getInitialState()
+    var defaultState = _self.getInitialState && _self.getInitialState.apply(this,[]);
     var newState = merge(this.state || {}, defaultState || {}, this.state || {})
     this.state = newState
-    SohpieConstructor.prototype._constructor.apply(this, arguments)
+    _self._constructor.apply(this, arguments)
 }

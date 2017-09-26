@@ -3,15 +3,16 @@ var merge = require("merge");
 export function initClass (SohpieConstructor, superConstructor,props, children, owner) {
 
 
-    var _self = SohpieConstructor.prototype;
+    var _self =this.self = SohpieConstructor.prototype;
+
+
     if (superConstructor) {
-        this.super = superConstructor
+        this.super = superConstructor.prototype
     }
 
     var defaultProps = _self.getDefaultProps && _self.getDefaultProps.apply(this,[]);
     var newProps = merge({},this.props || {}, defaultProps || {}, this.props || {}, props || {})
     this.props = this.attributes = newProps;
-
 
     var newChildren = []
     if(children&&children.length){
@@ -19,7 +20,7 @@ export function initClass (SohpieConstructor, superConstructor,props, children, 
             newChildren.push(children[i])
         }
     }
-    
+
     this.children =this.props.children = newChildren
 
 

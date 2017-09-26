@@ -26,8 +26,8 @@ var SohpieConstructor = function (props, children, owner) {
     this.defaultProps = {}
     this.defaultStates = {}
 
-    this.props.children = [];
-    this.children = []
+    this.props.children = this.children = children;
+
 
     initClass.apply(this, [SohpieConstructor, undefined, props, children, owner])
 

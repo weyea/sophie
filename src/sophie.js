@@ -36,7 +36,7 @@ var Sophie = {
   createElementByVnode:Bootstrap.createElementByVnode,
 
   createElementByTagName:Bootstrap.createElementByTagName,
-
+    renderVnodeFromJSON:Bootstrap.renderVnodeFromJSON,
   mountElement:mount,
   element : Element,
   register:Register.register,

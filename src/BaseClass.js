@@ -15,21 +15,8 @@ import {initClass} from "./InitClass"
 
 var Utils = require('./utils')
 
-var SohpieConstructor = function (props, children, owner) {
-    if (owner) {
-        this.owner = owner
-        this.ownerDocument = owner
-    }
-    this.state = {}
-    this.refs = {}
-    this.props = merge({},props || {})
-    this.defaultProps = {}
-    this.defaultStates = {}
-
-    this.props.children = this.children = children;
-
-
-    initClass.apply(this, [SohpieConstructor, undefined, props, children, owner])
+//只作继承用
+var SohpieConstructor = function () {
 
 }
 
@@ -44,9 +31,18 @@ var SohpieConstructor = function (props, children, owner) {
 var baseClassPrototype = {
 
 
-    _constructor: function () {
 
-    },
+    // _constructor: function () {
+    //
+    //
+    // },
+    // getDefaultChildren: function () {
+    //     return {}
+    // },
+    // getInitialState: function () {
+    //     return {}
+    // },
+
     forceUpdate: function (updateChildren) {
         // debugger
 

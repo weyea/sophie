@@ -59,10 +59,10 @@ module.exports = {
     },
 
     ready: ready,
-    renderToJSON: function () {
+    renderToJSON: function (outVnode) {
         // app
         //isPlainObject
-        var outVnode = Sophie.firstVnode.rootVnode;
+        var outVnode = outVnode || Sophie.firstVnode.rootVnode;
         var walk = function (vnode) {
 
             var currentData = {};
@@ -132,47 +132,55 @@ module.exports = {
         return data
 
     },
+    renderVnodeFromJSON: function (json, ownerDocument, callback) {
+        var funcEl = function (c) {
+            callback&&callback(c)
+            if (c.type == "thunk") {
+                return Sophie.element(Sophie.registry[c.name], c.props, funChildren(c.children))
+            }
+            else if (c.type == "text") {
+
+                return {
+                    type: 'text',
+                    nodeValue: c.nodeValue
+                }
+            }
+            else if (c.type == "html") {
+
+                return {
+                    type: 'html',
+                    nodeValue: c.nodeValue
+                }
+            }
+            else if (c.type = "native") {
+                return Sophie.element(c.tagName, c.props, funChildren(c.children))
+            }
+        }
+        var funChildren = function (children) {
+            var result = []
+            for (var i = 0; i < children.length; i++) {
+                var c = children[i];
+                if (!c || !c.type) continue;
+
+                result.push(funcEl(c))
+            }
+
+            return result;
+        }
+        currentOwner.target = ownerDocument;
+        var result = funcEl(json)
+        currentOwner.target = undefined;
+        return result;
+    },
     renderFromJSON: function (data, container, callback) {
         var htmlData = data;
+        var self = this
         if (htmlData) {
             var site = htmlData;
             var APP = Sophie.createClass("app", {
                 render: function () {
-                    var self = this;
-                    var func = function (children) {
-                        var result = []
-                        for (var i = 0; i < children.length; i++) {
-                            var c = children[i];
-                            if (!c || !c.type) continue;
-
-                            if (c.type == "thunk") {
-                                result.push(self.element(Sophie.registry[c.name], c.props, func(c.children)))
-                            }
-                            else if (c.type == "text") {
-
-                                result.push({
-                                    type: 'text',
-                                    nodeValue: c.nodeValue
-                                })
-                            }
-                            else if (c.type == "html") {
-
-                                result.push({
-                                    type: 'html',
-                                    nodeValue: c.nodeValue
-                                })
-                            }
-                            else if (c.type = "native") {
-                                result.push(self.element(c.tagName, c.props, func(c.children)))
-                            }
-                        }
-
-                        return result;
-                    }
-                    return this.element("app", {}, func(site.children))
-
+                   return  self.renderVnodeFromJSON(data,this)
                 }
-
             })
 
             Sophie.runApp(APP, container || $("#dotlinkface").get(0), true)

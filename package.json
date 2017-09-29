@@ -1,7 +1,9 @@
 {
   "name": "sophie",
-  "version": "0.1.13",
+  "version": "0.1.20",
   "main": "./src/sophie.js",
+  "repository":"",
+  "license":"",
   "dependencies": {
     "@f/create-element": "^1.0.1",
     "@f/empty-element": "^1.0.0",
@@ -52,4 +54,5 @@
     "dev": "TARGET=dev webpack-dev-server --hot --port 8080 --host 0.0.0.0 --colors",
     "bundle": "TARGET=bundle webpack"
   }
+
 }

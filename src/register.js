@@ -1,8 +1,8 @@
-
 var Utils = require("./utils");
-var EE  = require("./event")
+var EE = require("./event")
 var element = require("./element");
-import {dom,diff,vnode}   from "../lib/deku/src/index";
+import {dom, diff, vnode} from "../lib/deku/src/index";
+
 var StyleSheet = require("./styleSheet");
 var merge = require("merge");
 var currentOwner = require("./currentOwner");
@@ -13,168 +13,139 @@ import {initClass} from "./InitClass"
 
 function register(inName, inOptions, ExtendClass) {
 
-    if(typeof inName !== "string"){
+    if (typeof inName !== "string") {
         ExtendClass = inOptions
-        inOptions  = inName;
+        inOptions = inName;
         inName = undefined
     }
 
-
     var definition = inOptions || {};
-    definition.name = inName || definition.name ;
+    definition.name = inName || definition.name;
+
+
+    var SohpieConstructor = function (props, children, owner) {
+        initClass.apply(this, arguments)
+    }
+
+
+    //只能扩展Sophie类
+    if (ExtendClass && (ExtendClass === SophieBaseClass || ExtendClass.prototype instanceof SophieBaseClass)) {
+        SohpieConstructor.prototype = Object.create(ExtendClass.prototype)
+        SohpieConstructor.prototype.super = ExtendClass.prototype;
+    }
+    else {
+
+        SohpieConstructor.prototype = Object.create(SophieBaseClass.prototype)
+        SohpieConstructor.prototype.super = SophieBaseClass.prototype;
+    }
+
+
 
 
 
     resolveTagName(definition);
     resolveMixin(definition);
 
-    ExtendClass = ExtendClass || SophieBaseClass
 
-    //只能扩展Sophie类
-    if(ExtendClass == SophieBaseClass || ExtendClass.prototype instanceof  SophieBaseClass){
-        var SohpieConstructor = function (props, children, owner) {
+    var oldConstructor = definition.constructor
+    var oldGetDefaultProps = definition.getDefaultProps
+    var getDefaultChildren = definition.getDefaultChildren;
+    var oldGetInitState = definition.getInitialState;
+    var oldRender = definition.render
 
-            ExtendClass.apply(this, arguments)
-            initClass.apply(this, [SohpieConstructor, ExtendClass, props, children, owner])
-        }
-        SohpieConstructor.prototype = Object.create(ExtendClass.prototype)
-        SohpieConstructor.prototype.constructor = SohpieConstructor
-        SohpieConstructor.prototype.self =  SohpieConstructor.prototype
-        SohpieConstructor.prototype.super = ExtendClass.prototype;
-
-    }
-    else{
-        var SohpieConstructor = function (props, children, owner) {
-            SophieBaseClass.apply(this, arguments)
-            initClass.apply(this, [SohpieConstructor, SophieBaseClass, props, children, owner])
-        }
-        SohpieConstructor.prototype = Object.create(SophieBaseClass.prototype)
-        SohpieConstructor.prototype.constructor = SohpieConstructor
-        SohpieConstructor.prototype.self =  SohpieConstructor.prototype
-        SohpieConstructor.prototype.super = SophieBaseClass.prototype;
-
-    }
-
-
-    var oldConstructor =  definition.constructor
-    var oldRender =  definition.render
     var oldComponentDidMount = definition.componentDidMount
     var oldComponentWillMount = definition.componentWillMount
     var oldComponentDidUpdate = definition.componentDidUpdate
 
 
-    var componentDidInsertChild = definition.componentDidInsertChild
-
-    var getDefaultChildren = definition.getDefaultChildren;
-    var componentDidSetChildren = definition.componentDidSetChildren;
-
-    if(oldConstructor) {
-        definition._constructor = oldConstructor;
-    }
-    else{
-        definition._constructor = function(){}
+    definition.getDefaultProps = function () {
+        var defaultProps = {}
+        if (ExtendClass && ExtendClass.prototype.getDefaultProps) {
+            defaultProps = ExtendClass.prototype.getDefaultProps.apply(this, arguments)
+        }
+        var thisDefault = oldGetDefaultProps && oldGetDefaultProps.apply(this, arguments)
+        return merge({}, defaultProps || {},thisDefault || {})
     }
 
-    if(getDefaultChildren){
-        definition.getDefaultChildren = function(){
-            var result =  getDefaultChildren.apply(this, arguments);
-            if(!result){
-                return []
+    definition.getDefaultChildren = function () {
+        if (!getDefaultChildren) {
+            if (ExtendClass && ExtendClass.prototype.getDefaultChildren) {
+                return ExtendClass.prototype.getDefaultChildren.apply(this, arguments) || []
             }
-            for(var i = 0;i<result.length;i++){
-                result[i].parent = this;
-            }
-            return result;
+        }
+        else {
+            return getDefaultChildren.apply(this, arguments) || []
         }
     }
+
+    definition.getInitialState = function () {
+        var superState = {}
+        if (ExtendClass && ExtendClass.prototype.getInitialState) {
+            superState = ExtendClass.prototype.getInitialState.apply(this, arguments)
+        }
+        var thisState = oldGetInitState && oldGetInitState.apply(this, arguments)
+        return merge({},  superState || {},thisState || {})
+    }
+
+    definition._constructor = function () {
+        if (ExtendClass && ExtendClass.prototype._constructor) {
+            ExtendClass.prototype._constructor.apply(this, arguments)
+        }
+        oldConstructor && oldConstructor.apply(this, arguments)
+
+    }
+
 
     //for decleare
     // SohpieConstructor.prototype.getDefaultProps = function(){}
     // SohpieConstructor.prototype.getInitialState = function(){}
-    definition._initProps = function(props, children, owner){
-        var defaultProps = this.getDefaultProps&&this.getDefaultProps();
-        var newProps = merge(defaultProps||{},this.props||{},  props||{})
-        this.props =this.attributes =  newProps;
 
-        if (!children ||children.length == 0) {
-            if (this.getDefaultChildren) {
-                var defaultChildren = this.getDefaultChildren();
-                if (Array.isArray(defaultChildren)) {
-                    this.props.children = defaultChildren;
-                }
-                else {
-                    this.props.children = [defaultChildren]
-                }
-            }
-        }
 
-        var defaultState = this.getInitialState&&this.getInitialState()
-        var newState = merge({},defaultState||{},this.state||{})
-        this.state = newState
-    }
-
-    if(oldRender){
-        definition.render =  function(){
+    if (oldRender) {
+        definition.render = function () {
             currentOwner.target = this;
-            var result =  oldRender.apply(this, arguments);
+            var result = oldRender.apply(this, arguments);
             currentOwner.target = undefined;
             return result;
         }
     }
 
-    if(oldComponentDidMount){
-        definition.componentDidMount = function(){
-            if(!this._didMount){
+    if (oldComponentDidMount) {
+        definition.componentDidMount = function () {
+            if (!this._didMount) {
                 this._didMount = true
-                oldComponentDidMount&&oldComponentDidMount.apply(this, arguments)
-                EE.trigger("componentDidMount",[this])
+                oldComponentDidMount && oldComponentDidMount.apply(this, arguments)
+                EE.trigger("componentDidMount", [this])
             }
 
         }
     }
-    if(oldComponentDidMount){
-        definition.componentDidUpdate = function(){
-                oldComponentDidUpdate&&oldComponentDidUpdate.apply(this, arguments)
-                EE.trigger("componentDidUpdate",[this])
+    if (oldComponentDidMount) {
+        definition.componentDidUpdate = function () {
+            oldComponentDidUpdate && oldComponentDidUpdate.apply(this, arguments)
+            EE.trigger("componentDidUpdate", [this])
         }
     }
 
 
-    if(componentDidInsertChild){
-        definition.componentDidInserted = function(){
-            componentDidInsertChild&&componentDidInsertChild.apply(this, arguments)
-            EE.trigger("componentDidInsertChild",[this])
-        }
-    }
-
-    if(componentDidSetChildren){
-        definition.componentDidSetChildren = function(){
-            componentDidSetChildren&&componentDidSetChildren.apply(this, arguments)
-            EE.trigger("componentDidSetChildren",[this])
-        }
-    }
-
-    if(oldComponentWillMount){
-        definition.componentWillMount = function(){
-            oldComponentWillMount&&oldComponentWillMount.apply(this, arguments)
-            EE.trigger("oldComponentWillMount",[this])
+    if (oldComponentWillMount) {
+        definition.componentWillMount = function () {
+            oldComponentWillMount && oldComponentWillMount.apply(this, arguments)
+            EE.trigger("oldComponentWillMount", [this])
         }
     }
 
 
+    Utils.merge(SohpieConstructor.prototype, definition);
 
 
-    Utils.merge(SohpieConstructor.prototype ,definition);
     SohpieConstructor.prototype.constructor = SohpieConstructor
-
-
-    SohpieConstructor.createStyleSheet = function(styles,mediaQuery){
-        StyleSheet.create(styles,mediaQuery, inName)
+    SohpieConstructor.createStyleSheet = function (styles, mediaQuery) {
+        StyleSheet.create(styles, mediaQuery, inName)
     }
 
 
-
-    if(inName!=="undefined"){
+    if (inName) {
         registerDefinition(inName, SohpieConstructor);
         document.createElement(inName);
     }
@@ -183,7 +154,7 @@ function register(inName, inOptions, ExtendClass) {
 }
 
 function resolveTagName(inDefinition) {
-    if(inDefinition.name){
+    if (inDefinition.name) {
         inDefinition.tagName = inDefinition.name;
         inDefinition.type = inDefinition.name;
     }
@@ -192,14 +163,14 @@ function resolveTagName(inDefinition) {
 
 
 function resolveMixin(inDefinition) {
-    var mixin= inDefinition.mixin||[];
-    for(var i=0;i<mixin.length;i++){
+    var mixin = inDefinition.mixin || [];
+    for (var i = 0; i < mixin.length; i++) {
         var pDefinition = mixin[i];
-      for (var p in pDefinition) {
-          if (!inDefinition[p]) {
-              inDefinition[p] = pDefinition[p];
-          }
-      }
+        for (var p in pDefinition) {
+            if (!inDefinition[p]) {
+                inDefinition[p] = pDefinition[p];
+            }
+        }
     }
 }
 
@@ -208,20 +179,16 @@ function registerDefinition(inName, inDefinition) {
 }
 
 
-
-
-function isLeaf(inElement){
-    if(inElement){
+function isLeaf(inElement) {
+    if (inElement) {
         var name = inElement.tagName.toLowerCase();
         return registry[name];
     }
 }
 
 
-
-
 module.exports = {
-  registry : registry,
-  isLeaf : isLeaf,
-  register : register
+    registry: registry,
+    isLeaf: isLeaf,
+    register: register
 }

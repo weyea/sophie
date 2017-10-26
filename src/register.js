@@ -7,6 +7,7 @@ var StyleSheet = require("./styleSheet");
 var merge = require("merge");
 var currentOwner = require("./currentOwner");
 var registry = {};
+
 var SophieBaseClass = require("./BaseClass")
 
 import {initClass} from "./InitClass"

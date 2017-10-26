@@ -1,5 +1,7 @@
 var merge = require("merge");
 
+var utils = require("./utils")
+
 export function initClass(props, children, owner) {
     if (owner) {
         this.owner = owner
@@ -7,15 +9,15 @@ export function initClass(props, children, owner) {
     }
     this.state = {}
     this.refs = {}
-    this.props = this.attributes = merge({}, props || {})
+    this.props = this.attributes = utils.extend(true,{}, props || {})
     this.defaultProps = {}
 
-    this.props.children = this.children = children;
+    this.props.children = this.children = utils.extend([],children)
 
 
     this.defaultProps = this.getDefaultProps()
 
-    this.props = this.attributes = merge({}, this.defaultProps, this.props);
+    this.props = this.attributes = utils.extend(true,{}, this.defaultProps, this.props);
 
 
     if (!(children && children.length)) {

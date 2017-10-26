@@ -4,6 +4,7 @@ import {reduceChildrenArray} from "../lib/deku/src/element/index";
 
 var currentOwner = require("./currentOwner");
 var merge = require("merge");
+var utils = require("./utils")
 
 module.exports = function (type, attributes, ...children) {
 
@@ -17,6 +18,7 @@ module.exports = function (type, attributes, ...children) {
 
     let result;
 
+    attributes = utils.extend(true, {}, attributes)
 
     children = reduceChildrenArray(children);
 
@@ -34,8 +36,8 @@ module.exports = function (type, attributes, ...children) {
     }
 
     if (typeof type === 'function' && type.prototype.render) {
-       result = new type(attributes, newChildren, currentOwner.target);
-       result.type ="thunk"
+        result = new type(attributes, newChildren, currentOwner.target);
+        result.type = "thunk"
 
     }
     //用方法 返回 属性 来 创建 element
@@ -50,7 +52,7 @@ module.exports = function (type, attributes, ...children) {
         result = element.apply(null, [type, attributes, newChildren]);
 
     }
-    else{
+    else {
         result = element.apply(null, [type, attributes, newChildren]);
     }
 

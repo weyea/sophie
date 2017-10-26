@@ -88,10 +88,21 @@ module.exports = {
                 // currentData.state = component.state
                 var attributes = {};
 
-                for (var p in component.props) {
-                    if (p == "children") continue;
-                    attributes[p] = component.props[p]
+
+                var vnodeProps =  component.props;
+                var vnodeDefaultProps = component.defaultProps;
+                var mergeProps = {}
+                for(var p in vnodeProps){
+                    if(p !== "children"){
+                        if(!vnodeDefaultProps[p] ||  vnodeDefaultProps[p] !== vnodeProps[p] ){
+                            mergeProps[p] = vnodeProps[p]
+                        }
+                    }
                 }
+
+                attributes = utils.extend(2,{}, mergeProps)
+                delete attributes.children
+
                 currentData.props = attributes
                 currentData.name = component.name
             }
@@ -108,12 +119,11 @@ module.exports = {
             else if (vnode.type == "native") {
                 currentData.type = "native"
                 currentData.tagName = vnode.tagName;
-                var attributes = {};
-                for (var p in vnode.props) {
-                    if (p == "children") continue;
-                    attributes[p] = vnode.props[p];
+
+                currentData.props = utils.extend(1, {}, vnode.props)
+                if (currentData.props.children) {
+                    delete  currentData.props.children;
                 }
-                currentData.props = attributes
 
             }
             currentData.children = [];
@@ -132,9 +142,12 @@ module.exports = {
         return data
 
     },
+
     renderVnodeFromJSON: function (json, ownerDocument, callback) {
         var funcEl = function (c) {
-            callback&&callback(c)
+           var result =  callback && callback(c)
+
+            if(result === false) return;
             if (c.type == "thunk") {
                 return Sophie.element(Sophie.registry[c.name], c.props, funChildren(c.children))
             }
@@ -162,7 +175,10 @@ module.exports = {
                 var c = children[i];
                 if (!c || !c.type) continue;
 
-                result.push(funcEl(c))
+                var el = funcEl(c);
+                if(el){
+                    result.push(el)
+                }
             }
 
             return result;
@@ -179,7 +195,7 @@ module.exports = {
             var site = htmlData;
             var APP = Sophie.createClass("app", {
                 render: function () {
-                   return  self.renderVnodeFromJSON(data,this)
+                    return self.renderVnodeFromJSON(data, this)
                 }
             })
 

@@ -10,11 +10,12 @@
 var merge = require("merge");
 
 var element = require("./element");
+
 import {dom, diff, vnode} from "../lib/deku/src/index";
+
 import {initClass} from "./InitClass"
 
 var Utils = require('./utils')
-
 //只作继承用
 var SohpieConstructor = function () {
 
@@ -28,9 +29,8 @@ var SohpieConstructor = function () {
 // }
 
 
+
 var baseClassPrototype = {
-
-
 
     // _constructor: function () {
     //
@@ -84,7 +84,7 @@ var baseClassPrototype = {
         return node
     },
     setState: function (value) {
-        this.state = merge(this.state, value);
+        this.state = Utils.extend(true, this.state, value);
         this._update();
     },
 
@@ -93,7 +93,7 @@ var baseClassPrototype = {
             this.componentWillSetProps(value);
         }
         //设置属性
-        this.props = merge(this.props, value);
+        this.props = Utils.extend(true, this.props, value);
         if (this.componentDidSetProps) {
             this.componentDidSetProps(value);
         }
@@ -113,15 +113,18 @@ var baseClassPrototype = {
         children.push(child);
     },
 
-    append: function (child) {
+    append: function (child, forceUpdate) {
         child.parent = this
         child.owner = child.creater = this.owner
         var children = this.props.children;
         children.push(child);
-        this._update()
-        if (this.componentDidInsertChild) {
-            this.componentDidInsertChild(child);
+        if (forceUpdate !== false) {
+            this._update()
+            if (this.componentDidInsertChild) {
+                this.componentDidInsertChild(child);
+            }
         }
+
     },
 
     setChildren: function (children) {

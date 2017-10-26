@@ -130,15 +130,16 @@ var renderTest = function () {
             console.log(this.tagName)
             console.log(this.props.children)
 
-            // setTimeout(() => {
-            //     this.setState({num: ++this.state.num})
-            // }, 3000)
+            setTimeout(() => {
+                this.setState({num: ++this.state.num})
+            }, 1000)
         },
 
         render: function () {
             return <div class="container">
 
                 <div class="grid">
+
                     {this.props.children[4]}
                     {this.props.children[5]}
                 </div>

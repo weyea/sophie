@@ -29,7 +29,6 @@ var SohpieConstructor = function () {
 // }
 
 
-
 var baseClassPrototype = {
 
     // _constructor: function () {
@@ -115,7 +114,7 @@ var baseClassPrototype = {
 
     append: function (child, forceUpdate) {
         child.parent = this
-        child.owner = child.creater = this.owner
+        child.ownerDocument = child.owner = child.creater = this.owner
         var children = this.props.children;
         children.push(child);
         if (forceUpdate !== false) {
@@ -132,7 +131,7 @@ var baseClassPrototype = {
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
             child.parent = this;
-            child.owner = child.creater = this.owner
+            child.ownerDocument = child.owner = child.creater = this.owner
             result.push(child)
         }
         this.props.children = this.children = this.attributes.children = result;
@@ -143,7 +142,7 @@ var baseClassPrototype = {
 
     remove: function (child) {
         var parent = this;
-        var children = parent.children;
+        var children = parent.props.children;
         for (var i = 0; i < children.length; i++) {
             if (children[i] == child) {
                 //  children[i].parent = undefined
@@ -159,12 +158,13 @@ var baseClassPrototype = {
     },
     insertBefore: function (target, before) {
         var parent = this;
-        var children = parent.children;
+        var children = parent.props.children;
         for (var i = 0; i < children.length; i++) {
             if (children[i] == before) {
                 children.splice(i, 0, target)
 
                 target.parent = parent
+                target.ownerDocument = target.owner = target.creater = this.owner
                 break;
             }
         }
@@ -175,12 +175,12 @@ var baseClassPrototype = {
     },
     insertAfter: function (target, after) {
         var parent = this;
-        var children = parent.children;
+        var children = parent.props.children;
         for (var i = 0; i < children.length; i++) {
             if (children[i] == after) {
                 children.splice(i + 1, 0, target)
                 target.parent = parent
-
+                target.ownerDocument = target.owner = target.creater = this.owner
                 break;
             }
         }

@@ -59,7 +59,7 @@ module.exports = {
     },
 
     ready: ready,
-    renderToJSON: function (outVnode) {
+    renderToJSON: function (outVnode, state) {
         // app
         //isPlainObject
         var outVnode = outVnode || Sophie.firstVnode.rootVnode;
@@ -89,21 +89,26 @@ module.exports = {
                 var attributes = {};
 
 
-                var vnodeProps =  component.props;
+                var vnodeProps = component.props;
                 var vnodeDefaultProps = component.defaultProps;
                 var mergeProps = {}
-                for(var p in vnodeProps){
-                    if(p !== "children"){
-                        if(!vnodeDefaultProps[p] ||  vnodeDefaultProps[p] !== vnodeProps[p] ){
+                for (var p in vnodeProps) {
+                    if (p !== "children") {
+                        if (!vnodeDefaultProps[p] || vnodeDefaultProps[p] !== vnodeProps[p]) {
                             mergeProps[p] = vnodeProps[p]
                         }
                     }
                 }
 
-                attributes = utils.extend(2,{}, mergeProps)
+
+                attributes = utils.extend(2, {}, mergeProps)
                 delete attributes.children
 
                 currentData.props = attributes
+                if (state) {
+                
+                    currentData.state = utils.extend(2, {}, component.state)
+                }
                 currentData.name = component.name
             }
             else if (vnode.type == "text") {
@@ -145,10 +150,14 @@ module.exports = {
 
     renderVnodeFromJSON: function (json, ownerDocument, callback) {
         var funcEl = function (c) {
-           var result =  callback && callback(c)
+            var result = callback && callback(c)
 
-            if(result === false) return;
+            if (result === false) return;
             if (c.type == "thunk") {
+
+                if (c.state) {
+                    c.props.__state = c.state;
+                }
                 return Sophie.element(Sophie.registry[c.name], c.props, funChildren(c.children))
             }
             else if (c.type == "text") {
@@ -176,7 +185,7 @@ module.exports = {
                 if (!c || !c.type) continue;
 
                 var el = funcEl(c);
-                if(el){
+                if (el) {
                     result.push(el)
                 }
             }

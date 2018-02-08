@@ -89,11 +89,24 @@ module.exports = {
                 var attributes = {};
 
 
+                var excepts = {
+                    "children": 1,
+                    "className": 1,
+                    "class": 1,
+                    "paddingBottom": 1,
+                    "ref": 1,
+                    "active": 1,
+                    "title": 1,
+                    "isHidden": 1,
+                    "heightAuto": 1
+
+                }
+                var inputProps = component.inputProps
                 var vnodeProps = component.props;
                 var vnodeDefaultProps = component.defaultProps;
                 var mergeProps = {}
                 for (var p in vnodeProps) {
-                    if (p !== "children") {
+                    if (!excepts[p] || inputProps[p]) {
                         if (!vnodeDefaultProps[p] || vnodeDefaultProps[p] !== vnodeProps[p]) {
                             mergeProps[p] = vnodeProps[p]
                         }
@@ -106,7 +119,7 @@ module.exports = {
 
                 currentData.props = attributes
                 if (state) {
-                
+
                     currentData.state = utils.extend(2, {}, component.state)
                 }
                 currentData.name = component.name
@@ -132,11 +145,15 @@ module.exports = {
 
             }
             currentData.children = [];
-            if (children && children.length) {
-                for (var i = 0; i < children.length; i++) {
-                    if (children[i]) currentData.children.push(walk(children[i]))
+
+            if (vnode.tagName !== "p-list-dataset") {
+                if (children && children.length) {
+                    for (var i = 0; i < children.length; i++) {
+                        if (children[i]) currentData.children.push(walk(children[i]))
+                    }
                 }
             }
+
             if (!currentData.type) {
                 currentData = undefined;
             }
@@ -192,9 +209,11 @@ module.exports = {
 
             return result;
         }
+
+        var oldOwnerDocument = currentOwner.target
         currentOwner.target = ownerDocument;
         var result = funcEl(json)
-        currentOwner.target = undefined;
+        currentOwner.target = oldOwnerDocument || undefined;
         return result;
     },
     renderFromJSON: function (data, container, callback) {
@@ -218,18 +237,18 @@ module.exports = {
     },
     //第个组件生成元素
     isBaseVnode: function (vnode) {
-        return vnode.owner && vnode.owner.name == Sophie.firstVnode.name
+        return vnode.ownerDocument && vnode.ownerDocument == Sophie.firstVnode
     },
 
 
     getOwner: function (vnode) {
 
-        return vnode.owner || vnode._owner;
+        return vnode.ownerDocument || vnode.ownerDocument;
 
     },
     getCreater: function (vnode) {
 
-        return vnode.owner || vnode._owner;
+        return vnode.ownerDocument || vnode.ownerDocument;
 
     },
 
@@ -237,6 +256,9 @@ module.exports = {
         return vnode.parent;
     },
     closestBaseParent: function (vnode) {
+        if (!vnode) {
+            return;
+        }
         if (this.isBaseVnode(vnode)) {
             return vnode;
         }
@@ -254,7 +276,10 @@ module.exports = {
         }
         else {
             var owner = this.getOwner(parent);
-            return this.closestBaseParent(owner);
+            if (owner) {
+                return this.closestBaseParent(owner);
+            }
+
         }
     },
 

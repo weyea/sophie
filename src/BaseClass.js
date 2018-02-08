@@ -111,12 +111,35 @@ var baseClassPrototype = {
         var children = this.props.children;
         children.push(child);
     },
+    _addOwnerDocument: function (child, parent) {
+        child.parent = parent || this
+        child.ownerDocument = child.owner = child.creater = this.owner
+        if (child.props.children) {
+            for (var i = 0; i < child.props.children.length; i++) {
+                this._addOwnerDocument(child.props.children[i], child)
+            }
+        }
+
+
+    },
 
     append: function (child, forceUpdate) {
-        child.parent = this
-        child.ownerDocument = child.owner = child.creater = this.owner
+        this._addOwnerDocument(child)
         var children = this.props.children;
         children.push(child);
+        if (forceUpdate !== false) {
+            this._update()
+            if (this.componentDidInsertChild) {
+                this.componentDidInsertChild(child);
+            }
+        }
+
+    },
+
+    unshift: function (child, forceUpdate) {
+        this._addOwnerDocument(child)
+        var children = this.props.children;
+        children.unshift(child);
         if (forceUpdate !== false) {
             this._update()
             if (this.componentDidInsertChild) {
@@ -130,8 +153,7 @@ var baseClassPrototype = {
         var result = [];
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
-            child.parent = this;
-            child.ownerDocument = child.owner = child.creater = this.owner
+            this._addOwnerDocument(child)
             result.push(child)
         }
         this.props.children = this.children = this.attributes.children = result;
@@ -158,13 +180,13 @@ var baseClassPrototype = {
     },
     insertBefore: function (target, before) {
         var parent = this;
+        this._addOwnerDocument(target)
         var children = parent.props.children;
         for (var i = 0; i < children.length; i++) {
             if (children[i] == before) {
                 children.splice(i, 0, target)
 
-                target.parent = parent
-                target.ownerDocument = target.owner = target.creater = this.owner
+
                 break;
             }
         }
@@ -173,14 +195,27 @@ var baseClassPrototype = {
             target.componentDidInsert();
         }
     },
+
+    replaceChild: function(replaceChild, newChild){
+        var parent = this;
+        this._addOwnerDocument(newChild)
+        var children = parent.props.children;
+        for (var i = 0; i < children.length; i++) {
+            if (children[i] == replaceChild) {
+                children[i] = newChild;
+                break;
+            }
+        }
+        this._update()
+    },
     insertAfter: function (target, after) {
         var parent = this;
+        this._addOwnerDocument(target)
         var children = parent.props.children;
         for (var i = 0; i < children.length; i++) {
             if (children[i] == after) {
                 children.splice(i + 1, 0, target)
-                target.parent = parent
-                target.ownerDocument = target.owner = target.creater = this.owner
+
                 break;
             }
         }

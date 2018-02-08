@@ -19,6 +19,7 @@ export function initClass(props, children, owner) {
 
 
     this.refs = {}
+    this.inputProps = utils.extend(true, {}, props || {})
     this.props = this.attributes = utils.extend(true, {}, props || {})
     this.defaultProps = {}
 

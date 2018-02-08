@@ -104,9 +104,10 @@ function register(inName, inOptions, ExtendClass) {
 
     if (oldRender) {
         definition.render = function () {
+            var oldOwnerDocument =  currentOwner.target
             currentOwner.target = this;
             var result = oldRender.apply(this, arguments);
-            currentOwner.target = undefined;
+            currentOwner.target = oldOwnerDocument ||  undefined;
             return result;
         }
     }
